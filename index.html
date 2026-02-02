@@ -7,79 +7,74 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* هەمان ستایلەکانت وەک خۆی */
+        /* Security & Select Protection */
         * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        
         :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --dark-text: #2c3e50; }
         body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
         #app-container { display: flex; }
+
         .main-container { width: 100%; max-width: 700px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 95vh; position: relative; overflow: hidden; }
+        
+        /* Header */
         .header { background: white; padding: 10px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding-left: 15px; padding-right: 15px; height: 60px; }
+        
         .menu-btn { font-size: 28px; cursor: pointer; color: var(--border-color); padding: 5px; transition: 0.2s; }
         .menu-btn:hover { color: #b6962f; }
+
         select { font-family: 'Amiri', serif; font-size: 18px; padding: 5px; width: 65%; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fff; text-align: center; }
+
+        /* Sidebar Menu */
         .sidebar { position: absolute; top: 0; right: -100%; width: 75%; height: 100%; background: white; z-index: 100; transition: 0.4s ease; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .sidebar.open { right: 0; }
         .sidebar-header { padding: 20px; background: var(--border-color); color: white; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: bold; }
         .close-btn { cursor: pointer; font-size: 24px; }
         .menu-content { flex-grow: 1; overflow-y: auto; padding: 15px; }
-        .menu-section-title { font-size: 18px; color: var(--border-color); border-bottom: 1px solid #eee; margin-top: 20px; margin-bottom: 10px; padding-bottom: 5px; }
-        .menu-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; border: 1px solid #eee; transition: 0.2s; font-size: 16px; }
+        .menu-section-title { font-size: 18px; color: var(--border-color); border-bottom: 1px solid #eee; margin-top: 20px; margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; }
+        .menu-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; border: 1px solid #eee; transition: 0.2s; font-size: 16px; align-items: center;}
         .menu-item:hover { background: #fffbf2; border-color: var(--border-color); }
         .item-info { display: flex; flex-direction: column; }
         .item-date { font-size: 12px; color: #888; }
         .delete-item { color: red; cursor: pointer; font-size: 18px; padding: 0 5px; }
+
+        /* User Status Styles */
+        .user-status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 8px; }
+        .status-online { background-color: #27ae60; box-shadow: 0 0 5px #27ae60; }
+        .status-idle { background-color: #f39c12; }
+        .live-counter { font-size: 12px; background: #eee; padding: 2px 8px; border-radius: 10px; margin-right: 5px; }
+
+        /* Overlay */
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 90; display: none; }
         .overlay.active { display: block; }
+
+        /* Quran Content */
         .quran-content { flex-grow: 1; padding: 20px; overflow-y: auto; text-align: justify; font-size: 32px; line-height: 2.6; scroll-behavior: smooth; }
         .ayah-container { display: inline; }
         .word { display: inline-block; padding: 0 2px; border-radius: 4px; transition: all 0.1s ease; cursor: pointer; }
         .word.active { color: var(--highlight-color); font-weight: bold; text-shadow: 0 0 1px var(--highlight-color); transform: scale(1.1); background-color: rgba(39, 174, 96, 0.1); }
         .ayah-number { font-size: 18px; color: var(--border-color); border: 1px solid var(--border-color); border-radius: 50%; padding: 0 8px; margin: 0 5px; display: inline-block; vertical-align: middle; }
         .basmala { text-align: center; font-size: 26px; color: var(--border-color); margin-bottom: 20px; display: block; font-family: 'Amiri', serif; }
+
+        /* Footer */
         .footer { background: white; padding: 15px; border-top: 1px solid #eee; border-radius: 0 0 15px 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.02); }
         #live-caption { width: 90%; background-color: #f8f9fa; padding: 10px; border-radius: 8px; font-size: 16px; color: #555; margin-bottom: 12px; text-align: center; min-height: 25px; border: 1px solid #e0e0e0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: rtl; }
+        
         .controls { display: flex; gap: 15px; align-items: center; width: 100%; justify-content: center; }
+        
         button#mic-btn { background-color: var(--border-color); color: white; border: none; padding: 12px 30px; font-size: 18px; border-radius: 50px; cursor: pointer; font-family: 'Amiri', serif; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: transform 0.2s, background 0.3s; width: 180px; justify-content: center; }
         button#mic-btn:active { transform: scale(0.95); }
         button.listening { background-color: #e74c3c !important; animation: pulse 1.5s infinite; }
+        
         button#fav-btn { background: white; border: 2px solid var(--border-color); color: var(--border-color); width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
         button#fav-btn:hover { background: var(--border-color); color: white; }
-        .copyright { font-size: 10px; color: #aaa; margin-top: 10px; cursor: pointer; }
+        
+        .copyright { font-size: 10px; color: #aaa; margin-top: 10px; display: flex; gap: 10px; align-items: center; }
+        
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
-
-        /* ====================
-           New Admin Dashboard Styles
-           ==================== */
-        #admin-panel {
-            display: none; /* Hidden by default */
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 300px; max-height: 400px; background: white; border: 2px solid var(--border-color);
-            border-radius: 10px; z-index: 200; box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            overflow: hidden; flex-direction: column;
-        }
-        .admin-header { background: var(--border-color); color: white; padding: 10px; text-align: center; font-weight: bold; display: flex; justify-content: space-between; }
-        .admin-content { padding: 10px; overflow-y: auto; font-size: 14px; }
-        .user-row { display: flex; justify-content: space-between; padding: 5px; border-bottom: 1px solid #eee; align-items: center; }
-        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; }
-        .online { background-color: #27ae60; }
-        .offline { background-color: #e74c3c; }
-        .idle { background-color: #f39c12; }
     </style>
 </head>
 <body oncontextmenu="return false;">
-
-    <div id="admin-panel">
-        <div class="admin-header">
-            <span>بەڕێوەبردن (Admin)</span>
-            <span style="cursor:pointer" onclick="document.getElementById('admin-panel').style.display='none'">✕</span>
-        </div>
-        <div class="admin-content">
-            <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-                ئۆنلاین: <span id="online-count">0</span>
-            </div>
-            <div id="users-list">جاری بارکردن...</div>
-        </div>
-    </div>
 
     <div class="main-container" id="app-container">
         
@@ -90,21 +85,27 @@
                 <span class="close-btn" onclick="toggleMenu()">✕</span>
             </div>
             <div class="menu-content">
+                
+                <div class="menu-section-title">
+                    👥 بەکارهێنەرانی ئێستا
+                    <span id="total-users-badge" class="live-counter" style="float:left">1</span>
+                </div>
+                <div id="live-users-list" style="max-height: 150px; overflow-y: auto; font-size: 14px; margin-bottom: 20px;">
+                    </div>
+                <div style="font-size: 12px; color: #666; text-align: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                     کۆی سەردانەکان: <span id="total-visits-count">1</span>
+                </div>
+
                 <div class="menu-section-title">❤️ دڵخوازەکان (Bookmarks)</div>
                 <div id="favorites-list"></div>
 
                 <div class="menu-section-title">🕒 مێژووی خوێندنەوە</div>
                 <div id="history-list"></div>
-                
-                <div class="menu-section-title">🔧 بەڕێوەبردن</div>
-                <div class="menu-item" onclick="document.getElementById('admin-panel').style.display='flex'; toggleMenu();">
-                    <div class="item-info"><span>📊 ئاماری سەردانیکەران</span></div>
-                </div>
             </div>
         </div>
 
         <div class="header">
-            <div class="menu-btn" onclick="toggleMenu()">☰</div>
+            <div class="menu-btn" onclick="toggleMenu()">☰ <span id="header-live-dot" style="font-size:10px; color:#27ae60; display:none;">●</span></div>
             <select id="surahSelect" onchange="loadSurah(this.value)">
                 <option value="1" selected>1. سورة الفاتحة</option>
                 <option value="" disabled>جاری بارکردن...</option>
@@ -121,112 +122,127 @@
                     <span>🎤</span> دەستپێکردن
                 </button>
             </div>
-            <div class="copyright" onclick="toggleAdminSecret()">Made by Muhamad Ibrahim Rasul</div>
+            <div class="copyright">
+                <span>Made by Muhamad Ibrahim Rasul</span>
+            </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, set, onDisconnect, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    <script>
+        // Unique ID for this tab
+        const myId = 'user_' + Math.random().toString(36).substr(2, 6);
+        const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
+        let myStatus = 'online';
 
-        // ==========================================
-        // ⚠️ لێرە زانیاری Firebaseـەکەت دابنێ ⚠️
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY_HERE",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID"
+        // Store other users (Map)
+        let activeUsers = new Map();
+
+        // 1. Total Visits Counter (LocalStorage - Persistent)
+        let visits = localStorage.getItem('total_site_visits') || 0;
+        visits = parseInt(visits) + 1;
+        localStorage.setItem('total_site_visits', visits);
+        document.getElementById('total-visits-count').innerText = visits;
+
+        // 2. Broadcast Channel for Tab-to-Tab Communication
+        const bc = new BroadcastChannel('quran_app_live_tracking');
+
+        // Function to broadcast my presence
+        function broadcastPresence() {
+            bc.postMessage({
+                type: 'presence',
+                id: myId,
+                device: deviceType,
+                status: myStatus,
+                timestamp: Date.now()
+            });
+        }
+
+        // Listen for messages from other tabs
+        bc.onmessage = (event) => {
+            const data = event.data;
+            if (data.type === 'presence') {
+                activeUsers.set(data.id, data);
+                updateLiveUI();
+            }
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        // Send heartbeat every 2 seconds
+        setInterval(broadcastPresence, 2000);
+        // Initial broadcast
+        broadcastPresence();
 
-        // --- Tracking Logic ---
-        let userId = localStorage.getItem('unique_visitor_id');
-        if (!userId) {
-            userId = 'user_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('unique_visitor_id', userId);
-        }
+        // Check for dead users (timeout > 5 seconds)
+        setInterval(() => {
+            const now = Date.now();
+            let changed = false;
+            activeUsers.forEach((user, id) => {
+                if (now - user.timestamp > 5000) {
+                    activeUsers.delete(id);
+                    changed = true;
+                }
+            });
+            if (changed) updateLiveUI();
+        }, 3000);
 
-        async function registerUser() {
-            try {
-                // Get Location info
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                const location = data.city ? `${data.city}, ${data.country_name}` : "Unknown Location";
-
-                const userRef = ref(db, 'online_users/' + userId);
-
-                // Set user data
-                set(userRef, {
-                    id: userId,
-                    location: location,
-                    status: 'online',
-                    lastActive: Date.now()
-                });
-
-                // Handle Disconnect (Closing tab)
-                onDisconnect(userRef).remove();
-
-                // Handle Visibility Change (Active/Inactive)
-                document.addEventListener("visibilitychange", () => {
-                    if (document.visibilityState === 'visible') {
-                        update(userRef, { status: 'online', lastActive: Date.now() });
-                    } else {
-                        update(userRef, { status: 'idle' });
-                    }
-                });
-
-            } catch (err) {
-                console.error("Tracking Error:", err);
+        // Visibility Change (Active/Idle)
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'visible') {
+                myStatus = 'online';
+            } else {
+                myStatus = 'idle';
             }
-        }
-
-        // --- Admin Panel Logic (Listen to DB) ---
-        const usersListEl = document.getElementById('users-list');
-        const onlineCountEl = document.getElementById('online-count');
-
-        const allUsersRef = ref(db, 'online_users');
-        onValue(allUsersRef, (snapshot) => {
-            const data = snapshot.val();
-            usersListEl.innerHTML = "";
-            let count = 0;
-
-            if (data) {
-                Object.values(data).forEach(user => {
-                    count++;
-                    const statusClass = user.status === 'online' ? 'online' : 'idle';
-                    const statusText = user.status === 'online' ? 'چالاک' : 'ناچالاک';
-                    
-                    const div = document.createElement('div');
-                    div.className = 'user-row';
-                    div.innerHTML = `
-                        <div>
-                            <span class="status-dot ${statusClass}"></span>
-                            ${user.location || "نەزانراو"}
-                        </div>
-                        <div style="font-size:12px; color:#666;">${statusText}</div>
-                    `;
-                    usersListEl.appendChild(div);
-                });
-            }
-            onlineCountEl.innerText = count;
+            broadcastPresence(); // Immediate update
+            updateLiveUI(); // Update my own UI
         });
 
-        // Start Tracking
-        registerUser();
+        // Update the Sidebar UI
+        function updateLiveUI() {
+            const listEl = document.getElementById('live-users-list');
+            const badgeEl = document.getElementById('total-users-badge');
+            const headerDot = document.getElementById('header-live-dot');
+            
+            listEl.innerHTML = "";
+            
+            // Add Me First
+            const myRow = createUserRow(myId, deviceType, myStatus, true);
+            listEl.appendChild(myRow);
 
+            // Add Others
+            let onlineCount = 1; // Me
+            activeUsers.forEach((user) => {
+                onlineCount++;
+                const row = createUserRow(user.id, user.device, user.status, false);
+                listEl.appendChild(row);
+            });
+
+            badgeEl.innerText = onlineCount;
+            headerDot.style.display = onlineCount > 1 ? "inline" : "none";
+        }
+
+        function createUserRow(id, device, status, isMe) {
+            const statusColor = status === 'online' ? 'status-online' : 'status-idle';
+            const statusText = status === 'online' ? 'چالاک' : 'ناچالاک';
+            const meLabel = isMe ? " (تۆ)" : "";
+            
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+            div.style.padding = "5px 10px";
+            div.style.cursor = "default";
+            div.innerHTML = `
+                <div style="display:flex; align-items:center;">
+                    <span class="user-status-dot ${statusColor}"></span>
+                    <span style="margin-right:8px; font-weight:bold;">${device} ${meLabel}</span>
+                </div>
+                <span style="font-size:10px; color:#888;">${statusText}</span>
+            `;
+            return div;
+        }
+
+        // Initialize UI immediately with myself
+        updateLiveUI();
     </script>
 
     <script>
-        // ... (تەواوی کۆدە کۆنەکەت لێرە دەمێنێتەوە بە بێ گۆڕانکاری) ...
-        // ... (خوارەوە کۆپی بکەرەوە بۆ تەواوکردنی سکریپتە کۆنەکە) ...
-
         // ==========================================
         // SECURITY SCRIPT
         // ==========================================
@@ -271,16 +287,6 @@
         const overlay = document.getElementById('overlay');
         const favoritesList = document.getElementById('favorites-list');
         const historyList = document.getElementById('history-list');
-
-        // Admin Secret Toggle
-        let clickCount = 0;
-        function toggleAdminSecret() {
-            clickCount++;
-            if(clickCount === 5) {
-                document.getElementById('admin-panel').style.display = 'flex';
-                clickCount = 0;
-            }
-        }
 
         init();
 
@@ -443,6 +449,9 @@
             }
         }
 
+        // ==========================================
+        // Ultimate Skeleton Normalization
+        // ==========================================
         function getSkeleton(text) {
             if (!text) return "";
             return text
