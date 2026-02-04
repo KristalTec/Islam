@@ -211,7 +211,7 @@
             }
 
             history.forEach(item => {
-                // If item.date is stored as simple date string, we might not have exact time unless we update storage. 
+                // If item.date is stored as a simple date string, we might not have the exact time unless we update the storage. 
                 // Assuming standard format stored from quran.html
                 const div = document.createElement('div');
                 div.className = 'history-item';
@@ -271,7 +271,7 @@
             const now = Date.now();
             let changed = false;
             activeUsers.forEach((user, id) => {
-                if (now - user.timestamp > 5000) {
+                if (now - user. timestamp > 5000) {
                     activeUsers.delete(id);
                     changed = true;
                 }
@@ -280,7 +280,7 @@
         }, 3000);
 
         document.addEventListener("visibilitychange", () => {
-            myStatus = document.visibilityState === 'visible' ? 'online' : 'idle';
+            myStatus = document.visibilityState === 'visible' ? 'online': 'idle';
             broadcastPresence();
         });
 
@@ -304,9 +304,9 @@
         function createUserElement(id, device, status, isMe) {
             const div = document.createElement('div');
             div.className = 'user-item';
-            const statusClass = status === 'online' ? 'online' : 'idle';
+            const statusClass = status === 'online' ? 'online': 'idle';
             const statusText = status === 'online' ? 'چالاک' : 'ناچالاک';
-            const label = isMe ? `${device} (تۆ)` : device;
+            const label = isMe ? `${device} (تۆ) : device;
             
             div.innerHTML = `
                 <span class="dot ${statusClass}"></span>
