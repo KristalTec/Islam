@@ -43,11 +43,13 @@
         /* LIVE FEED SECTION */
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
-        .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
+        .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
+        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.3s; position: relative; overflow: hidden; animation: slideIn 0.4s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .feed-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
         .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
         .tag-ayah { background: var(--highlight-color); } /* Green */
@@ -59,9 +61,29 @@
         .feed-content { font-size: 17px; line-height: 1.8; color: #444; margin-top: 15px; text-align: justify; }
         .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
 
-        /* Enable Notif Button */
-        .notif-permission { background: #ffeaa7; padding: 15px; font-size: 14px; color: #d35400; border-bottom: 1px solid #fdcb6e; display: none; cursor: pointer; text-align: center; font-weight: bold; animation: pulse 2s infinite; }
+        /* Enable Notif Button (Inside Settings) */
+        .notif-permission { 
+            background: #ffeaa7; 
+            padding: 10px; 
+            font-size: 13px; 
+            color: #d35400; 
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none; 
+            cursor: pointer; 
+            text-align: center; 
+            font-weight: bold; 
+            animation: pulse 2s infinite; 
+            border: 1px solid #fdcb6e;
+        }
         @keyframes pulse { 0% { background: #ffeaa7; } 50% { background: #fff3cd; } 100% { background: #ffeaa7; } }
+
+        /* Social Media */
+        .settings-section-title { margin-top: 20px; font-weight: bold; color: var(--border-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
+        .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
+        .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
+        .social-btn img { width: 22px; height: 22px; }
+        .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
 
         /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -85,13 +107,6 @@
         .h-time { font-size: 11px; color: #888; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
 
-        /* Social Media */
-        .settings-section-title { margin-top: 20px; font-weight: bold; color: var(--border-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
-        .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
-        .social-btn img { width: 22px; height: 22px; }
-        .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
-
         /* Bottom Navigation Bar */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
@@ -108,10 +123,6 @@
     <div class="app-container">
         
         <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
-        <div class="notif-permission" id="notif-perm-btn" onclick="enableNotifications()">
-            🔔 تکایە لێرە بدە بۆ چالاککردنی دەنگ و نۆتیفیکەیشن (یەکجار)
-        </div>
 
         <div class="header">
             <div class="icon-group">
@@ -154,7 +165,7 @@
                     <span class="live-indicator"></span>
                     <span>نوێترین بابەتەکان</span>
                 </div>
-                <span style="font-size:12px; color:#888;">ڕاستەوخۆ</span>
+                <span style="font-size:12px; color:#888;">خێرا</span>
             </div>
             
             <div id="feed-container">
@@ -188,10 +199,23 @@
     <div id="settingsModal" class="modal" onclick="closeModal(event, 'settingsModal')">
         <div class="modal-content">
             <h3>⚙️ ڕێکخستنەکان</h3>
-            <div class="stat-row"><span>کۆی سەردانەکان:</span><b id="visit-count">0</b></div>
-            <div class="stat-row"><span>بەکارهێنەرانی چالاک:</span><b id="active-count" style="color:var(--highlight-color);">1</b></div>
+            
+            <div class="notif-permission" id="notif-perm-btn" onclick="enableNotifications()">
+                🔔 تکایە لێرە بدە بۆ چالاککردنی دەنگ و نۆتیفیکەیشن (یەکجار)
+            </div>
+
+            <div class="stat-row">
+                <span>کۆی سەردانەکان:</span>
+                <b id="visit-count">0</b>
+            </div>
+            <div class="stat-row">
+                <span>بەکارهێنەرانی چالاک:</span>
+                <b id="active-count" style="color:var(--highlight-color);">1</b>
+            </div>
+
             <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی ئامێرەکان:</div>
             <div class="user-list" id="users-list-container"></div>
+
             <div class="settings-section-title">📞 پەیوەندی</div>
             <div class="social-row">
                 <a href="https://facebook.com/Report.Bka.Dazanm.Ter.na.buuy" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
@@ -199,6 +223,7 @@
                 <a href="https://snapchat.com/t/b0OhYdsb" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg"></a>
                 <a href="https://www.tiktok.com/@hamaofficial_0?_r=1&_t=ZS-93doDIzN8Bp" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg"></a>
             </div>
+
             <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
         </div>
     </div>
@@ -279,17 +304,15 @@
         // ===========================================
         // NOTIFICATIONS & PERSISTENCE
         // ===========================================
-        // Check if user has already granted permission
         let hasPermission = false;
         if("Notification" in window && Notification.permission === "granted") {
             hasPermission = true;
         }
 
-        // Load persisted feed data from localStorage
         let feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
 
         function enableNotifications() {
-            // Unlock audio context immediately on click
+            // Unlock audio
             const audio = document.getElementById('notif-sound');
             audio.play().then(() => {
                 audio.pause();
@@ -309,16 +332,15 @@
             }
         }
 
-        // Show button if permission NOT granted
+        // Show button in Settings if not granted
         setTimeout(() => {
             if(!hasPermission) {
                 document.getElementById('notif-perm-btn').style.display = 'block';
             } else {
-                startLiveUpdates(); // Auto start if permission exists
+                startLiveUpdates();
             }
         }, 1000);
 
-        // Save feed to localStorage (Limited to 1000 items)
         function saveFeed() {
             localStorage.setItem('islam_feed_data', JSON.stringify(feedData));
         }
@@ -332,9 +354,13 @@
                     renderCard(item.type, item.content, item.isNew);
                 });
             } else {
+                // Load 3 items instantly from local DB (FAST START)
                 addCardToFeed('hadith', getRandom(db.hadiths), false, true);
-                await addAyahCard();
                 addCardToFeed('info', getRandom(db.info), false, true);
+                addCardToFeed('dua', getRandom(db.duas), false, true);
+                
+                // Then fetch Ayah in background
+                addAyahCard();
             }
         }
 
@@ -342,7 +368,6 @@
             renderCard(type, content, isNew);
             if (save) {
                 feedData.unshift({ type, content, isNew });
-                // Keep last 1000 items (Won't delete)
                 if(feedData.length > 1000) feedData.pop();
                 saveFeed();
             }
@@ -398,17 +423,16 @@
                     text: d.data[0].text,
                     source: `سورة ${d.data[0].surah.name}`
                 }, false, true);
-            } catch(e) { console.log("Ayah fetch error"); }
+            } catch(e) { console.log("Ayah fetch error, using local fallback"); }
         }
 
         // ===========================================
-        // LIVE UPDATE SYSTEM
+        // LIVE UPDATE SYSTEM (VERY FAST: 12 Seconds)
         // ===========================================
         function startLiveUpdates() {
-            // Update every 45 seconds
             setInterval(() => {
                 triggerManualUpdate();
-            }, 45000); 
+            }, 12000); // 12 Seconds Update
         }
 
         function triggerManualUpdate() {
@@ -421,7 +445,6 @@
 
             addCardToFeed(type, content, true, true);
             
-            // Prepare Notification Content
             let notifTitle = "زانیاری نوێ";
             let notifBody = "";
 
@@ -434,20 +457,17 @@
         }
 
         function playNotification(title, body) {
-            // 1. Play Sound
             const audio = document.getElementById('notif-sound');
             audio.currentTime = 0;
             audio.play().catch(e => console.log("Audio still locked, waiting for user click."));
 
-            // 2. Vibrate
             if("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
 
-            // 3. Show System Notification
             if (Notification.permission === "granted") {
                 new Notification(title, {
                     body: body,
                     icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png",
-                    requireInteraction: false // Disappears automatically
+                    requireInteraction: false
                 });
             }
         }
@@ -460,7 +480,7 @@
 
 
         // ===========================================
-        // History Logic
+        // History Logic (Standard)
         // ===========================================
         function renderHistory() {
             const container = document.getElementById('history-list-container');
