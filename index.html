@@ -38,6 +38,12 @@
         .item-date { font-size: 12px; color: #888; }
         .delete-item { color: red; cursor: pointer; font-size: 18px; padding: 0 5px; }
 
+        /* Sidebar Social Icons */
+        .sidebar-socials { display: flex; justify-content: center; gap: 15px; padding: 20px 0; margin-top: 10px; border-top: 1px solid #eee; flex-wrap: wrap; }
+        .sidebar-social-btn { width: 50px; height: 50px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; background: white; display: flex; align-items: center; justify-content: center; padding: 8px; border: 1px solid #f0f0f0; }
+        .sidebar-social-btn img { width: 100%; height: 100%; object-fit: contain; }
+        .sidebar-social-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); border-color: var(--border-color); }
+
         /* User Status Styles */
         .user-status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .status-online { background-color: #27ae60; box-shadow: 0 0 5px #27ae60; }
@@ -69,7 +75,7 @@
         button#fav-btn { background: white; border: 2px solid var(--border-color); color: var(--border-color); width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
         button#fav-btn:hover { background: var(--border-color); color: white; }
         
-        .copyright { font-size: 10px; color: #aaa; margin-top: 10px; display: flex; gap: 10px; align-items: center; }
+        .copyright { font-size: 10px; color: #aaa; margin-top: 10px; text-align: center; }
         
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
     </style>
@@ -101,6 +107,22 @@
 
                 <div class="menu-section-title">🕒 مێژووی خوێندنەوە</div>
                 <div id="history-list"></div>
+
+                <div class="menu-section-title">🔗 پەیوەندی</div>
+                <div class="sidebar-socials">
+                    <a href="https://facebook.com/Report.Bka.Dazanm.Ter.na.buuy" target="_blank" class="sidebar-social-btn" title="Facebook">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+                    </a>
+                    <a href="https://www.instagram.com/hamaofficial0?igsh=MWc1bnFjbGZiMHE5MA%3D%3D&utm_source=qr" target="_blank" class="sidebar-social-btn" title="Instagram">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
+                    </a>
+                    <a href="https://snapchat.com/t/b0OhYdsb" target="_blank" class="sidebar-social-btn" title="Snapchat">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" alt="Snapchat">
+                    </a>
+                    <a href="https://www.tiktok.com/@hamaofficial_0?_r=1&_t=ZS-93doDIzN8Bp" target="_blank" class="sidebar-social-btn" title="TikTok">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" alt="TikTok">
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -122,6 +144,7 @@
                     <span>🎤</span> دەستپێکردن
                 </button>
             </div>
+            
             <div class="copyright">
                 <span>Made by Muhamad Ibrahim Rasul</span>
             </div>
