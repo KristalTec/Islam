@@ -17,9 +17,10 @@
         
         /* Header */
         .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .header-title { font-size: 20px; font-weight: bold; }
-        .settings-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; }
-        .settings-btn:hover { transform: rotate(90deg); }
+        .header-title { font-size: 20px; font-weight: bold; position: absolute; left: 0; right: 0; text-align: center; pointer-events: none; }
+        .icon-group { display: flex; gap: 15px; z-index: 10; }
+        .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; }
+        .header-btn:hover { transform: scale(1.1); color: #b6962f; }
 
         /* Main Content Area */
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
@@ -31,15 +32,12 @@
 
         /* Grid Menu */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        /* Last item spans full width */
-        .card:last-child { grid-column: span 2; }
-        
         .card { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #eee; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-color); }
         .card:active { transform: scale(0.95); background-color: #fffbf2; }
         .card-icon { font-size: 32px; }
         .card-title { font-weight: bold; font-size: 18px; }
 
-        /* Settings Modal */
+        /* Modals */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
         
@@ -51,7 +49,15 @@
         .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
         .dot.idle { background: #f39c12; }
 
-        /* Social Media Inside Settings */
+        /* History Styles */
+        .history-list { max-height: 300px; overflow-y: auto; text-align: right; margin-top: 10px; }
+        .history-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; border-right: 3px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .h-info { display: flex; flex-direction: column; }
+        .h-name { font-weight: bold; font-size: 16px; color: var(--text-color); }
+        .h-time { font-size: 11px; color: #888; }
+        .clear-btn { background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
+
+        /* Social Media */
         .settings-section-title { margin-top: 20px; font-weight: bold; color: var(--border-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
         .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
         .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
@@ -60,7 +66,7 @@
 
         /* Bottom Navigation Bar */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; } /* Changed width to fit 3 items */
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
         .nav-item.active { color: var(--border-color); font-weight: bold; }
         .nav-icon { font-size: 24px; }
         .nav-item:active { transform: scale(0.9); }
@@ -74,10 +80,12 @@
     <div class="app-container">
         
         <div class="header">
-            <div class="settings-btn" onclick="openSettings()">⚙️</div>
+            <div class="icon-group">
+                <div class="header-btn" onclick="openSettings()" title="ڕێکخستن">⚙️</div>
+                <div class="header-btn" onclick="openHistory()" title="مێژوو">🕒</div>
+            </div>
             <div class="header-title">Ultimate Pro</div>
-            <div style="width: 30px;"></div>
-        </div>
+            <div style="width: 60px;"></div> </div>
 
         <div class="content">
             <div class="hero-card">
@@ -140,8 +148,7 @@
             </div>
 
             <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی ئامێرەکان:</div>
-            <div class="user-list" id="users-list-container">
-                </div>
+            <div class="user-list" id="users-list-container"></div>
 
             <div class="settings-section-title">📞 پەیوەندی</div>
             <div class="social-row">
@@ -155,6 +162,20 @@
         </div>
     </div>
 
+    <div id="historyModal" class="modal" onclick="closeModal(event, 'historyModal')">
+        <div class="modal-content">
+            <h3>🕒 مێژووی خوێندنەوە</h3>
+            
+            <div id="history-list-container" class="history-list">
+                </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                <button class="clear-btn" onclick="clearHistory()">🗑️ سڕینەوەی هەمووی</button>
+                <button onclick="document.getElementById('historyModal').style.display='none'" style="padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Set Date
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -165,14 +186,55 @@
             document.getElementById('settingsModal').style.display = 'flex'; 
             updateStatsUI(); 
         }
+
+        function openHistory() {
+            document.getElementById('historyModal').style.display = 'flex';
+            renderHistory();
+        }
+
         function closeModal(e, id) {
             if (e.target.id === id) { document.getElementById(id).style.display = 'none'; }
         }
 
         // ===========================================
+        // History Logic
+        // ===========================================
+        function renderHistory() {
+            const container = document.getElementById('history-list-container');
+            const history = JSON.parse(localStorage.getItem('quran_history') || '[]');
+            
+            container.innerHTML = '';
+            
+            if(history.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">هیچ مێژوویەک تۆمار نەکراوە</div>';
+                return;
+            }
+
+            history.forEach(item => {
+                // If item.date is stored as simple date string, we might not have exact time unless we update storage. 
+                // Assuming standard format stored from quran.html
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="h-info">
+                        <span class="h-name">📖 ${item.name}</span>
+                        <span class="h-time">${item.date}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function clearHistory() {
+            if(confirm("دڵنیای لە سڕینەوەی هەموو مێژووەکە؟")) {
+                localStorage.removeItem('quran_history');
+                renderHistory();
+            }
+        }
+
+        // ===========================================
         // Live User Tracking System
         // ===========================================
-        
         let visits = localStorage.getItem('total_site_visits') || 0;
         visits = parseInt(visits) + 1;
         localStorage.setItem('total_site_visits', visits);
