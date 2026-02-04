@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Made by Muhamad Ibrahim Rasul - Ultimate Pro</title>
+    <title>Quran Player - Ultimate Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -20,39 +20,11 @@
         /* Header */
         .header { background: white; padding: 10px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding-left: 15px; padding-right: 15px; height: 60px; }
         
-        .menu-btn { font-size: 28px; cursor: pointer; color: var(--border-color); padding: 5px; transition: 0.2s; }
-        .menu-btn:hover { color: #b6962f; }
+        /* New Home Button */
+        .home-btn { text-decoration: none; color: var(--border-color); font-size: 16px; font-weight: bold; border: 1px solid var(--border-color); padding: 5px 15px; border-radius: 20px; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .home-btn:hover { background-color: var(--border-color); color: white; }
 
-        select { font-family: 'Amiri', serif; font-size: 18px; padding: 5px; width: 65%; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fff; text-align: center; }
-
-        /* Sidebar Menu */
-        .sidebar { position: absolute; top: 0; right: -100%; width: 75%; height: 100%; background: white; z-index: 100; transition: 0.4s ease; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .sidebar.open { right: 0; }
-        .sidebar-header { padding: 20px; background: var(--border-color); color: white; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: bold; }
-        .close-btn { cursor: pointer; font-size: 24px; }
-        .menu-content { flex-grow: 1; overflow-y: auto; padding: 15px; }
-        .menu-section-title { font-size: 18px; color: var(--border-color); border-bottom: 1px solid #eee; margin-top: 20px; margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; }
-        .menu-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; border: 1px solid #eee; transition: 0.2s; font-size: 16px; align-items: center;}
-        .menu-item:hover { background: #fffbf2; border-color: var(--border-color); }
-        .item-info { display: flex; flex-direction: column; }
-        .item-date { font-size: 12px; color: #888; }
-        .delete-item { color: red; cursor: pointer; font-size: 18px; padding: 0 5px; }
-
-        /* Sidebar Social Icons */
-        .sidebar-socials { display: flex; justify-content: center; gap: 15px; padding: 20px 0; margin-top: 10px; border-top: 1px solid #eee; flex-wrap: wrap; }
-        .sidebar-social-btn { width: 50px; height: 50px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; background: white; display: flex; align-items: center; justify-content: center; padding: 8px; border: 1px solid #f0f0f0; }
-        .sidebar-social-btn img { width: 100%; height: 100%; object-fit: contain; }
-        .sidebar-social-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); border-color: var(--border-color); }
-
-        /* User Status Styles */
-        .user-status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 8px; }
-        .status-online { background-color: #27ae60; box-shadow: 0 0 5px #27ae60; }
-        .status-idle { background-color: #f39c12; }
-        .live-counter { font-size: 12px; background: #eee; padding: 2px 8px; border-radius: 10px; margin-right: 5px; }
-
-        /* Overlay */
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 90; display: none; }
-        .overlay.active { display: block; }
+        select { font-family: 'Amiri', serif; font-size: 18px; padding: 5px; width: 60%; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fff; text-align: center; }
 
         /* Quran Content */
         .quran-content { flex-grow: 1; padding: 20px; overflow-y: auto; text-align: justify; font-size: 32px; line-height: 2.6; scroll-behavior: smooth; }
@@ -84,57 +56,9 @@
 
     <div class="main-container" id="app-container">
         
-        <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <span>لیستی سەرەکی</span>
-                <span class="close-btn" onclick="toggleMenu()">✕</span>
-            </div>
-            <div class="menu-content">
-                
-                <div class="menu-section-title">
-                    👥 بەکارهێنەرانی ئێستا
-                    <span id="total-users-badge" class="live-counter" style="float:left">1</span>
-                </div>
-                <div id="live-users-list" style="max-height: 150px; overflow-y: auto; font-size: 14px; margin-bottom: 20px;">
-                    </div>
-                <div style="font-size: 12px; color: #666; text-align: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                     کۆی سەردانەکان: <span id="total-visits-count">1</span>
-                </div>
-
-                <div class="menu-section-title">❤️ دڵخوازەکان (Bookmarks)</div>
-                <div id="favorites-list"></div>
-
-                <div class="menu-section-title">🕒 مێژووی خوێندنەوە</div>
-                <div id="history-list"></div>
-
-                <div class="menu-section-title">کاتەکانی بانگ </div>
-                <div class="menu-item" onclick="window.location.href='daily.html'">
-                    <div class="item-info">
-                        <span>🕌 کاتەکانی بانگ و فەرموودە</span>
-                        <span class="item-date">کرتە بکە بۆ کردنەوە</span>
-                    </div>
-                </div>
-                <div class="menu-section-title">🔗 پەیوەندی</div>
-                <div class="sidebar-socials">
-                    <a href="https://facebook.com/Report.Bka.Dazanm.Ter.na.buuy" target="_blank" class="sidebar-social-btn" title="Facebook">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
-                    </a>
-                    <a href="https://www.instagram.com/hamaofficial0?igsh=MWc1bnFjbGZiMHE5MA%3D%3D&utm_source=qr" target="_blank" class="sidebar-social-btn" title="Instagram">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
-                    </a>
-                    <a href="https://snapchat.com/t/b0OhYdsb" target="_blank" class="sidebar-social-btn" title="Snapchat">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" alt="Snapchat">
-                    </a>
-                    <a href="https://www.tiktok.com/@hamaofficial_0?_r=1&_t=ZS-93doDIzN8Bp" target="_blank" class="sidebar-social-btn" title="TikTok">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" alt="TikTok">
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <div class="header">
-            <div class="menu-btn" onclick="toggleMenu()">☰ <span id="header-live-dot" style="font-size:10px; color:#27ae60; display:none;">●</span></div>
+            <a href="index.html" class="home-btn">🏠 سەرەکی</a>
+
             <select id="surahSelect" onchange="loadSurah(this.value)">
                 <option value="1" selected>1. سورة الفاتحة</option>
                 <option value="" disabled>جاری بارکردن...</option>
@@ -159,120 +83,25 @@
     </div>
 
     <script>
-        // Unique ID for this tab
+        // ==========================================
+        // Presence Logic (Keeping you visible in settings)
+        // ==========================================
         const myId = 'user_' + Math.random().toString(36).substr(2, 6);
         const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
-        let myStatus = 'online';
-
-        // Store other users (Map)
-        let activeUsers = new Map();
-
-        // 1. Total Visits Counter (LocalStorage - Persistent)
-        let visits = localStorage.getItem('total_site_visits') || 0;
-        visits = parseInt(visits) + 1;
-        localStorage.setItem('total_site_visits', visits);
-        document.getElementById('total-visits-count').innerText = visits;
-
-        // 2. Broadcast Channel for Tab-to-Tab Communication
         const bc = new BroadcastChannel('quran_app_live_tracking');
 
-        // Function to broadcast my presence
         function broadcastPresence() {
             bc.postMessage({
                 type: 'presence',
                 id: myId,
                 device: deviceType,
-                status: myStatus,
+                status: document.visibilityState === 'visible' ? 'online' : 'idle',
                 timestamp: Date.now()
             });
         }
-
-        // Listen for messages from other tabs
-        bc.onmessage = (event) => {
-            const data = event.data;
-            if (data.type === 'presence') {
-                activeUsers.set(data.id, data);
-                updateLiveUI();
-            }
-        };
-
-        // Send heartbeat every 2 seconds
         setInterval(broadcastPresence, 2000);
-        // Initial broadcast
         broadcastPresence();
 
-        // Check for dead users (timeout > 5 seconds)
-        setInterval(() => {
-            const now = Date.now();
-            let changed = false;
-            activeUsers.forEach((user, id) => {
-                if (now - user.timestamp > 5000) {
-                    activeUsers.delete(id);
-                    changed = true;
-                }
-            });
-            if (changed) updateLiveUI();
-        }, 3000);
-
-        // Visibility Change (Active/Idle)
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === 'visible') {
-                myStatus = 'online';
-            } else {
-                myStatus = 'idle';
-            }
-            broadcastPresence(); // Immediate update
-            updateLiveUI(); // Update my own UI
-        });
-
-        // Update the Sidebar UI
-        function updateLiveUI() {
-            const listEl = document.getElementById('live-users-list');
-            const badgeEl = document.getElementById('total-users-badge');
-            const headerDot = document.getElementById('header-live-dot');
-            
-            listEl.innerHTML = "";
-            
-            // Add Me First
-            const myRow = createUserRow(myId, deviceType, myStatus, true);
-            listEl.appendChild(myRow);
-
-            // Add Others
-            let onlineCount = 1; // Me
-            activeUsers.forEach((user) => {
-                onlineCount++;
-                const row = createUserRow(user.id, user.device, user.status, false);
-                listEl.appendChild(row);
-            });
-
-            badgeEl.innerText = onlineCount;
-            headerDot.style.display = onlineCount > 1 ? "inline" : "none";
-        }
-
-        function createUserRow(id, device, status, isMe) {
-            const statusColor = status === 'online' ? 'status-online' : 'status-idle';
-            const statusText = status === 'online' ? 'چالاک' : 'ناچالاک';
-            const meLabel = isMe ? " (تۆ)" : "";
-            
-            const div = document.createElement('div');
-            div.className = 'menu-item';
-            div.style.padding = "5px 10px";
-            div.style.cursor = "default";
-            div.innerHTML = `
-                <div style="display:flex; align-items:center;">
-                    <span class="user-status-dot ${statusColor}"></span>
-                    <span style="margin-right:8px; font-weight:bold;">${device} ${meLabel}</span>
-                </div>
-                <span style="font-size:10px; color:#888;">${statusText}</span>
-            `;
-            return div;
-        }
-
-        // Initialize UI immediately with myself
-        updateLiveUI();
-    </script>
-
-    <script>
         // ==========================================
         // SECURITY SCRIPT
         // ==========================================
@@ -313,16 +142,10 @@
         const quranDisplay = document.getElementById('quran-display');
         const captionBox = document.getElementById('live-caption');
         const micBtn = document.getElementById('mic-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const favoritesList = document.getElementById('favorites-list');
-        const historyList = document.getElementById('history-list');
 
         init();
 
         function init() {
-            loadHistory();
-            loadFavorites();
             if(allAyahs.length === 0) {
                 allAyahs = fatihaData;
                 renderSurah(1);
@@ -333,14 +156,8 @@
         }
 
         // ==========================================
-        // Menu & Storage Logic
+        // Storage Logic (Keeping History Logic Working)
         // ==========================================
-        function toggleMenu() {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-            if(sidebar.classList.contains('open')) { loadHistory(); loadFavorites(); }
-        }
-
         function addToHistory(surahNum, surahName) {
             let history = JSON.parse(localStorage.getItem('quran_history') || '[]');
             history = history.filter(h => h.number != surahNum);
@@ -365,44 +182,6 @@
                 localStorage.setItem('quran_favorites', JSON.stringify(favorites));
                 alert(`✅ شوێنی گەیشتن پاشەکەوت کرا:\n${currentSurahName} - ئایەتی ${ayahNum}`);
             } else { alert("⚠️ ئەم شوێنە پێشتر پاشەکەوت کراوە"); }
-        }
-
-        function loadHistory() {
-            let history = JSON.parse(localStorage.getItem('quran_history') || '[]');
-            historyList.innerHTML = history.length ? '' : '<div style="text-align:center; color:#999;">هیچ مێژوویەک نییە</div>';
-            history.forEach(h => {
-                historyList.innerHTML += `<div class="menu-item" onclick="loadSurah(${h.number}); toggleMenu();"><div class="item-info"><span>📖 ${h.name}</span><span class="item-date">${h.date}</span></div></div>`;
-            });
-        }
-
-        function loadFavorites() {
-            let favorites = JSON.parse(localStorage.getItem('quran_favorites') || '[]');
-            favoritesList.innerHTML = favorites.length ? '' : '<div style="text-align:center; color:#999;">هیچ دڵخوازێک نییە</div>';
-            favorites.forEach((f, index) => {
-                favoritesList.innerHTML += `<div class="menu-item"><div class="item-info" onclick="restoreSession(${f.surahNum}, ${f.ayahIndex}); toggleMenu();"><span>❤️ ${f.surahName} - ئایەتی ${f.ayahDisplayNum}</span><span class="item-date">${f.date}</span></div><span class="delete-item" onclick="deleteFavorite(${index})">🗑️</span></div>`;
-            });
-        }
-
-        function deleteFavorite(index) {
-            let favorites = JSON.parse(localStorage.getItem('quran_favorites') || '[]');
-            favorites.splice(index, 1);
-            localStorage.setItem('quran_favorites', JSON.stringify(favorites));
-            loadFavorites();
-        }
-
-        async function restoreSession(surahNum, ayahIdx) {
-            surahSelect.value = surahNum;
-            await loadSurah(surahNum);
-            currentAyahIndex = ayahIdx;
-            prepareCurrentAyah();
-            setTimeout(() => {
-                const el = document.getElementById(`ayah-${ayahIdx}`);
-                if(el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    el.style.backgroundColor = "#fff3cd";
-                    setTimeout(() => el.style.backgroundColor = "transparent", 2000);
-                }
-            }, 500);
         }
 
         // ==========================================
