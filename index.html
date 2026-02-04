@@ -49,8 +49,6 @@
         .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .feed-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        
         .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
         .tag-ayah { background: var(--highlight-color); } /* Green */
         .tag-hadith { background: #3498db; } /* Blue */
@@ -62,7 +60,8 @@
         .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
 
         /* Enable Notif Button */
-        .notif-permission { background: #ffeaa7; padding: 10px; font-size: 12px; color: #d35400; border-bottom: 1px solid #fdcb6e; display: none; cursor: pointer; text-align: center; }
+        .notif-permission { background: #ffeaa7; padding: 15px; font-size: 14px; color: #d35400; border-bottom: 1px solid #fdcb6e; display: none; cursor: pointer; text-align: center; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { background: #ffeaa7; } 50% { background: #fff3cd; } 100% { background: #ffeaa7; } }
 
         /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -111,7 +110,7 @@
         <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
         <div class="notif-permission" id="notif-perm-btn" onclick="enableNotifications()">
-            🔔 تکایە ئێرە دابگرە بۆ چالاککردنی ئاگادارکردنەوەی پۆستی نوێ
+            🔔 تکایە لێرە بدە بۆ چالاککردنی دەنگ و نۆتیفیکەیشن (یەکجار)
         </div>
 
         <div class="header">
@@ -189,19 +188,10 @@
     <div id="settingsModal" class="modal" onclick="closeModal(event, 'settingsModal')">
         <div class="modal-content">
             <h3>⚙️ ڕێکخستنەکان</h3>
-            
-            <div class="stat-row">
-                <span>کۆی سەردانەکان:</span>
-                <b id="visit-count">0</b>
-            </div>
-            <div class="stat-row">
-                <span>بەکارهێنەرانی چالاک:</span>
-                <b id="active-count" style="color:var(--highlight-color);">1</b>
-            </div>
-
+            <div class="stat-row"><span>کۆی سەردانەکان:</span><b id="visit-count">0</b></div>
+            <div class="stat-row"><span>بەکارهێنەرانی چالاک:</span><b id="active-count" style="color:var(--highlight-color);">1</b></div>
             <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی ئامێرەکان:</div>
             <div class="user-list" id="users-list-container"></div>
-
             <div class="settings-section-title">📞 پەیوەندی</div>
             <div class="social-row">
                 <a href="https://facebook.com/Report.Bka.Dazanm.Ter.na.buuy" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
@@ -209,7 +199,6 @@
                 <a href="https://snapchat.com/t/b0OhYdsb" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg"></a>
                 <a href="https://www.tiktok.com/@hamaofficial_0?_r=1&_t=ZS-93doDIzN8Bp" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg"></a>
             </div>
-
             <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
         </div>
     </div>
@@ -240,7 +229,7 @@
         // ===========================================
         const db = {
             hadiths: [
-                "باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.",
+                "پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.",
                 "پێکەنین بە ڕووی براکەتدا سەدەقەیە.",
                 "پاکوخاوێنی بەشێکە لە ئیمان.",
                 "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت.",
@@ -288,23 +277,48 @@
         };
 
         // ===========================================
-        // DYNAMIC FEED, NOTIFICATIONS & PERSISTENCE
+        // NOTIFICATIONS & PERSISTENCE
         // ===========================================
-        let notifEnabled = false;
+        // Check if user has already granted permission
+        let hasPermission = false;
+        if("Notification" in window && Notification.permission === "granted") {
+            hasPermission = true;
+        }
+
+        // Load persisted feed data from localStorage
         let feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
 
         function enableNotifications() {
-            notifEnabled = true;
-            document.getElementById('notif-perm-btn').style.display = 'none';
-            if ("Notification" in window) Notification.requestPermission();
-            startLiveUpdates();
-            alert("✅ نۆتیفیکەیشن چالاک کرا. چاوەڕێی زانیاری نوێ بە...");
+            // Unlock audio context immediately on click
+            const audio = document.getElementById('notif-sound');
+            audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+            }).catch(e => console.log("Audio unlock failed", e));
+
+            // Request Permission
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        hasPermission = true;
+                        document.getElementById('notif-perm-btn').style.display = 'none';
+                        startLiveUpdates();
+                        alert("✅ سوپاس! ئاگادارکردنەوەکان چالاک کران.");
+                    }
+                });
+            }
         }
 
+        // Show button if permission NOT granted
         setTimeout(() => {
-            if(!notifEnabled) document.getElementById('notif-perm-btn').style.display = 'block';
-        }, 2000);
+            if(!hasPermission) {
+                document.getElementById('notif-perm-btn').style.display = 'block';
+            } else {
+                startLiveUpdates(); // Auto start if permission exists
+            }
+        }, 1000);
 
+        // Save feed to localStorage (Limited to 1000 items)
         function saveFeed() {
             localStorage.setItem('islam_feed_data', JSON.stringify(feedData));
         }
@@ -328,7 +342,8 @@
             renderCard(type, content, isNew);
             if (save) {
                 feedData.unshift({ type, content, isNew });
-                if(feedData.length > 50) feedData.pop();
+                // Keep last 1000 items (Won't delete)
+                if(feedData.length > 1000) feedData.pop();
                 saveFeed();
             }
         }
@@ -387,9 +402,10 @@
         }
 
         // ===========================================
-        // LIVE UPDATE SIMULATOR
+        // LIVE UPDATE SYSTEM
         // ===========================================
         function startLiveUpdates() {
+            // Update every 45 seconds
             setInterval(() => {
                 triggerManualUpdate();
             }, 45000); 
@@ -405,12 +421,12 @@
 
             addCardToFeed(type, content, true, true);
             
-            // Notification with Actual Content
-            let notifTitle = "بابەتێکی نوێ";
+            // Prepare Notification Content
+            let notifTitle = "زانیاری نوێ";
             let notifBody = "";
 
-            if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = content; }
-            else if (type === 'dua') { notifTitle = "دوعا"; notifBody = content; }
+            if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = content.substring(0, 100) + "..."; }
+            else if (type === 'dua') { notifTitle = "دوعا"; notifBody = content.substring(0, 100); }
             else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
             else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
 
@@ -418,15 +434,20 @@
         }
 
         function playNotification(title, body) {
+            // 1. Play Sound
             const audio = document.getElementById('notif-sound');
             audio.currentTime = 0;
-            audio.play().catch(e => console.log("Audio blocked"));
+            audio.play().catch(e => console.log("Audio still locked, waiting for user click."));
 
+            // 2. Vibrate
+            if("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+
+            // 3. Show System Notification
             if (Notification.permission === "granted") {
                 new Notification(title, {
-                    body: body, // Shows actual content
+                    body: body,
                     icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png",
-                    vibrate: [200, 100, 200]
+                    requireInteraction: false // Disappears automatically
                 });
             }
         }
@@ -439,7 +460,7 @@
 
 
         // ===========================================
-        // History Logic (Standard)
+        // History Logic
         // ===========================================
         function renderHistory() {
             const container = document.getElementById('history-list-container');
