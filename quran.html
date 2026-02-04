@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Made by Muhamad Ibrahim Rasul - Ultimate Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Security & Select Protection */
+        * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        
+        :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --dark-text: #2c3e50; }
+        body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
+        #app-container { display: flex; }
+
+        .main-container { width: 100%; max-width: 700px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 95vh; position: relative; overflow: hidden; }
+        
+        /* Header */
+        .header { background: white; padding: 10px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding-left: 15px; padding-right: 15px; height: 60px; }
+        
+        .menu-btn { font-size: 28px; cursor: pointer; color: var(--border-color); padding: 5px; transition: 0.2s; }
+        .menu-btn:hover { color: #b6962f; }
+
+        select { font-family: 'Amiri', serif; font-size: 18px; padding: 5px; width: 65%; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fff; text-align: center; }
+
+        /* Sidebar Menu */
+        .sidebar { position: absolute; top: 0; right: -100%; width: 75%; height: 100%; background: white; z-index: 100; transition: 0.4s ease; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .sidebar.open { right: 0; }
+        .sidebar-header { padding: 20px; background: var(--border-color); color: white; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: bold; }
+        .close-btn { cursor: pointer; font-size: 24px; }
+        .menu-content { flex-grow: 1; overflow-y: auto; padding: 15px; }
+        .menu-section-title { font-size: 18px; color: var(--border-color); border-bottom: 1px solid #eee; margin-top: 20px; margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; }
+        .menu-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; border: 1px solid #eee; transition: 0.2s; font-size: 16px; align-items: center;}
+        .menu-item:hover { background: #fffbf2; border-color: var(--border-color); }
+        .item-info { display: flex; flex-direction: column; }
+        .item-date { font-size: 12px; color: #888; }
+        .delete-item { color: red; cursor: pointer; font-size: 18px; padding: 0 5px; }
+
+        /* Sidebar Social Icons */
+        .sidebar-socials { display: flex; justify-content: center; gap: 15px; padding: 20px 0; margin-top: 10px; border-top: 1px solid #eee; flex-wrap: wrap; }
+        .sidebar-social-btn { width: 50px; height: 50px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; background: white; display: flex; align-items: center; justify-content: center; padding: 8px; border: 1px solid #f0f0f0; }
+        .sidebar-social-btn img { width: 100%; height: 100%; object-fit: contain; }
+        .sidebar-social-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); border-color: var(--border-color); }
+
+        /* User Status Styles */
+        .user-status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 8px; }
+        .status-online { background-color: #27ae60; box-shadow: 0 0 5px #27ae60; }
+        .status-idle { background-color: #f39c12; }
+        .live-counter { font-size: 12px; background: #eee; padding: 2px 8px; border-radius: 10px; margin-right: 5px; }
+
+        /* Overlay */
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 90; display: none; }
+        .overlay.active { display: block; }
+
+        /* Quran Content */
+        .quran-content { flex-grow: 1; padding: 20px; overflow-y: auto; text-align: justify; font-size: 32px; line-height: 2.6; scroll-behavior: smooth; }
+        .ayah-container { display: inline; }
+        .word { display: inline-block; padding: 0 2px; border-radius: 4px; transition: all 0.1s ease; cursor: pointer; }
+        .word.active { color: var(--highlight-color); font-weight: bold; text-shadow: 0 0 1px var(--highlight-color); transform: scale(1.1); background-color: rgba(39, 174, 96, 0.1); }
+        .ayah-number { font-size: 18px; color: var(--border-color); border: 1px solid var(--border-color); border-radius: 50%; padding: 0 8px; margin: 0 5px; display: inline-block; vertical-align: middle; }
+        .basmala { text-align: center; font-size: 26px; color: var(--border-color); margin-bottom: 20px; display: block; font-family: 'Amiri', serif; }
+
+        /* Footer */
+        .footer { background: white; padding: 15px; border-top: 1px solid #eee; border-radius: 0 0 15px 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.02); }
+        #live-caption { width: 90%; background-color: #f8f9fa; padding: 10px; border-radius: 8px; font-size: 16px; color: #555; margin-bottom: 12px; text-align: center; min-height: 25px; border: 1px solid #e0e0e0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: rtl; }
+        
+        .controls { display: flex; gap: 15px; align-items: center; width: 100%; justify-content: center; }
+        
+        button#mic-btn { background-color: var(--border-color); color: white; border: none; padding: 12px 30px; font-size: 18px; border-radius: 50px; cursor: pointer; font-family: 'Amiri', serif; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transition: transform 0.2s, background 0.3s; width: 180px; justify-content: center; }
+        button#mic-btn:active { transform: scale(0.95); }
+        button.listening { background-color: #e74c3c !important; animation: pulse 1.5s infinite; }
+        
+        button#fav-btn { background: white; border: 2px solid var(--border-color); color: var(--border-color); width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
+        button#fav-btn:hover { background: var(--border-color); color: white; }
+        
+        .copyright { font-size: 10px; color: #aaa; margin-top: 10px; text-align: center; }
+        
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="main-container" id="app-container">
+        
+        <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span>لیستی سەرەکی</span>
+                <span class="close-btn" onclick="toggleMenu()">✕</span>
+            </div>
+            <div class="menu-content">
+                
+                <div class="menu-section-title">
+                    👥 بەکارهێنەرانی ئێستا
+                    <span id="total-users-badge" class="live-counter" style="float:left">1</span>
+                </div>
+                <div id="live-users-list" style="max-height: 150px; overflow-y: auto; font-size: 14px; margin-bottom: 20px;">
+                    </div>
+                <div style="font-size: 12px; color: #666; text-align: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                     کۆی سەردانەکان: <span id="total-visits-count">1</span>
+                </div>
+
+                <div class="menu-section-title">❤️ دڵخوازەکان (Bookmarks)</div>
+                <div id="favorites-list"></div>
+
+                <div class="menu-section-title">🕒 مێژووی خوێندنەوە</div>
+                <div id="history-list"></div>
+
+                <div class="menu-section-title">کاتەکانی بانگ </div>
+                <div class="menu-item" onclick="window.location.href='daily.html'">
+                    <div class="item-info">
+                        <span>🕌 کاتەکانی بانگ و فەرموودە</span>
+                        <span class="item-date">کرتە بکە بۆ کردنەوە</span>
+                    </div>
+                </div>
+                <div class="menu-section-title">🔗 پەیوەندی</div>
+                <div class="sidebar-socials">
+                    <a href="https://facebook.com/Report.Bka.Dazanm.Ter.na.buuy" target="_blank" class="sidebar-social-btn" title="Facebook">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+                    </a>
+                    <a href="https://www.instagram.com/hamaofficial0?igsh=MWc1bnFjbGZiMHE5MA%3D%3D&utm_source=qr" target="_blank" class="sidebar-social-btn" title="Instagram">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
+                    </a>
+                    <a href="https://snapchat.com/t/b0OhYdsb" target="_blank" class="sidebar-social-btn" title="Snapchat">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" alt="Snapchat">
+                    </a>
+                    <a href="https://www.tiktok.com/@hamaofficial_0?_r=1&_t=ZS-93doDIzN8Bp" target="_blank" class="sidebar-social-btn" title="TikTok">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" alt="TikTok">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="header">
+            <div class="menu-btn" onclick="toggleMenu()">☰ <span id="header-live-dot" style="font-size:10px; color:#27ae60; display:none;">●</span></div>
+            <select id="surahSelect" onchange="loadSurah(this.value)">
+                <option value="1" selected>1. سورة الفاتحة</option>
+                <option value="" disabled>جاری بارکردن...</option>
+            </select>
+        </div>
+
+        <div class="quran-content" id="quran-display"></div>
+
+        <div class="footer">
+            <div id="live-caption">ئامادەیە بۆ گوێگرتن...</div>
+            <div class="controls">
+                <button id="fav-btn" onclick="saveToFavorites()" title="پاشەکەوتکردنی ئەم شوێنە">❤️</button>
+                <button id="mic-btn" onclick="toggleListening()">
+                    <span>🎤</span> دەستپێکردن
+                </button>
+            </div>
+            
+            <div class="copyright">
+                <span>Made by Muhamad Ibrahim Rasul</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Unique ID for this tab
+        const myId = 'user_' + Math.random().toString(36).substr(2, 6);
+        const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
+        let myStatus = 'online';
+
+        // Store other users (Map)
+        let activeUsers = new Map();
+
+        // 1. Total Visits Counter (LocalStorage - Persistent)
+        let visits = localStorage.getItem('total_site_visits') || 0;
+        visits = parseInt(visits) + 1;
+        localStorage.setItem('total_site_visits', visits);
+        document.getElementById('total-visits-count').innerText = visits;
+
+        // 2. Broadcast Channel for Tab-to-Tab Communication
+        const bc = new BroadcastChannel('quran_app_live_tracking');
+
+        // Function to broadcast my presence
+        function broadcastPresence() {
+            bc.postMessage({
+                type: 'presence',
+                id: myId,
+                device: deviceType,
+                status: myStatus,
+                timestamp: Date.now()
+            });
+        }
+
+        // Listen for messages from other tabs
+        bc.onmessage = (event) => {
+            const data = event.data;
+            if (data.type === 'presence') {
+                activeUsers.set(data.id, data);
+                updateLiveUI();
+            }
+        };
+
+        // Send heartbeat every 2 seconds
+        setInterval(broadcastPresence, 2000);
+        // Initial broadcast
+        broadcastPresence();
+
+        // Check for dead users (timeout > 5 seconds)
+        setInterval(() => {
+            const now = Date.now();
+            let changed = false;
+            activeUsers.forEach((user, id) => {
+                if (now - user.timestamp > 5000) {
+                    activeUsers.delete(id);
+                    changed = true;
+                }
+            });
+            if (changed) updateLiveUI();
+        }, 3000);
+
+        // Visibility Change (Active/Idle)
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'visible') {
+                myStatus = 'online';
+            } else {
+                myStatus = 'idle';
+            }
+            broadcastPresence(); // Immediate update
+            updateLiveUI(); // Update my own UI
+        });
+
+        // Update the Sidebar UI
+        function updateLiveUI() {
+            const listEl = document.getElementById('live-users-list');
+            const badgeEl = document.getElementById('total-users-badge');
+            const headerDot = document.getElementById('header-live-dot');
+            
+            listEl.innerHTML = "";
+            
+            // Add Me First
+            const myRow = createUserRow(myId, deviceType, myStatus, true);
+            listEl.appendChild(myRow);
+
+            // Add Others
+            let onlineCount = 1; // Me
+            activeUsers.forEach((user) => {
+                onlineCount++;
+                const row = createUserRow(user.id, user.device, user.status, false);
+                listEl.appendChild(row);
+            });
+
+            badgeEl.innerText = onlineCount;
+            headerDot.style.display = onlineCount > 1 ? "inline" : "none";
+        }
+
+        function createUserRow(id, device, status, isMe) {
+            const statusColor = status === 'online' ? 'status-online' : 'status-idle';
+            const statusText = status === 'online' ? 'چالاک' : 'ناچالاک';
+            const meLabel = isMe ? " (تۆ)" : "";
+            
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+            div.style.padding = "5px 10px";
+            div.style.cursor = "default";
+            div.innerHTML = `
+                <div style="display:flex; align-items:center;">
+                    <span class="user-status-dot ${statusColor}"></span>
+                    <span style="margin-right:8px; font-weight:bold;">${device} ${meLabel}</span>
+                </div>
+                <span style="font-size:10px; color:#888;">${statusText}</span>
+            `;
+            return div;
+        }
+
+        // Initialize UI immediately with myself
+        updateLiveUI();
+    </script>
+
+    <script>
+        // ==========================================
+        // SECURITY SCRIPT
+        // ==========================================
+        document.onkeydown = function(e) {
+            if(
+                event.keyCode == 123 || 
+                (event.ctrlKey && event.shiftKey && event.keyCode == 73) || 
+                (event.ctrlKey && event.shiftKey && event.keyCode == 74) || 
+                (event.ctrlKey && event.keyCode == 85)
+            ) { return false; }
+        }
+        document.ondragstart = function() { return false; }; 
+
+        // ==========================================
+        // Data & Variables
+        // ==========================================
+        const fatihaData = [
+            { text: "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", numberInSurah: 1 },
+            { text: "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ", numberInSurah: 2 },
+            { text: "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", numberInSurah: 3 },
+            { text: "مَٰلِكِ يَوْمِ ٱلدِّينِ", numberInSurah: 4 },
+            { text: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", numberInSurah: 5 },
+            { text: "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ", numberInSurah: 6 },
+            { text: "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّالِّينَ", numberInSurah: 7 }
+        ];
+
+        let allAyahs = [];
+        let currentAyahIndex = 0;
+        let currentWordIndex = 0;
+        let currentWords = []; 
+        let isListening = false;
+        let recognition;
+        let currentSurahName = "سورة الفاتحة";
+        let currentSurahNumber = 1;
+
+        // UI Elements
+        const surahSelect = document.getElementById('surahSelect');
+        const quranDisplay = document.getElementById('quran-display');
+        const captionBox = document.getElementById('live-caption');
+        const micBtn = document.getElementById('mic-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const favoritesList = document.getElementById('favorites-list');
+        const historyList = document.getElementById('history-list');
+
+        init();
+
+        function init() {
+            loadHistory();
+            loadFavorites();
+            if(allAyahs.length === 0) {
+                allAyahs = fatihaData;
+                renderSurah(1);
+                prepareCurrentAyah();
+                fetchSurahList();
+                addToHistory(1, "سورة الفاتحة");
+            }
+        }
+
+        // ==========================================
+        // Menu & Storage Logic
+        // ==========================================
+        function toggleMenu() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            if(sidebar.classList.contains('open')) { loadHistory(); loadFavorites(); }
+        }
+
+        function addToHistory(surahNum, surahName) {
+            let history = JSON.parse(localStorage.getItem('quran_history') || '[]');
+            history = history.filter(h => h.number != surahNum);
+            history.unshift({ number: surahNum, name: surahName, date: new Date().toLocaleDateString('ar-IQ') });
+            if(history.length > 10) history.pop();
+            localStorage.setItem('quran_history', JSON.stringify(history));
+        }
+
+        function saveToFavorites() {
+            const ayahNum = allAyahs[currentAyahIndex].numberInSurah;
+            let favorites = JSON.parse(localStorage.getItem('quran_favorites') || '[]');
+            const newFav = {
+                surahNum: currentSurahNumber,
+                surahName: currentSurahName,
+                ayahIndex: currentAyahIndex,
+                ayahDisplayNum: ayahNum,
+                date: new Date().toLocaleTimeString('ar-IQ')
+            };
+            const exists = favorites.some(f => f.surahNum == newFav.surahNum && f.ayahIndex == newFav.ayahIndex);
+            if(!exists) {
+                favorites.unshift(newFav);
+                localStorage.setItem('quran_favorites', JSON.stringify(favorites));
+                alert(`✅ شوێنی گەیشتن پاشەکەوت کرا:\n${currentSurahName} - ئایەتی ${ayahNum}`);
+            } else { alert("⚠️ ئەم شوێنە پێشتر پاشەکەوت کراوە"); }
+        }
+
+        function loadHistory() {
+            let history = JSON.parse(localStorage.getItem('quran_history') || '[]');
+            historyList.innerHTML = history.length ? '' : '<div style="text-align:center; color:#999;">هیچ مێژوویەک نییە</div>';
+            history.forEach(h => {
+                historyList.innerHTML += `<div class="menu-item" onclick="loadSurah(${h.number}); toggleMenu();"><div class="item-info"><span>📖 ${h.name}</span><span class="item-date">${h.date}</span></div></div>`;
+            });
+        }
+
+        function loadFavorites() {
+            let favorites = JSON.parse(localStorage.getItem('quran_favorites') || '[]');
+            favoritesList.innerHTML = favorites.length ? '' : '<div style="text-align:center; color:#999;">هیچ دڵخوازێک نییە</div>';
+            favorites.forEach((f, index) => {
+                favoritesList.innerHTML += `<div class="menu-item"><div class="item-info" onclick="restoreSession(${f.surahNum}, ${f.ayahIndex}); toggleMenu();"><span>❤️ ${f.surahName} - ئایەتی ${f.ayahDisplayNum}</span><span class="item-date">${f.date}</span></div><span class="delete-item" onclick="deleteFavorite(${index})">🗑️</span></div>`;
+            });
+        }
+
+        function deleteFavorite(index) {
+            let favorites = JSON.parse(localStorage.getItem('quran_favorites') || '[]');
+            favorites.splice(index, 1);
+            localStorage.setItem('quran_favorites', JSON.stringify(favorites));
+            loadFavorites();
+        }
+
+        async function restoreSession(surahNum, ayahIdx) {
+            surahSelect.value = surahNum;
+            await loadSurah(surahNum);
+            currentAyahIndex = ayahIdx;
+            prepareCurrentAyah();
+            setTimeout(() => {
+                const el = document.getElementById(`ayah-${ayahIdx}`);
+                if(el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.style.backgroundColor = "#fff3cd";
+                    setTimeout(() => el.style.backgroundColor = "transparent", 2000);
+                }
+            }, 500);
+        }
+
+        // ==========================================
+        // Quran & API Logic
+        // ==========================================
+        async function fetchSurahList() {
+            try {
+                const response = await fetch('https://api.alquran.cloud/v1/surah');
+                const data = await response.json();
+                surahSelect.innerHTML = '';
+                data.data.forEach(surah => {
+                    const option = document.createElement('option');
+                    option.value = surah.number;
+                    option.text = `${surah.number}. ${surah.name}`;
+                    if(surah.number === 1) option.selected = true;
+                    surahSelect.appendChild(option);
+                });
+            } catch (error) { console.log("Offline mode"); }
+        }
+
+        async function loadSurah(surahNumber) {
+            surahNumber = parseInt(surahNumber);
+            currentSurahNumber = surahNumber;
+            const option = surahSelect.querySelector(`option[value="${surahNumber}"]`);
+            if(option) {
+                currentSurahName = option.text.split('. ')[1];
+                addToHistory(surahNumber, currentSurahName);
+            }
+            if(surahNumber == 1) {
+                allAyahs = fatihaData;
+                renderSurah(1);
+                currentAyahIndex = 0;
+                prepareCurrentAyah();
+                return;
+            }
+            quranDisplay.innerHTML = '<div style="text-align:center; margin-top:50px; color:#d4af37;">جاری هێنانی ئایەتەکان...</div>';
+            try {
+                const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/editions/quran-uthmani`);
+                if(!response.ok) throw new Error("Blocked");
+                const data = await response.json();
+                allAyahs = data.data[0].ayahs;
+                renderSurah(surahNumber);
+                currentAyahIndex = 0;
+                prepareCurrentAyah();
+            } catch (error) {
+                quranDisplay.innerHTML = `<div style="text-align:center; padding:20px;">⚠️ کێشەی ئینتەرنێت، تکایە دڵنیابەرەوە لە پەیوەندیەکەت.</div>`;
+            }
+        }
+
+        function renderSurah(surahNum) {
+            let html = "";
+            if(surahNum != 1 && surahNum != 9) html += `<div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
+            allAyahs.forEach((ayah, aIndex) => {
+                let text = ayah.text;
+                if(surahNum != 1 && aIndex === 0) text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "").trim();
+                html += `<span id="ayah-${aIndex}" class="ayah-container">`;
+                text.split(' ').forEach((word, wIndex) => {
+                    html += `<span id="word-${aIndex}-${wIndex}" class="word">${word} </span>`;
+                });
+                html += `<span class="ayah-number">${ayah.numberInSurah}</span></span> `;
+            });
+            quranDisplay.innerHTML = html;
+        }
+
+        function prepareCurrentAyah() {
+            if(currentAyahIndex < allAyahs.length) {
+                let text = allAyahs[currentAyahIndex].text;
+                if(currentAyahIndex === 0 && allAyahs.length > 7 && allAyahs[0].text.includes("بِسْمِ")) 
+                     text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "").trim();
+                currentWords = text.split(' ');
+                currentWordIndex = 0;
+                const el = document.getElementById(`ayah-${currentAyahIndex}`);
+                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // ==========================================
+        // Ultimate Skeleton Normalization
+        // ==========================================
+        function getSkeleton(text) {
+            if (!text) return "";
+            return text
+                .replace(/[\u0610-\u061A\u064B-\u066F\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]/g, '')
+                .replace(/[اأإآٱٰ]/g, '')
+                .replace(/(ى|ي|ئ)/g, 'ي')
+                .replace(/(ة|ه)/g, 'ه')
+                .replace(/(ؤ|و)/g, 'و')
+                .replace(/\s+/g, '')
+                .trim();
+        }
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true; 
+            recognition.lang = 'ar-SA';
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => { 
+                isListening = true; 
+                micBtn.classList.add('listening'); 
+                micBtn.innerHTML = "<span>⏹</span> وەستان"; 
+                captionBox.innerText = "گوێدەگرێت..."; 
+                captionBox.style.color = "#27ae60"; 
+            };
+            
+            recognition.onend = () => { 
+                if (isListening) recognition.start(); 
+                else { 
+                    micBtn.classList.remove('listening'); 
+                    micBtn.innerHTML = "<span>🎤</span> دەستپێکردن"; 
+                    captionBox.innerText = "وەستا."; 
+                    captionBox.style.color = "#555"; 
+                } 
+            };
+
+            recognition.onresult = (event) => { 
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    transcript += event.results[i][0].transcript;
+                }
+                captionBox.innerText = transcript;
+                checkMatch(transcript); 
+            };
+        } else { alert("تکایە Google Chrome بەکاربهێنە"); }
+
+        function checkMatch(spokenText) {
+            if(currentAyahIndex >= allAyahs.length) return;
+            let spokenSkeleton = getSkeleton(spokenText);
+            for (let i = 0; i < 3; i++) {
+                let indexToCheck = currentWordIndex + i;
+                if (indexToCheck >= currentWords.length) break;
+                let targetWordRaw = currentWords[indexToCheck];
+                let targetSkeleton = getSkeleton(targetWordRaw);
+                if (spokenSkeleton.includes(targetSkeleton)) { 
+                    for(let j = 0; j <= i; j++) activateWord(); 
+                    return; 
+                }
+            }
+        }
+
+        function activateWord() {
+            let el = document.getElementById(`word-${currentAyahIndex}-${currentWordIndex}`);
+            if(el) { el.classList.add('active'); }
+            currentWordIndex++; 
+            if(currentWordIndex >= currentWords.length) nextAyah();
+        }
+
+        function nextAyah() {
+            currentAyahIndex++; 
+            captionBox.innerText = "..."; 
+            if (currentAyahIndex < allAyahs.length) {
+                prepareCurrentAyah();
+            } else { 
+                captionBox.innerText = "تەواو بوو، دەچێتە سورەتی دواتر..."; 
+                setTimeout(() => { 
+                    let currentSurahId = parseInt(surahSelect.value); 
+                    let nextSurahId = currentSurahId + 1; 
+                    if(nextSurahId <= 114) { 
+                        surahSelect.value = nextSurahId; 
+                        loadSurah(nextSurahId); 
+                    } else { 
+                        captionBox.innerText = "پیرۆزە! هەموو قورئانت تەواو کرد."; 
+                        isListening = false; 
+                        recognition.stop(); 
+                    } 
+                }, 1000); 
+            }
+        }
+
+        function toggleListening() {
+            if(isListening) { 
+                isListening = false; 
+                recognition.stop(); 
+            } else { 
+                recognition.start(); 
+            }
+        }
+    </script>
+</body>
+</html>
