@@ -20,10 +20,10 @@
         
         select.custom-select { padding: 8px; border-radius: 20px; border: none; font-family: 'Amiri'; font-size: 14px; cursor: pointer; outline: none; background: white; color: var(--text-color); width: 100%; text-align: center; }
         
-        .audio-controls { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: white; padding: 5px 10px; border-radius: 20px; }
+        .audio-controls { display: flex; align-items: center; justify-content: space-between; gap: 5px; background: white; padding: 5px 10px; border-radius: 20px; flex-wrap: wrap; }
         
         /* Volume Slider */
-        input[type=range] { width: 100px; cursor: pointer; }
+        input[type=range] { width: 80px; cursor: pointer; }
         
         /* Mute Button */
         .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px; }
@@ -37,7 +37,7 @@
         .prayer-card.active-prayer { border: 2px solid var(--highlight-color); background-color: #e8f8f5; transform: scale(1.02); box-shadow: 0 0 10px rgba(39, 174, 96, 0.2); }
         
         .prayer-name { font-weight: bold; color: var(--text-color); }
-        .prayer-time { color: var(--border-color); font-weight: bold; background: #fffbf2; padding: 3px 8px; border-radius: 5px; }
+        .prayer-time { color: var(--border-color); font-weight: bold; background: #fffbf2; padding: 3px 8px; border-radius: 5px; direction: ltr; }
 
         #adhan-alert { display: none; background-color: var(--highlight-color); color: white; padding: 15px; margin: 10px; border-radius: 8px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
@@ -90,12 +90,17 @@
                 </select>
 
                 <div class="audio-controls">
-                    <select id="audio-select" onchange="changeAdhanSound()" style="border:none; outline:none; font-family:'Amiri'; width:120px;">
+                    <select id="audio-select" onchange="changeAdhanSound()" style="border:none; outline:none; font-family:'Amiri'; width:90px; font-size:12px;">
                         <option value="makkah">بانگی مەککە</option>
                         <option value="madina">بانگی مەدینە</option>
                         <option value="aqsa">بانگی قودس</option>
                         <option value="mishary">مشاری العفاسی</option>
                         <option value="abdulbasit">عبدالباسط</option>
+                    </select>
+
+                    <select id="format-select" onchange="changeTimeFormat()" style="border:none; outline:none; font-family:'Amiri'; width:60px; font-size:12px; font-weight:bold;">
+                        <option value="24">24H</option>
+                        <option value="12">12H</option>
                     </select>
                     
                     <input type="range" id="volume-control" min="0" max="1" step="0.1" value="1" onchange="changeVolume()" title="دەنگ">
@@ -145,11 +150,14 @@
         let currentCity = localStorage.getItem('selectedCity') || "Sulaymaniyah";
         let currentSound = localStorage.getItem('selectedSound') || "makkah";
         let savedVolume = localStorage.getItem('adhanVolume') || 1;
+        let timeFormat = localStorage.getItem('timeFormat') || '24'; // Default 24H
 
         // Initial UI Setup
         document.getElementById('city-select').value = currentCity;
         document.getElementById('audio-select').value = currentSound;
         document.getElementById('volume-control').value = savedVolume;
+        document.getElementById('format-select').value = timeFormat;
+        
         audioPlayer.src = adhanSounds[currentSound];
         audioPlayer.volume = savedVolume;
 
@@ -179,7 +187,6 @@
             const selected = document.getElementById('audio-select').value;
             localStorage.setItem('selectedSound', selected);
             audioPlayer.src = adhanSounds[selected];
-            // Play a short preview
             if(audioEnabled) {
                 audioPlayer.play();
                 setTimeout(() => { audioPlayer.pause(); audioPlayer.currentTime=0; }, 3000);
@@ -204,10 +211,31 @@
             }
         }
 
+        function changeTimeFormat() {
+            timeFormat = document.getElementById('format-select').value;
+            localStorage.setItem('timeFormat', timeFormat);
+            renderPrayers(); // Re-render with new format
+        }
+
+        // Helper to format 24h to 12h
+        function formatTime(time24) {
+            if (timeFormat === '24') return time24;
+            
+            // Remove timezone specific data if exists, expecting HH:MM
+            let [hours, minutes] = time24.split(':');
+            hours = parseInt(hours);
+            
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            
+            return `${hours}:${minutes} ${ampm}`;
+        }
+
         // ==========================================
         // 3. API & Data Logic
         // ==========================================
-        let todayPrayers = {}; 
+        let todayPrayers = {}; // Stores raw 24h format for logic
 
         async function fetchIslamicData() {
             const cityContainer = document.getElementById('prayer-container');
@@ -223,6 +251,7 @@
                     document.getElementById('gregorian-date').innerText = date.gregorian.date;
                     document.getElementById('hijri-date').innerText = `${date.hijri.day} ${date.hijri.month.en}`;
 
+                    // Always store as 24h for logic
                     todayPrayers = {
                         'Fajr': timings.Fajr.split(' ')[0],
                         'Sunrise': timings.Sunrise.split(' ')[0],
@@ -232,29 +261,37 @@
                         'Isha': timings.Isha.split(' ')[0]
                     };
 
-                    const prayersDisplay = [
-                        { key: 'Fajr', name: 'بەیانی' },
-                        { key: 'Sunrise', name: 'خۆرھەڵاتن' },
-                        { key: 'Dhuhr', name: 'نیوەڕۆ' },
-                        { key: 'Asr', name: 'عەسر' },
-                        { key: 'Maghrib', name: 'مەغریب' },
-                        { key: 'Isha', name: 'عیشا' }
-                    ];
-
-                    let html = '';
-                    prayersDisplay.forEach(p => {
-                        html += `
-                            <div class="prayer-card" id="card-${p.key}">
-                                <span class="prayer-name">${p.name}</span>
-                                <span class="prayer-time" dir="ltr">${todayPrayers[p.key]}</span>
-                            </div>
-                        `;
-                    });
-                    cityContainer.innerHTML = html;
+                    renderPrayers();
                 }
             } catch (error) {
                 cityContainer.innerHTML = "<div style='color:red;'>کێشە لە پەیوەندی هەیە!</div>";
             }
+        }
+
+        function renderPrayers() {
+            const cityContainer = document.getElementById('prayer-container');
+            const prayersDisplay = [
+                { key: 'Fajr', name: 'بەیانی' },
+                { key: 'Sunrise', name: 'خۆرھەڵاتن' },
+                { key: 'Dhuhr', name: 'نیوەڕۆ' },
+                { key: 'Asr', name: 'عەسر' },
+                { key: 'Maghrib', name: 'مەغریب' },
+                { key: 'Isha', name: 'عیشا' }
+            ];
+
+            let html = '';
+            prayersDisplay.forEach(p => {
+                // Use helper to display correct format
+                let displayTime = formatTime(todayPrayers[p.key]);
+                
+                html += `
+                    <div class="prayer-card" id="card-${p.key}">
+                        <span class="prayer-name">${p.name}</span>
+                        <span class="prayer-time" dir="ltr">${displayTime}</span>
+                    </div>
+                `;
+            });
+            cityContainer.innerHTML = html;
         }
 
         function changeCity() {
@@ -273,7 +310,7 @@
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            const currentTime = `${hours}:${minutes}`;
+            const currentTime = `${hours}:${minutes}`; // Always checks in 24h format
             
             for (const [key, time] of Object.entries(todayPrayers)) {
                 // Highlight Logic
@@ -302,13 +339,13 @@
             document.getElementById('current-prayer-name').innerText = prayerName;
             alertBox.style.display = 'block';
 
-            // 2. Play Audio (If not muted)
+            // 2. Play Audio
             if (!isMuted) {
                 audioPlayer.currentTime = 0;
                 audioPlayer.play().catch(e => document.getElementById('audio-perm-btn').style.display = 'block');
             }
 
-            // 3. Send Notification (If background)
+            // 3. Send Notification
             if (Notification.permission === "granted") {
                 new Notification("کاتەکانی بانگ", {
                     body: `بانگی ${prayerName} - الله أكبر`,
