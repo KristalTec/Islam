@@ -16,11 +16,13 @@
         .app-container { width: 100%; max-width: 600px; background-color: var(--bg-color); height: 100%; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
         /* Header */
-        .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .header-title { font-size: 20px; font-weight: bold; position: absolute; left: 0; right: 0; text-align: center; pointer-events: none; }
+        .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 50; }
         .icon-group { display: flex; gap: 15px; z-index: 10; }
-        .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; }
+        .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; position: relative; }
         .header-btn:hover { transform: scale(1.1); color: #b6962f; }
+        
+        /* Notification Dot */
+        .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: red; border-radius: 50%; border: 1px solid white; display: none; }
 
         /* Main Content Area */
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; scroll-behavior: smooth; }
@@ -39,21 +41,30 @@
         .card-title { font-weight: bold; font-size: 18px; }
 
         /* LIVE FEED SECTION */
-        .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); margin-bottom: 15px; border-right: 4px solid var(--highlight-color); padding-right: 10px; display: flex; align-items: center; justify-content: space-between; }
-        .refresh-feed { font-size: 12px; color: #999; cursor: pointer; }
+        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
+        .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.3s; position: relative; overflow: hidden; }
         .feed-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
         .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
-        .tag-ayah { background: var(--highlight-color); }
-        .tag-name { background: #3498db; }
-        .tag-info { background: #9b59b6; }
+        .tag-ayah { background: var(--highlight-color); } /* Green */
+        .tag-hadith { background: #3498db; } /* Blue */
+        .tag-dua { background: #e67e22; } /* Orange */
+        .tag-info { background: #9b59b6; } /* Purple */
+        .tag-name { background: #e74c3c; } /* Red */
 
-        .feed-content { font-size: 16px; line-height: 1.8; color: #444; margin-top: 10px; }
-        .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; }
+        .feed-content { font-size: 17px; line-height: 1.8; color: #444; margin-top: 15px; text-align: justify; }
+        .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
 
-        /* Loading Spinner */
+        /* Enable Notif Button */
+        .notif-permission { background: #ffeaa7; padding: 10px; font-size: 12px; color: #d35400; border-bottom: 1px solid #fdcb6e; display: none; cursor: pointer; text-align: center; }
+
+        /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -61,13 +72,12 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
         
-        /* Stats & History Styles */
+        /* Stats & History */
         .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
         .user-list { max-height: 120px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; }
         .user-item { padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
-        .dot.idle { background: #f39c12; }
         
         .history-list { max-height: 300px; overflow-y: auto; text-align: right; margin-top: 10px; }
         .history-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; border-right: 3px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
@@ -98,20 +108,29 @@
 
     <div class="app-container">
         
+        <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+        <div class="notif-permission" id="notif-perm-btn" onclick="enableNotifications()">
+            🔔 تکایە ئێرە دابگرە بۆ چالاککردنی ئاگادارکردنەوەی پۆستی نوێ
+        </div>
+
         <div class="header">
             <div class="icon-group">
                 <div class="header-btn" onclick="openSettings()" title="ڕێکخستن">⚙️</div>
-                <div class="header-btn" onclick="openHistory()" title="مێژوو">🕒</div>
+                <div class="header-btn" onclick="openHistory()" title="مێژوو">
+                    🕒
+                    <span class="notif-badge" id="history-badge"></span>
+                </div>
             </div>
-            <div class="header-title">Ultimate Pro</div>
-            <div style="width: 60px;"></div>
+            <div style="font-weight:bold; font-size:18px;">Ultimate Pro</div>
+            <div class="header-btn" onclick="triggerManualUpdate()" title="نوێکردنەوە">🔃</div>
         </div>
 
         <div class="content">
             <div class="hero-card">
                 <div class="hero-pattern"></div>
                 <div class="hero-title">بەخێربێیت</div>
-                <div class="hero-date" id="current-date">جاری بارکردن...</div>
+                <div class="hero-date" id="current-date">...</div>
             </div>
 
             <div class="menu-grid">
@@ -131,9 +150,12 @@
                 </a>
             </div>
 
-            <div class="feed-title">
-                <span>📰 نوێترین بابەتەکان</span>
-                <span class="refresh-feed" onclick="refreshFeed()">نوێکردنەوە ↻</span>
+            <div class="feed-header">
+                <div class="feed-title">
+                    <span class="live-indicator"></span>
+                    <span>نوێترین بابەتەکان</span>
+                </div>
+                <span style="font-size:12px; color:#888;">ڕاستەوخۆ</span>
             </div>
             
             <div id="feed-container">
@@ -214,75 +236,195 @@
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
 
         // ===========================================
-        // DYNAMIC FEED SYSTEM (The New Important Part)
+        // DATA DATABASE (Massive Content)
         // ===========================================
-        
-        async function loadFeed() {
+        const db = {
+            hadiths: [
+                "باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.",
+                "پێکەنین بە ڕووی براکەتدا سەدەقەیە.",
+                "پاکوخاوێنی بەشێکە لە ئیمان.",
+                "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت.",
+                "دوعا چەکی باوەڕدارە.",
+                "خوا جوانە و جوانی خۆشدەوێت.",
+                "وتنی قسەی باش سەدەقەیە.",
+                "بەهێز ئەوە نییە لە زۆرانبازی دەیباتەوە، بەهێز ئەوەیە لەکاتی تووڕەیی خۆی دەگرێت.",
+                "ئارامگرتن ڕووناکییە.",
+                "هەرکەسێک ڕێگایەک بگرێتەبەر بۆ زانست، خوای گەورە ڕێگای بەهەشتی بۆ ئاسان دەکات.",
+                "موسڵمان لە دەست و زمانی موسڵمانان پارێزراوە.",
+                "ئه‌وه‌ی باوه‌ڕی به‌ خوا و ڕۆژی دوایی هه‌یه‌، با میوانه‌كه‌ی به‌ڕێز بگرێت.",
+                "ڕاستگۆیی بەرەو چاکە دەبات و چاکەش بەرەو بەهەشت.",
+                "لەخواترسان سەری هەموو داناییەکە."
+            ],
+            duas: [
+                "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+                "اللهم إني أسألك الهدى والتقى والعفاف والغنى",
+                "يا مقلب القلوب ثبت قلبي على دينك",
+                "اللهم إنك عفو تحب العفو فاعف عني",
+                "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ",
+                "اللهم إني أعوذ بك من الهم والحزن",
+                "لا إله إلا أنت سبحانك إني كنت من الظالمين"
+            ],
+            names: [
+                { name: "الرحمن", meaning: "بەخشندە بۆ هەموو دروستکراوەکان" },
+                { name: "الرحيم", meaning: "بەبەزەیی بۆ بڕواداران" },
+                { name: "الملك", meaning: "پاشا و خاوەنی هەموو شتێک" },
+                { name: "القدوس", meaning: "پاک و بێگەرد" },
+                { name: "السلام", meaning: "سەرچاوەی ئاشتی و سەلامەتی" },
+                { name: "المؤمن", meaning: "بەخشەری ئیمان و دڵنیایی" },
+                { name: "المهيمن", meaning: "چاودێر و ئاگادار" },
+                { name: "العزيز", meaning: "بەهێز و شكۆدار" },
+                { name: "الجبار", meaning: "زۆردار و بەدەسەڵات" },
+                { name: "المتكبر", meaning: "گەورە و بێ هاوتا" }
+            ],
+            info: [
+                "یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.",
+                "یەکەم کەس کە باوەڕی بە پێغەمبەر (د.خ) هێنا خەدیجەی خێزانی بوو.",
+                "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.",
+                "درێژترین سورەتی قورئان سورەتی بەقەرەیە.",
+                "کورتترین سورەتی قورئان سورەتی کەوسەرە.",
+                "لە مانگی ڕەمەزاندا شەوێک هەیە بەناوی شەوی قەدر کە پاداشتەکەی لە هەزار مانگ باشترە.",
+                "نوێژی جەماعەت ٢٧ پلە پاداشتی زیاترە لە نوێژی تاک."
+            ]
+        };
+
+        // ===========================================
+        // DYNAMIC FEED & NOTIFICATION SYSTEM
+        // ===========================================
+        let notifEnabled = false;
+
+        function enableNotifications() {
+            notifEnabled = true;
+            document.getElementById('notif-perm-btn').style.display = 'none';
+            // Request system permission
+            if ("Notification" in window) Notification.requestPermission();
+            // Start the loop
+            startLiveUpdates();
+            alert("✅ نۆتیفیکەیشن چالاک کرا. چاوەڕێی زانیاری نوێ بە...");
+        }
+
+        // Show permission button if not enabled
+        setTimeout(() => {
+            if(!notifEnabled) document.getElementById('notif-perm-btn').style.display = 'block';
+        }, 2000);
+
+        async function loadInitialFeed() {
             const container = document.getElementById('feed-container');
-            container.innerHTML = '<div class="loader"></div>';
+            container.innerHTML = ''; // Clear loader
+            
+            // Add 1 random item from each category initially
+            addCardToFeed('hadith', getRandom(db.hadiths));
+            await addAyahCard();
+            addCardToFeed('info', getRandom(db.info));
+        }
 
-            try {
-                // 1. Fetch Random Ayah (Live from Internet)
-                // Random number between 1 and 6236
-                const randomAyahId = Math.floor(Math.random() * 6236) + 1;
-                const ayahResponse = await fetch(`https://api.alquran.cloud/v1/ayah/${randomAyahId}/editions/quran-uthmani`);
-                const ayahData = await ayahResponse.json();
-                const ayahText = ayahData.data[0].text;
-                const surahName = ayahData.data[0].surah.name;
+        function addCardToFeed(type, content, isNew = false) {
+            const container = document.getElementById('feed-container');
+            const div = document.createElement('div');
+            div.className = 'feed-card';
+            
+            let tagHTML = '';
+            let sourceHTML = '';
 
-                // 2. Fetch or Generate "Isamic Info"
-                const infoList = [
-                    { title: "ناوی خوای گەورە", text: "الرحمن: واتە بەخشندە بۆ هەموو دروستکراوەکان لە دونیا." },
-                    { title: "ناوی خوای گەورە", text: "القدوس: پاک و بێگەرد لە هەموو کەم و کورتییەک." },
-                    { title: "سونەت", text: "خەوتن لەسەر دەستنوێژ سونەتێکی گەورەی پێغەمبەرە (د.خ)." },
-                    { title: "ئامۆژگاری", text: "هەموو ڕۆژێک لاپەڕەیەک قورئان دڵەکان ئارام دەکاتەوە." },
-                    { title: "زانیاری", text: "یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە." }
-                ];
-                const randomInfo = infoList[Math.floor(Math.random() * infoList.length)];
-
-                // 3. Render Content
-                container.innerHTML = `
-                    <div class="feed-card">
-                        <span class="feed-tag tag-ayah">ئایەتی هەڵبژێردراو</span>
-                        <div class="feed-content" style="font-family:'Amiri'; font-size:20px;">
-                            "${ayahText}"
-                        </div>
-                        <span class="feed-source">سورة ${surahName}</span>
-                    </div>
-
-                    <div class="feed-card">
-                        <span class="feed-tag tag-info">${randomInfo.title}</span>
-                        <div class="feed-content">
-                            ${randomInfo.text}
-                        </div>
-                    </div>
-
-                    <div style="font-size:10px; color:#aaa; text-align:center;">
-                        ✅ پەیوەستە بە ئینتەرنێتەوە
-                    </div>
-                `;
-
-            } catch (error) {
-                container.innerHTML = `<div style="text-align:center; color:red;">کێشە لە پەیوەندی هەیە. تکایە ئینتەرنێتەکەت بپشکنە. <br><span style="font-size:20px; cursor:pointer;" onclick="loadFeed()">🔄</span></div>`;
+            if (type === 'hadith') {
+                tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>';
+                sourceHTML = 'پێغەمبەر (د.خ) دەفەرموێت';
+            } else if (type === 'dua') {
+                tagHTML = '<span class="feed-tag tag-dua">دوعای ڕۆژ</span>';
+                sourceHTML = 'دوعا و پاڕانەوە';
+            } else if (type === 'name') {
+                tagHTML = '<span class="feed-tag tag-name">ناوی خوای گەورە</span>';
+                content = `<b>${content.name}</b>: ${content.meaning}`;
+                sourceHTML = 'ئەسمائی حوسنا';
+            } else if (type === 'info') {
+                tagHTML = '<span class="feed-tag tag-info">زانیاری</span>';
+                sourceHTML = 'رۆشنبیری ئیسلامی';
+            } else if (type === 'ayah') {
+                tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>';
+                sourceHTML = content.source; // Passed in object
+                content = `"${content.text}"`;
             }
+
+            div.innerHTML = `
+                ${tagHTML}
+                <div class="feed-content">${content}</div>
+                <span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>
+            `;
+
+            // Insert at top
+            container.insertBefore(div, container.firstChild);
+            
+            // Limit feed size to 50 items
+            if(container.children.length > 50) container.removeChild(container.lastChild);
         }
 
-        function refreshFeed() {
-            loadFeed();
+        async function addAyahCard() {
+            try {
+                const randomId = Math.floor(Math.random() * 6236) + 1;
+                const r = await fetch(`https://api.alquran.cloud/v1/ayah/${randomId}/editions/quran-uthmani`);
+                const d = await r.json();
+                addCardToFeed('ayah', {
+                    text: d.data[0].text,
+                    source: `سورة ${d.data[0].surah.name}`
+                });
+            } catch(e) { console.log("Ayah fetch error"); }
         }
 
-        // Load Feed on Start
-        loadFeed();
+        // ===========================================
+        // LIVE UPDATE SIMULATOR
+        // ===========================================
+        function startLiveUpdates() {
+            // Trigger update every 45-60 seconds
+            setInterval(() => {
+                triggerManualUpdate();
+            }, 45000); 
+        }
+
+        function triggerManualUpdate() {
+            // Pick random type
+            const types = ['hadith', 'dua', 'name', 'info'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            let content;
+
+            if(type === 'name') content = getRandom(db.names);
+            else content = getRandom(db[type + 's'] || db[type]); // Handle plurals
+
+            addCardToFeed(type, content, true);
+            playNotification();
+        }
+
+        function playNotification() {
+            // 1. Play Sound
+            const audio = document.getElementById('notif-sound');
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio blocked"));
+
+            // 2. Show System Notification
+            if (Notification.permission === "granted") {
+                new Notification("زانیاری نوێ گەیشت!", {
+                    body: "بابەتێکی نوێی ئیسلامی زیادکرا، کرتە بکە بۆ بینین.",
+                    icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png"
+                });
+            }
+
+            // 3. Visual Badge (Optional)
+            // document.getElementById('history-badge').style.display = 'block';
+        }
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // Initialize
+        loadInitialFeed();
 
 
         // ===========================================
-        // History Logic
+        // History Logic (Standard)
         // ===========================================
         function renderHistory() {
             const container = document.getElementById('history-list-container');
             const history = JSON.parse(localStorage.getItem('quran_history') || '[]');
             container.innerHTML = history.length ? '' : '<div style="text-align:center; color:#999; padding:20px;">هیچ مێژوویەک نییە</div>';
-            
             history.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'history-item';
@@ -290,10 +432,7 @@
                 container.appendChild(div);
             });
         }
-
-        function clearHistory() {
-            if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); }
-        }
+        function clearHistory() { if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); } }
 
         // ===========================================
         // User Tracking
@@ -306,28 +445,20 @@
         const myId = 'u_' + Math.random().toString(36).substr(2, 5);
         const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
         let myStatus = 'online';
-
         const bc = new BroadcastChannel('quran_app_live_tracking');
         let activeUsers = new Map();
 
-        function broadcastPresence() {
-            bc.postMessage({ type: 'presence', id: myId, device: deviceType, status: myStatus, timestamp: Date.now() });
-        }
+        function broadcastPresence() { bc.postMessage({ type: 'presence', id: myId, device: deviceType, status: myStatus, timestamp: Date.now() }); }
         bc.onmessage = (event) => { if (event.data.type === 'presence') { activeUsers.set(event.data.id, event.data); updateStatsUI(); } };
         setInterval(broadcastPresence, 2000);
         broadcastPresence();
-        
         setInterval(() => {
             const now = Date.now();
             let changed = false;
             activeUsers.forEach((user, id) => { if (now - user.timestamp > 5000) { activeUsers.delete(id); changed = true; } });
             if(changed) updateStatsUI();
         }, 3000);
-
-        document.addEventListener("visibilitychange", () => {
-            myStatus = document.visibilityState === 'visible' ? 'online' : 'idle';
-            broadcastPresence();
-        });
+        document.addEventListener("visibilitychange", () => { myStatus = document.visibilityState === 'visible' ? 'online' : 'idle'; broadcastPresence(); });
 
         function updateStatsUI() {
             const list = document.getElementById('users-list-container');
@@ -346,6 +477,10 @@
             return div;
         }
 
+        // Helper
+        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); }
+        function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
+        function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
     </script>
 
 </body>
