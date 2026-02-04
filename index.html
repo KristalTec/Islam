@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سەرەکی - Home Pro</title>
+    <title>سەرەکی - Islam</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -122,7 +122,7 @@
                     <span class="notif-badge" id="history-badge"></span>
                 </div>
             </div>
-            <div style="font-weight:bold; font-size:18px;">Ultimate Pro</div>
+            <div style="font-weight:bold; font-size:18px;">Islam</div>
             <div class="header-btn" onclick="triggerManualUpdate()" title="نوێکردنەوە">🔃</div>
         </div>
 
@@ -236,7 +236,7 @@
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
 
         // ===========================================
-        // DATA DATABASE (Massive Content)
+        // DATA DATABASE
         // ===========================================
         const db = {
             hadiths: [
@@ -288,42 +288,69 @@
         };
 
         // ===========================================
-        // DYNAMIC FEED & NOTIFICATION SYSTEM
+        // DYNAMIC FEED, NOTIFICATIONS & PERSISTENCE
         // ===========================================
         let notifEnabled = false;
+
+        // Load persisted feed data from localStorage
+        let feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
 
         function enableNotifications() {
             notifEnabled = true;
             document.getElementById('notif-perm-btn').style.display = 'none';
-            // Request system permission
             if ("Notification" in window) Notification.requestPermission();
-            // Start the loop
             startLiveUpdates();
             alert("✅ نۆتیفیکەیشن چالاک کرا. چاوەڕێی زانیاری نوێ بە...");
         }
 
-        // Show permission button if not enabled
         setTimeout(() => {
             if(!notifEnabled) document.getElementById('notif-perm-btn').style.display = 'block';
         }, 2000);
 
-        async function loadInitialFeed() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = ''; // Clear loader
-            
-            // Add 1 random item from each category initially
-            addCardToFeed('hadith', getRandom(db.hadiths));
-            await addAyahCard();
-            addCardToFeed('info', getRandom(db.info));
+        // Save feed to localStorage
+        function saveFeed() {
+            localStorage.setItem('islam_feed_data', JSON.stringify(feedData));
         }
 
-        function addCardToFeed(type, content, isNew = false) {
+        async function loadInitialFeed() {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = ''; 
+
+            if(feedData.length > 0) {
+                // If data exists, render it
+                feedData.forEach(item => {
+                    renderCard(item.type, item.content, item.isNew);
+                });
+            } else {
+                // If empty, generate initial data
+                addCardToFeed('hadith', getRandom(db.hadiths), false, true);
+                await addAyahCard();
+                addCardToFeed('info', getRandom(db.info), false, true);
+            }
+        }
+
+        function addCardToFeed(type, content, isNew = false, save = true) {
+            // Render visible card
+            renderCard(type, content, isNew);
+
+            // Save to storage
+            if (save) {
+                // Add to beginning of array
+                feedData.unshift({ type, content, isNew });
+                // Limit to 50 items
+                if(feedData.length > 50) feedData.pop();
+                saveFeed();
+            }
+        }
+
+        function renderCard(type, content, isNew) {
             const container = document.getElementById('feed-container');
             const div = document.createElement('div');
             div.className = 'feed-card';
             
             let tagHTML = '';
             let sourceHTML = '';
+            let displayContent = content;
 
             if (type === 'hadith') {
                 tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>';
@@ -333,28 +360,42 @@
                 sourceHTML = 'دوعا و پاڕانەوە';
             } else if (type === 'name') {
                 tagHTML = '<span class="feed-tag tag-name">ناوی خوای گەورە</span>';
-                content = `<b>${content.name}</b>: ${content.meaning}`;
+                displayContent = `<b>${content.name}</b>: ${content.meaning}`;
                 sourceHTML = 'ئەسمائی حوسنا';
             } else if (type === 'info') {
                 tagHTML = '<span class="feed-tag tag-info">زانیاری</span>';
                 sourceHTML = 'رۆشنبیری ئیسلامی';
             } else if (type === 'ayah') {
                 tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>';
-                sourceHTML = content.source; // Passed in object
-                content = `"${content.text}"`;
+                sourceHTML = content.source; 
+                displayContent = `"${content.text}"`;
             }
 
             div.innerHTML = `
                 ${tagHTML}
-                <div class="feed-content">${content}</div>
+                <div class="feed-content">${displayContent}</div>
                 <span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>
             `;
 
-            // Insert at top
-            container.insertBefore(div, container.firstChild);
+            // Insert at top (but if loading history, order matters)
+            // If rendering history loop, append. If new live item, prepend.
+            // Simplified: Just always prepend to DOM? No, history is ordered NEW -> OLD.
+            // So if we iterate array, we append child. 
+            // BUT wait, array is saved [Newest, ..., Oldest]. 
+            // So iterating array and appending child puts Newest at top. Correct.
+            // If adding LIVE item, prepend.
             
-            // Limit feed size to 50 items
-            if(container.children.length > 50) container.removeChild(container.lastChild);
+            // To fix order issue:
+            // Since loadInitialFeed iterates the array (Newest first), we should append to container.
+            // But addCardToFeed is called by live updates too.
+            // Let's just prepend always for new live ones. 
+            // For initial load, we must clear container first then loop.
+            
+            if (container.children.length > 0 && isNew) {
+                container.insertBefore(div, container.firstChild);
+            } else {
+                container.appendChild(div);
+            }
         }
 
         async function addAyahCard() {
@@ -365,7 +406,7 @@
                 addCardToFeed('ayah', {
                     text: d.data[0].text,
                     source: `سورة ${d.data[0].surah.name}`
-                });
+                }, false, true);
             } catch(e) { console.log("Ayah fetch error"); }
         }
 
@@ -373,48 +414,40 @@
         // LIVE UPDATE SIMULATOR
         // ===========================================
         function startLiveUpdates() {
-            // Trigger update every 45-60 seconds
             setInterval(() => {
                 triggerManualUpdate();
             }, 45000); 
         }
 
         function triggerManualUpdate() {
-            // Pick random type
             const types = ['hadith', 'dua', 'name', 'info'];
             const type = types[Math.floor(Math.random() * types.length)];
             let content;
 
             if(type === 'name') content = getRandom(db.names);
-            else content = getRandom(db[type + 's'] || db[type]); // Handle plurals
+            else content = getRandom(db[type + 's'] || db[type]); 
 
-            addCardToFeed(type, content, true);
+            addCardToFeed(type, content, true, true); // save=true
             playNotification();
         }
 
         function playNotification() {
-            // 1. Play Sound
             const audio = document.getElementById('notif-sound');
             audio.currentTime = 0;
             audio.play().catch(e => console.log("Audio blocked"));
 
-            // 2. Show System Notification
             if (Notification.permission === "granted") {
                 new Notification("زانیاری نوێ گەیشت!", {
                     body: "بابەتێکی نوێی ئیسلامی زیادکرا، کرتە بکە بۆ بینین.",
                     icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png"
                 });
             }
-
-            // 3. Visual Badge (Optional)
-            // document.getElementById('history-badge').style.display = 'block';
         }
 
         function getRandom(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // Initialize
         loadInitialFeed();
 
 
