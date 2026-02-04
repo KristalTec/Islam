@@ -16,10 +16,13 @@
         .app-container { width: 100%; max-width: 600px; background-color: var(--bg-color); height: 100%; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
         /* Header */
-        .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); text-align: center; font-size: 20px; font-weight: bold; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .header-title { font-size: 20px; font-weight: bold; }
+        .settings-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; }
+        .settings-btn:hover { transform: rotate(90deg); }
 
         /* Main Content Area */
-        .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; /* Space for bottom nav */ }
+        .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
 
         /* Welcome Card */
         .hero-card { background: linear-gradient(135deg, var(--border-color), #f1c40f); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
@@ -33,17 +36,24 @@
         .card-icon { font-size: 32px; }
         .card-title { font-weight: bold; font-size: 18px; }
 
-        /* Contact Modal */
+        /* Modals (Contact & Settings) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; }
+        .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; }
+        
         .social-row { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .social-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
         .social-btn img { width: 25px; height: 25px; }
-        .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); }
+        
+        /* Stats Styles */
+        .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .user-list { max-height: 150px; overflow-y: auto; margin-top: 10px; text-align: right; }
+        .user-item { padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
+        .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
+        .dot.idle { background: #f39c12; }
 
         /* Bottom Navigation Bar */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
-        
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 25%; }
         .nav-item.active { color: var(--border-color); font-weight: bold; }
         .nav-icon { font-size: 24px; }
@@ -58,8 +68,9 @@
     <div class="app-container">
         
         <div class="header">
-            Ultimate Pro
-        </div>
+            <div class="settings-btn" onclick="openSettings()">⚙️</div>
+            <div class="header-title">Ultimate Pro</div>
+            <div style="width: 30px;"></div> </div>
 
         <div class="content">
             <div class="hero-card">
@@ -118,7 +129,28 @@
 
     </div>
 
-    <div id="contactModal" class="modal" onclick="closeContact(event)">
+    <div id="settingsModal" class="modal" onclick="closeModal(event, 'settingsModal')">
+        <div class="modal-content">
+            <h3>⚙️ زانیاری وێبسایت</h3>
+            
+            <div class="stat-row">
+                <span>کۆی سەردانەکان:</span>
+                <b id="visit-count">0</b>
+            </div>
+            <div class="stat-row">
+                <span>بەکارهێنەرانی چالاک:</span>
+                <b id="active-count" style="color:var(--highlight-color);">1</b>
+            </div>
+
+            <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی ئامێرەکان:</div>
+            <div class="user-list" id="users-list-container">
+                </div>
+
+            <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
+        </div>
+    </div>
+
+    <div id="contactModal" class="modal" onclick="closeModal(event, 'contactModal')">
         <div class="modal-content">
             <h3>پەیوەندیمان پێوە بکە</h3>
             <p style="color:#666; font-size:14px;">بۆ هەر پێشنیارێک یان کێشەیەک</p>
@@ -139,16 +171,109 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-IQ', options);
 
-        // Modal Logic
-        function openContact() {
-            document.getElementById('contactModal').style.display = 'flex';
+        // UI Functions
+        function openContact() { document.getElementById('contactModal').style.display = 'flex'; }
+        function openSettings() { 
+            document.getElementById('settingsModal').style.display = 'flex'; 
+            updateStatsUI(); // Update UI when opening
+        }
+        function closeModal(e, id) {
+            if (e.target.id === id) { document.getElementById(id).style.display = 'none'; }
         }
 
-        function closeContact(e) {
-            if (e.target.id === 'contactModal') {
-                document.getElementById('contactModal').style.display = 'none';
-            }
+        // ===========================================
+        // Live User Tracking System (Simulation)
+        // ===========================================
+        
+        // 1. Visit Counter
+        let visits = localStorage.getItem('total_site_visits') || 0;
+        visits = parseInt(visits) + 1;
+        localStorage.setItem('total_site_visits', visits);
+        document.getElementById('visit-count').innerText = visits;
+
+        // 2. Identity
+        const myId = 'u_' + Math.random().toString(36).substr(2, 5);
+        const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
+        let myStatus = 'online';
+
+        // 3. Tracking Logic
+        const bc = new BroadcastChannel('quran_app_live_tracking');
+        let activeUsers = new Map();
+
+        function broadcastPresence() {
+            bc.postMessage({
+                type: 'presence',
+                id: myId,
+                device: deviceType,
+                status: myStatus,
+                timestamp: Date.now()
+            });
         }
+
+        bc.onmessage = (event) => {
+            if (event.data.type === 'presence') {
+                activeUsers.set(event.data.id, event.data);
+                updateStatsUI();
+            }
+        };
+
+        // Heartbeat
+        setInterval(broadcastPresence, 2000);
+        broadcastPresence();
+
+        // Check for offline users
+        setInterval(() => {
+            const now = Date.now();
+            let changed = false;
+            activeUsers.forEach((user, id) => {
+                if (now - user.timestamp > 5000) {
+                    activeUsers.delete(id);
+                    changed = true;
+                }
+            });
+            if(changed) updateStatsUI();
+        }, 3000);
+
+        // Status Check
+        document.addEventListener("visibilitychange", () => {
+            myStatus = document.visibilityState === 'visible' ? 'online' : 'idle';
+            broadcastPresence();
+        });
+
+        function updateStatsUI() {
+            const listContainer = document.getElementById('users-list-container');
+            const countLabel = document.getElementById('active-count');
+            
+            listContainer.innerHTML = '';
+            
+            // Add Me
+            listContainer.appendChild(createUserElement(myId, deviceType, myStatus, true));
+
+            // Add Others
+            let count = 1;
+            activeUsers.forEach(user => {
+                count++;
+                listContainer.appendChild(createUserElement(user.id, user.device, user.status, false));
+            });
+
+            countLabel.innerText = count;
+        }
+
+        function createUserElement(id, device, status, isMe) {
+            const div = document.createElement('div');
+            div.className = 'user-item';
+            const statusClass = status === 'online' ? 'online' : 'idle';
+            const statusText = status === 'online' ? 'چالاک' : 'ناچالاک';
+            const label = isMe ? `${device} (تۆ)` : device;
+            
+            div.innerHTML = `
+                <span class="dot ${statusClass}"></span>
+                <span style="flex-grow:1; margin-right:10px;">${label}</span>
+                <span style="color:#999;">${statusText}</span>
+            `;
+            return div;
+        }
+
     </script>
 
 </body>
