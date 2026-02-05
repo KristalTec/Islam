@@ -43,47 +43,23 @@
         /* LIVE FEED SECTION */
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
-        .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1s infinite; }
+        .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.3s; position: relative; overflow: hidden; animation: slideIn 0.4s ease; }
+        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .feed-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
         .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
-        .tag-ayah { background: var(--highlight-color); } /* Green */
-        .tag-hadith { background: #3498db; } /* Blue */
-        .tag-dua { background: #e67e22; } /* Orange */
-        .tag-info { background: #9b59b6; } /* Purple */
-        .tag-name { background: #e74c3c; } /* Red */
+        .tag-ayah { background: var(--highlight-color); } 
+        .tag-hadith { background: #3498db; } 
+        .tag-dua { background: #e67e22; } 
+        .tag-info { background: #9b59b6; } 
+        .tag-name { background: #e74c3c; } 
 
         .feed-content { font-size: 17px; line-height: 1.8; color: #444; margin-top: 15px; text-align: justify; }
         .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
-
-        /* Enable Notif Button (Inside Settings) */
-        .notif-permission { 
-            background: #ffeaa7; 
-            padding: 10px; 
-            font-size: 13px; 
-            color: #d35400; 
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none; 
-            cursor: pointer; 
-            text-align: center; 
-            font-weight: bold; 
-            animation: pulse 2s infinite; 
-            border: 1px solid #fdcb6e;
-        }
-        @keyframes pulse { 0% { background: #ffeaa7; } 50% { background: #fff3cd; } 100% { background: #ffeaa7; } }
-
-        /* Social Media */
-        .settings-section-title { margin-top: 20px; font-weight: bold; color: var(--border-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
-        .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
-        .social-btn img { width: 22px; height: 22px; }
-        .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
 
         /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -107,6 +83,31 @@
         .h-time { font-size: 11px; color: #888; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
 
+        /* Notification Toggle Button */
+        .notif-toggle-btn { 
+            padding: 12px; 
+            font-size: 14px; 
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer; 
+            text-align: center; 
+            font-weight: bold; 
+            width: 100%;
+            transition: 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .notif-enabled { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .notif-disabled { background: #f8d7da; color: #721c24; border-color: #f5c6cb; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(0.98); } 100% { transform: scale(1); } }
+
+        /* Social Media */
+        .settings-section-title { margin-top: 20px; font-weight: bold; color: var(--border-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
+        .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
+        .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
+        .social-btn img { width: 22px; height: 22px; }
+        .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
+
         /* Bottom Navigation Bar */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
@@ -114,15 +115,13 @@
         .nav-icon { font-size: 24px; }
         .nav-item:active { transform: scale(0.9); }
 
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="app-container">
         
-        <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+        <audio id="notif-sound" src="https://www.islamcan.com/audio/adhan/bismillah.mp3" preload="auto"></audio>
 
         <div class="header">
             <div class="icon-group">
@@ -200,8 +199,8 @@
         <div class="modal-content">
             <h3>⚙️ ڕێکخستنەکان</h3>
             
-            <div class="notif-permission" id="notif-perm-btn" onclick="enableNotifications()">
-                🔔 تکایە لێرە بدە بۆ چالاککردنی دەنگ و نۆتیفیکەیشن (یەکجار)
+            <div id="notif-toggle-btn" class="notif-toggle-btn notif-disabled" onclick="toggleNotifications()">
+                🔔 کرتە بکە بۆ چالاککردنی نۆتیفیکەیشن
             </div>
 
             <div class="stat-row">
@@ -240,24 +239,14 @@
     </div>
 
     <script>
-        // Set Date
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-IQ', options);
-
-        // UI Functions
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); }
-        function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
-        function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
-
         // ===========================================
-        // DATA DATABASE
+        // 1. DATA DEFINITION (MUST BE FIRST)
         // ===========================================
         const db = {
             hadiths: [
                 "پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.",
                 "پێکەنین بە ڕووی براکەتدا سەدەقەیە.",
                 "پاکوخاوێنی بەشێکە لە ئیمان.",
-                "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت.",
                 "دوعا چەکی باوەڕدارە.",
                 "خوا جوانە و جوانی خۆشدەوێت.",
                 "وتنی قسەی باش سەدەقەیە.",
@@ -302,44 +291,84 @@
         };
 
         // ===========================================
-        // NOTIFICATIONS & PERSISTENCE
+        // 2. MAIN LOGIC & INIT
         // ===========================================
-        let hasPermission = false;
-        if("Notification" in window && Notification.permission === "granted") {
-            hasPermission = true;
-        }
+        // Set Date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-IQ', options);
 
+        // UI Functions
+        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); updateNotifUI(); }
+        function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
+        function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
+
+        // ===========================================
+        // FIXED: NOTIFICATION SYSTEM
+        // ===========================================
+        let isNotifActive = JSON.parse(localStorage.getItem('isNotifActive') || 'false');
         let feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
 
-        function enableNotifications() {
-            // Unlock audio
-            const audio = document.getElementById('notif-sound');
-            audio.play().then(() => {
-                audio.pause();
-                audio.currentTime = 0;
-            }).catch(e => console.log("Audio unlock failed", e));
+        function updateNotifUI() {
+            const btn = document.getElementById('notif-toggle-btn');
+            
+            // Check browser permission state
+            if (!("Notification" in window)) {
+                btn.innerHTML = "❌ ئامێرەکەت پشتگیری ناکات";
+                btn.className = "notif-toggle-btn notif-disabled";
+                return;
+            }
 
-            // Request Permission
-            if ("Notification" in window) {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        hasPermission = true;
-                        document.getElementById('notif-perm-btn').style.display = 'none';
-                        startLiveUpdates();
-                        alert("✅ سوپاس! ئاگادارکردنەوەکان چالاک کران.");
-                    }
-                });
+            if (isNotifActive && Notification.permission === "granted") {
+                btn.innerHTML = "✅ نۆتیفیکەیشن چالاکە (کرتە بکە بۆ وەستان)";
+                btn.className = "notif-toggle-btn notif-enabled";
+            } else {
+                btn.innerHTML = "🔔 کرتە بکە بۆ چالاککردنی نۆتیفیکەیشن";
+                btn.className = "notif-toggle-btn notif-disabled";
             }
         }
 
-        // Show button in Settings if not granted
-        setTimeout(() => {
-            if(!hasPermission) {
-                document.getElementById('notif-perm-btn').style.display = 'block';
+        function toggleNotifications() {
+            if (isNotifActive) {
+                // User wants to Disable
+                isNotifActive = false;
+                localStorage.setItem('isNotifActive', 'false');
+                updateNotifUI();
+                alert("❌ نۆتیفیکەیشن ڕاگیرا");
             } else {
-                startLiveUpdates();
+                // User wants to Enable
+                // 1. Try to unlock audio immediately (iOS requirement)
+                const audio = document.getElementById('notif-sound');
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }).catch(e => console.log("Audio unlock attempted"));
+
+                // 2. Check Permission
+                if (!("Notification" in window)) {
+                    alert("ئەم وێبگەڕە پشتگیری نۆتیفیکەیشن ناکات.");
+                } else if (Notification.permission === "granted") {
+                    activateNotifications();
+                } else if (Notification.permission === "denied") {
+                    alert("⚠️ تۆ پێشتر نۆتیفیکەیشنت بلۆک کردووە. تکایە بچۆ ڕێکخستنەکانی مۆبایلەکەت (Settings > Site Settings) و ڕێگە بدە.");
+                } else {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            activateNotifications();
+                        } else {
+                            alert("❌ ڕێگەپێدان ڕەتکرایەوە.");
+                        }
+                    });
+                }
             }
-        }, 1000);
+        }
+
+        function activateNotifications() {
+            isNotifActive = true;
+            localStorage.setItem('isNotifActive', 'true');
+            updateNotifUI();
+            startLiveUpdates();
+            alert("✅ نۆتیفیکەیشن بە سەرکەوتوویی چالاک کرا! دەنگی (بسم الله) دەبیستیت.");
+        }
 
         function saveFeed() {
             localStorage.setItem('islam_feed_data', JSON.stringify(feedData));
@@ -354,13 +383,10 @@
                     renderCard(item.type, item.content, item.isNew);
                 });
             } else {
-                // Load 3 items instantly from local DB (FAST START)
                 addCardToFeed('hadith', getRandom(db.hadiths), false, true);
                 addCardToFeed('info', getRandom(db.info), false, true);
+                // Fallback for Ayah inside the DB to prevent empty state
                 addCardToFeed('dua', getRandom(db.duas), false, true);
-                
-                // Then fetch Ayah in background
-                addAyahCard();
             }
         }
 
@@ -397,7 +423,7 @@
                 sourceHTML = 'رۆشنبیری ئیسلامی';
             } else if (type === 'ayah') {
                 tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>';
-                sourceHTML = content.source; 
+                sourceHTML = content.source || 'قورئانی پیرۆز'; 
                 displayContent = `"${content.text}"`;
             }
 
@@ -414,25 +440,30 @@
             }
         }
 
+        // Safe fetch with fallback
         async function addAyahCard() {
             try {
                 const randomId = Math.floor(Math.random() * 6236) + 1;
                 const r = await fetch(`https://api.alquran.cloud/v1/ayah/${randomId}/editions/quran-uthmani`);
+                if(!r.ok) throw new Error("API Error");
                 const d = await r.json();
                 addCardToFeed('ayah', {
                     text: d.data[0].text,
                     source: `سورة ${d.data[0].surah.name}`
-                }, false, true);
-            } catch(e) { console.log("Ayah fetch error, using local fallback"); }
+                }, false, true); // Don't trigger notif on initial load, just add
+            } catch(e) { 
+                console.log("Using fallback ayah");
+                // Optional: Add local ayah here if API fails
+            }
         }
 
         // ===========================================
-        // LIVE UPDATE SYSTEM (VERY FAST: 12 Seconds)
+        // LIVE UPDATE SYSTEM (VERY FAST)
         // ===========================================
         function startLiveUpdates() {
             setInterval(() => {
                 triggerManualUpdate();
-            }, 12000); // 12 Seconds Update
+            }, 12000); 
         }
 
         function triggerManualUpdate() {
@@ -445,21 +476,23 @@
 
             addCardToFeed(type, content, true, true);
             
-            let notifTitle = "زانیاری نوێ";
-            let notifBody = "";
+            if (isNotifActive) {
+                let notifTitle = "زانیاری نوێ";
+                let notifBody = "";
 
-            if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = content.substring(0, 100) + "..."; }
-            else if (type === 'dua') { notifTitle = "دوعا"; notifBody = content.substring(0, 100); }
-            else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
-            else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
+                if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = content.substring(0, 50) + "..."; }
+                else if (type === 'dua') { notifTitle = "دوعا"; notifBody = content.substring(0, 50); }
+                else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}`; }
+                else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content.substring(0, 50); }
 
-            playNotification(notifTitle, notifBody);
+                playNotification(notifTitle, notifBody);
+            }
         }
 
         function playNotification(title, body) {
             const audio = document.getElementById('notif-sound');
             audio.currentTime = 0;
-            audio.play().catch(e => console.log("Audio still locked, waiting for user click."));
+            audio.play().catch(e => console.log("Audio still locked"));
 
             if("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
 
@@ -472,12 +505,7 @@
             }
         }
 
-        function getRandom(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        loadInitialFeed();
-
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
         // ===========================================
         // History Logic (Standard)
@@ -539,9 +567,15 @@
         }
 
         // Helper
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); }
+        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); updateNotifUI(); }
         function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
+
+        // Start
+        loadInitialFeed();
+        updateNotifUI();
+        if(isNotifActive) startLiveUpdates();
+        addAyahCard(); // Fetch random ayah on load
     </script>
 
 </body>
