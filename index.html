@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سەرەکی - Islam</title>
+    <title>سەرەکی - Islam Online</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -21,26 +21,21 @@
         .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; position: relative; }
         .header-btn:hover { transform: scale(1.1); color: #b6962f; }
         
-        /* Notification Dot */
         .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: red; border-radius: 50%; border: 1px solid white; display: none; }
 
-        /* Main Content Area */
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; scroll-behavior: smooth; }
 
-        /* Welcome Card */
         .hero-card { background: linear-gradient(135deg, var(--border-color), #f1c40f); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); position: relative; overflow: hidden; }
         .hero-title { font-size: 24px; margin-bottom: 10px; position: relative; z-index: 2; }
         .hero-date { font-size: 16px; opacity: 0.9; position: relative; z-index: 2; }
         .hero-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); }
 
-        /* Grid Menu */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .card { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #eee; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-color); }
         .card:active { transform: scale(0.95); background-color: #fffbf2; }
         .card-icon { font-size: 32px; }
         .card-title { font-weight: bold; font-size: 18px; }
 
-        /* LIVE FEED SECTION */
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
         .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
@@ -48,8 +43,6 @@
 
         .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .feed-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
         .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
         .tag-ayah { background: var(--highlight-color); } 
@@ -61,18 +54,16 @@
         .feed-content { font-size: 17px; line-height: 1.8; color: #444; margin-top: 15px; text-align: justify; }
         .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
 
-        /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Modals */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
         
-        /* Stats & History */
         .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .user-list { max-height: 120px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; }
-        .user-item { padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; }
+        .user-list { max-height: 150px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; }
+        .user-item { padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; justify-content: space-between; }
+        .user-ip { font-family: monospace; color: #555; direction: ltr; margin-right: 5px; font-size: 11px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
         
@@ -83,31 +74,16 @@
         .h-time { font-size: 11px; color: #888; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
 
-        /* Notification Toggle Button */
-        .notif-toggle-btn { 
-            padding: 10px; 
-            font-size: 14px; 
-            border-radius: 8px;
-            margin-bottom: 15px;
-            cursor: pointer; 
-            text-align: center; 
-            font-weight: bold; 
-            width: 100%;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
+        .notif-toggle-btn { padding: 10px; font-size: 14px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; text-align: center; font-weight: bold; width: 100%; transition: 0.3s; border: 1px solid transparent; }
         .notif-enabled { background: #e8f8f5; color: #27ae60; border-color: #27ae60; }
         .notif-disabled { background: #fdedec; color: #c0392b; border-color: #c0392b; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
-        /* Social Media */
-        .settings-section-title { margin-top: 20px; font-weight: bold; color: var(--border-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
         .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
         .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
         .social-btn img { width: 22px; height: 22px; }
         .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
 
-        /* Bottom Navigation Bar */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
         .nav-item.active { color: var(--border-color); font-weight: bold; }
@@ -132,7 +108,7 @@
                     <span class="notif-badge" id="history-badge"></span>
                 </div>
             </div>
-            <div style="font-weight:bold; font-size:18px;">Islam</div>
+            <div style="font-weight:bold; font-size:18px;">Islam Online</div>
             <div class="header-btn" onclick="triggerManualUpdate()" title="نوێکردنەوە">🔃</div>
         </div>
 
@@ -205,23 +181,25 @@
             </div>
 
             <div class="stat-row">
-                <span>کۆی سەردانەکان:</span>
+                <span>سەردانی تۆ:</span>
                 <b id="visit-count">0</b>
             </div>
             <div class="stat-row">
-                <span>بەکارهێنەرانی چالاک:</span>
-                <b id="active-count" style="color:var(--highlight-color);">1</b>
+                <span>ئۆنڵاین لە جیهاندا:</span>
+                <b id="active-count" style="color:var(--highlight-color);">...</b>
             </div>
 
-            <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی ئامێرەکان:</div>
-            <div class="user-list" id="users-list-container"></div>
+            <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی بەکارهێنەرە ئۆنڵاینەکان:</div>
+            <div class="user-list" id="users-list-container">
+                <div style="text-align:center; padding:10px;">جاری دەکرێت...</div>
+            </div>
 
-            <div class="settings-section-title">📞 پەیوەندی</div>
-            <div class="social-row">
-                <a href="https://facebook.com/Report.Bka.Dazanm.Ter.na.buuy" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
-                <a href="https://www.instagram.com/hamaofficial0?igsh=MWc1bnFjbGZiMHE5MA%3D%3D&utm_source=qr" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"></a>
-                <a href="https://snapchat.com/t/b0OhYdsb" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg"></a>
-                <a href="https://www.tiktok.com/@hamaofficial_0?_r=1&_t=ZS-93doDIzN8Bp" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg"></a>
+            <div style="margin-top:20px; font-weight:bold; color:var(--border-color); border-bottom: 1px solid #eee;">📞 پەیوەندی</div>
+            <div class="social-row" style="margin-top:10px;">
+                <a href="https://facebook.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
+                <a href="https://instagram.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"></a>
+                <a href="https://snapchat.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg"></a>
+                <a href="https://tiktok.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg"></a>
             </div>
 
             <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
@@ -245,7 +223,7 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-IQ', options);
 
         // UI Functions
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); updateNotifUI(); }
+        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); }
         function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
 
@@ -268,20 +246,13 @@
 
         function toggleNotifications() {
             if (isNotifActive) {
-                // Disable logic
                 isNotifActive = false;
                 localStorage.setItem('isNotifActive', 'false');
                 alert("❌ نۆتیفیکەیشن ڕاگیرا");
                 updateNotifUI();
             } else {
-                // Enable logic
-                // Unlock audio
                 const audio = document.getElementById('notif-sound');
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }).catch(e => console.log("Audio unlock failed", e));
-
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e => console.log("Audio unlock failed", e));
                 if ("Notification" in window) {
                     Notification.requestPermission().then(permission => {
                         if (permission === "granted") {
@@ -296,18 +267,13 @@
             }
         }
 
-        function saveFeed() {
-            localStorage.setItem('islam_feed_data', JSON.stringify(feedData));
-        }
-
+        function saveFeed() { localStorage.setItem('islam_feed_data', JSON.stringify(feedData)); }
+        
         async function loadInitialFeed() {
             const container = document.getElementById('feed-container');
             container.innerHTML = ''; 
-
             if(feedData.length > 0) {
-                feedData.forEach(item => {
-                    renderCard(item.type, item.content, item.isNew);
-                });
+                feedData.forEach(item => { renderCard(item.type, item.content, item.isNew); });
             } else {
                 addCardToFeed('hadith', getRandom(db.hadiths), false, true);
                 await addAyahCard();
@@ -328,41 +294,14 @@
             const container = document.getElementById('feed-container');
             const div = document.createElement('div');
             div.className = 'feed-card';
-            
-            let tagHTML = '';
-            let sourceHTML = '';
-            let displayContent = content;
-
-            if (type === 'hadith') {
-                tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>';
-                sourceHTML = 'پێغەمبەر (د.خ) دەفەرموێت';
-            } else if (type === 'dua') {
-                tagHTML = '<span class="feed-tag tag-dua">دوعای ڕۆژ</span>';
-                sourceHTML = 'دوعا و پاڕانەوە';
-            } else if (type === 'name') {
-                tagHTML = '<span class="feed-tag tag-name">ناوی خوای گەورە</span>';
-                displayContent = `<b>${content.name}</b>: ${content.meaning}`;
-                sourceHTML = 'ئەسمائی حوسنا';
-            } else if (type === 'info') {
-                tagHTML = '<span class="feed-tag tag-info">زانیاری</span>';
-                sourceHTML = 'رۆشنبیری ئیسلامی';
-            } else if (type === 'ayah') {
-                tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>';
-                sourceHTML = content.source; 
-                displayContent = `"${content.text}"`;
-            }
-
-            div.innerHTML = `
-                ${tagHTML}
-                <div class="feed-content">${displayContent}</div>
-                <span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>
-            `;
-
-            if (container.children.length > 0 && isNew) {
-                container.insertBefore(div, container.firstChild);
-            } else {
-                container.appendChild(div);
-            }
+            let tagHTML = '', sourceHTML = '', displayContent = content;
+            if (type === 'hadith') { tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>'; sourceHTML = 'پێغەمبەر (د.خ) دەفەرموێت'; } 
+            else if (type === 'dua') { tagHTML = '<span class="feed-tag tag-dua">دوعای ڕۆژ</span>'; sourceHTML = 'دوعا و پاڕانەوە'; } 
+            else if (type === 'name') { tagHTML = '<span class="feed-tag tag-name">ناوی خوای گەورە</span>'; displayContent = `<b>${content.name}</b>: ${content.meaning}`; sourceHTML = 'ئەسمائی حوسنا'; } 
+            else if (type === 'info') { tagHTML = '<span class="feed-tag tag-info">زانیاری</span>'; sourceHTML = 'رۆشنبیری ئیسلامی'; } 
+            else if (type === 'ayah') { tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>'; sourceHTML = content.source; displayContent = `"${content.text}"`; }
+            div.innerHTML = `${tagHTML}<div class="feed-content">${displayContent}</div><span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>`;
+            if (container.children.length > 0 && isNew) { container.insertBefore(div, container.firstChild); } else { container.appendChild(div); }
         }
 
         async function addAyahCard() {
@@ -370,118 +309,43 @@
                 const randomId = Math.floor(Math.random() * 6236) + 1;
                 const r = await fetch(`https://api.alquran.cloud/v1/ayah/${randomId}/editions/quran-uthmani`);
                 const d = await r.json();
-                addCardToFeed('ayah', {
-                    text: d.data[0].text,
-                    source: `سورة ${d.data[0].surah.name}`
-                }, false, true);
+                addCardToFeed('ayah', { text: d.data[0].text, source: `سورة ${d.data[0].surah.name}` }, false, true);
             } catch(e) { console.log("Ayah fetch error"); }
         }
 
-        // ===========================================
-        // LIVE UPDATE SYSTEM (VERY FAST)
-        // ===========================================
-        function startLiveUpdates() {
-            setInterval(() => {
-                triggerManualUpdate();
-            }, 12000); 
-        }
-
+        function startLiveUpdates() { setInterval(() => { triggerManualUpdate(); }, 12000); }
         function triggerManualUpdate() {
             const types = ['hadith', 'dua', 'name', 'info'];
             const type = types[Math.floor(Math.random() * types.length)];
             let content;
-
-            if(type === 'name') content = getRandom(db.names);
-            else content = getRandom(db[type + 's'] || db[type]); 
-
+            if(type === 'name') content = getRandom(db.names); else content = getRandom(db[type + 's'] || db[type]); 
             addCardToFeed(type, content, true, true);
-            
             if (isNotifActive) {
-                let notifTitle = "زانیاری نوێ";
-                let notifBody = "";
-
+                let notifTitle = "زانیاری نوێ", notifBody = "";
                 if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = content.substring(0, 100) + "..."; }
                 else if (type === 'dua') { notifTitle = "دوعا"; notifBody = content.substring(0, 100); }
                 else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
                 else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
-
                 playNotification(notifTitle, notifBody);
             }
         }
 
         function playNotification(title, body) {
             const audio = document.getElementById('notif-sound');
-            audio.currentTime = 0;
-            audio.play().catch(e => console.log("Audio still locked"));
-
+            audio.currentTime = 0; audio.play().catch(e => console.log("Audio still locked"));
             if("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
-
-            if (Notification.permission === "granted") {
-                new Notification(title, {
-                    body: body,
-                    icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png",
-                    requireInteraction: false
-                });
-            }
+            if (Notification.permission === "granted") { new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png", requireInteraction: false }); }
         }
-
         function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-        // ===========================================
-        // DATA DATABASE
-        // ===========================================
+        // Data DB
         const db = {
-            hadiths: [
-                "پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.",
-                "پێکەنین بە ڕووی براکەتدا سەدەقەیە.",
-                "پاکوخاوێنی بەشێکە لە ئیمان.",
-                "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت.",
-                "دوعا چەکی باوەڕدارە.",
-                "خوا جوانە و جوانی خۆشدەوێت.",
-                "وتنی قسەی باش سەدەقەیە.",
-                "بەهێز ئەوە نییە لە زۆرانبازی دەیباتەوە، بەهێز ئەوەیە لەکاتی تووڕەیی خۆی دەگرێت.",
-                "ئارامگرتن ڕووناکییە.",
-                "هەرکەسێک ڕێگایەک بگرێتەبەر بۆ زانست، خوای گەورە ڕێگای بەهەشتی بۆ ئاسان دەکات.",
-                "موسڵمان لە دەست و زمانی موسڵمانان پارێزراوە.",
-                "ئه‌وه‌ی باوه‌ڕی به‌ خوا و ڕۆژی دوایی هه‌یه‌، با میوانه‌كه‌ی به‌ڕێز بگرێت.",
-                "ڕاستگۆیی بەرەو چاکە دەبات و چاکەش بەرەو بەهەشت.",
-                "لەخواترسان سەری هەموو داناییەکە."
-            ],
-            duas: [
-                "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
-                "اللهم إني أسألك الهدى والتقى والعفاف والغنى",
-                "يا مقلب القلوب ثبت قلبي على دينك",
-                "اللهم إنك عفو تحب العفو فاعف عني",
-                "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ",
-                "اللهم إني أعوذ بك من الهم والحزن",
-                "لا إله إلا أنت سبحانك إني كنت من الظالمين"
-            ],
-            names: [
-                { name: "الرحمن", meaning: "بەخشندە بۆ هەموو دروستکراوەکان" },
-                { name: "الرحيم", meaning: "بەبەزەیی بۆ بڕواداران" },
-                { name: "الملك", meaning: "پاشا و خاوەنی هەموو شتێک" },
-                { name: "القدوس", meaning: "پاک و بێگەرد" },
-                { name: "السلام", meaning: "سەرچاوەی ئاشتی و سەلامەتی" },
-                { name: "المؤمن", meaning: "بەخشەری ئیمان و دڵنیایی" },
-                { name: "المهيمن", meaning: "چاودێر و ئاگادار" },
-                { name: "العزيز", meaning: "بەهێز و شكۆدار" },
-                { name: "الجبار", meaning: "زۆردار و بەدەسەڵات" },
-                { name: "المتكبر", meaning: "گەورە و بێ هاوتا" }
-            ],
-            info: [
-                "یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.",
-                "یەکەم کەس کە باوەڕی بە پێغەمبەر (د.خ) هێنا خەدیجەی خێزانی بوو.",
-                "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.",
-                "درێژترین سورەتی قورئان سورەتی بەقەرەیە.",
-                "کورتترین سورەتی قورئان سورەتی کەوسەرە.",
-                "لە مانگی ڕەمەزاندا شەوێک هەیە بەناوی شەوی قەدر کە پاداشتەکەی لە هەزار مانگ باشترە.",
-                "نوێژی جەماعەت ٢٧ پلە پاداشتی زیاترە لە نوێژی تاک."
-            ]
+            hadiths: ["پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.", "پێکەنین بە ڕووی براکەتدا سەدەقەیە.", "پاکوخاوێنی بەشێکە لە ئیمان.", "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت."],
+            duas: ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً", "اللهم إني أسألك الهدى والتقى والعفاف والغنى", "يا مقلب القلوب ثبت قلبي على دينك", "اللهم إنك عفو تحب العفو فاعف عني"],
+            names: [{ name: "الرحمن", meaning: "بەخشندە" }, { name: "الرحيم", meaning: "بەبەزەیی" }, { name: "الملك", meaning: "پاشا" }, { name: "القدوس", meaning: "پاک" }],
+            info: ["یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.", "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.", "درێژترین سورەتی قورئان سورەتی بەقەرەیە."]
         };
 
-        // ===========================================
-        // History Logic
-        // ===========================================
         function renderHistory() {
             const container = document.getElementById('history-list-container');
             const history = JSON.parse(localStorage.getItem('quran_history') || '[]');
@@ -496,20 +360,12 @@
         function clearHistory() { if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); } }
 
         // ===========================================
-        // User Tracking (FIXED FOR UNIQUE DEVICE)
+        // REAL-TIME ONLINE SYSTEM (WebSocket & IP)
         // ===========================================
         
-        // ١. لێرەدا سەرەتا دەگەڕێین بزانین ئایا ئەم موبایلە پێشتر ئایدی هەیە؟
-        // ئەگەر هەبوو ئەوە بەکاری دەهێنینەوە، ئەگەر نەبوو دانەیەکی نوێی بۆ دروست دەکەین
-        // ئەمە وادەکات ئەگەر ڕیفرێش بکەیت یان تاب دابخەیت و بیکەیتەوە، هەر بە هەمان کەس بتناسێت
         let myId = localStorage.getItem('unique_device_id');
-        if (!myId) {
-            myId = 'u_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('unique_device_id', myId);
-        }
+        if (!myId) { myId = 'u_' + Math.random().toString(36).substr(2, 6); localStorage.setItem('unique_device_id', myId); }
 
-        // ئەم بەشەش بۆ ئەوەیە کە ژمارەی سەردان تەنها یەکجار زیاد بێت بۆ هەر جارێک کە براوسەرەکە دەکرێتەوە
-        // نەک هەموو ڕیفرێشێک
         if (!sessionStorage.getItem('session_counted')) {
             let visits = localStorage.getItem('total_site_visits') || 0;
             visits = parseInt(visits) + 1;
@@ -519,86 +375,132 @@
         document.getElementById('visit-count').innerText = localStorage.getItem('total_site_visits');
 
         const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
-        let myStatus = 'online';
-        const bc = new BroadcastChannel('quran_app_live_tracking');
-        let activeUsers = new Map();
-
-        // ناردنی زانیاری خۆت بۆ ئەوانی تر
-        function broadcastPresence() { 
-            bc.postMessage({ 
-                type: 'presence', 
-                id: myId, 
-                device: deviceType, 
-                status: myStatus, 
-                timestamp: Date.now() 
-            }); 
+        let myIP = "Loading...";
+        let onlineUsers = new Map();
+        let socket;
+        
+        // 1. Fetch Real IP
+        async function fetchIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                myIP = data.ip;
+                connectToSignalingServer();
+            } catch (e) {
+                myIP = "Unknown IP";
+                connectToSignalingServer();
+            }
         }
 
-        // وەرگرتنی زانیاری ئەوانی تر
-        bc.onmessage = (event) => { 
-            if (event.data.type === 'presence') { 
-                activeUsers.set(event.data.id, event.data); 
-                updateStatsUI(); 
-            } 
-        };
+        // 2. Connect to Public WebSocket (Free Server)
+        // Note: Using PieSocket Demo Channel for testing. In production, use your own API Key.
+        function connectToSignalingServer() {
+            // Using a free public demo websocket channel
+            const apiKey = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV'; // Public Demo Key
+            const channelId = '1'; 
+            socket = new WebSocket(`wss://demo.piesocket.com/v3/channel_${channelId}?api_key=${apiKey}&notify_self=1`);
 
-        setInterval(broadcastPresence, 2000);
-        broadcastPresence();
+            socket.onopen = () => {
+                // Send "I am here" immediately
+                broadcastPresence();
+                // Start Heartbeat
+                setInterval(broadcastPresence, 3000); 
+                // Start Cleaning Offline Users
+                setInterval(cleanOfflineUsers, 5000);
+            };
 
-        // پاککردنەوەی ئەوانەی ڕۆیشتوون (دوای ٥ چرکە)
-        setInterval(() => {
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'presence') {
+                        // Update User List
+                        onlineUsers.set(data.id, {
+                            ...data,
+                            lastSeen: Date.now()
+                        });
+                        updateStatsUI();
+                    }
+                } catch (e) {}
+            };
+            
+            socket.onclose = () => {
+                // Try to reconnect if connection lost
+                setTimeout(connectToSignalingServer, 5000);
+            };
+        }
+
+        function broadcastPresence() {
+            if(socket && socket.readyState === WebSocket.OPEN) {
+                const payload = JSON.stringify({
+                    type: 'presence',
+                    id: myId,
+                    device: deviceType,
+                    ip: myIP,
+                    timestamp: Date.now()
+                });
+                socket.send(payload);
+            }
+        }
+
+        function cleanOfflineUsers() {
             const now = Date.now();
             let changed = false;
-            activeUsers.forEach((user, id) => { 
-                if (now - user.timestamp > 5000) { 
-                    activeUsers.delete(id); 
-                    changed = true; 
-                } 
+            onlineUsers.forEach((user, id) => {
+                // If no heartbeat for 10 seconds, remove them
+                if (now - user.lastSeen > 10000) {
+                    onlineUsers.delete(id);
+                    changed = true;
+                }
             });
-            if(changed) updateStatsUI();
-        }, 3000);
-
-        document.addEventListener("visibilitychange", () => { 
-            myStatus = document.visibilityState === 'visible' ? 'online' : 'idle'; 
-            broadcastPresence(); 
-        });
+            if (changed) updateStatsUI();
+        }
 
         function updateStatsUI() {
             const list = document.getElementById('users-list-container');
             const countLabel = document.getElementById('active-count');
             list.innerHTML = '';
             
-            // زیادکردنی خۆت بۆ لیستەکە
-            list.appendChild(createUserElement(myId, deviceType, myStatus, true));
+            // Add Self first
+            // Note: Since 'notify_self=1' is on, I might be in the map too.
+            // Let's filter map to display.
             
-            let count = 1; // خۆت هەژمار کراویت
-            
-            activeUsers.forEach((user) => { 
-                // دڵنیابوونەوە لەوەی کە خۆت دیسان زیاد نەکەیتەوە ئەگەر لە تابێکی ترەوە نامە هات
-                if (user.id !== myId) {
-                    count++; 
-                    list.appendChild(createUserElement(user.id, user.device, user.status, false)); 
-                }
-            });
-            
+            let count = 0;
+            const sortedUsers = Array.from(onlineUsers.values()).sort((a,b) => (a.id === myId ? -1 : 1));
+
+            if (sortedUsers.length === 0) {
+                 // Fallback if socket isn't ready yet, show self
+                 list.appendChild(createUserElement(myId, deviceType, myIP, true));
+                 count = 1;
+            } else {
+                sortedUsers.forEach(user => {
+                    count++;
+                    const isMe = user.id === myId;
+                    list.appendChild(createUserElement(user.id, user.device, user.ip, isMe));
+                });
+            }
+
             countLabel.innerText = count;
         }
 
-        function createUserElement(id, device, status, isMe) {
+        function createUserElement(id, device, ip, isMe) {
             const div = document.createElement('div');
             div.className = 'user-item';
-            div.innerHTML = `<span class="dot ${status==='online'?'online':'idle'}"></span><span style="flex-grow:1; margin-right:10px;">${isMe ? device+' (تۆ)':device}</span><span style="color:#999;">${status==='online'?'چالاک':'ناچالاک'}</span>`;
+            div.innerHTML = `
+                <div style="display:flex; align-items:center;">
+                    <span class="dot online"></span>
+                    <span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ' : 'میوان'}</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                    <span style="font-size:10px; color:#888;">${device}</span>
+                    <span class="user-ip">${ip}</span>
+                </div>
+            `;
             return div;
         }
 
-        // Helper
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); updateNotifUI(); }
-        function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
-        function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
-
         // Start
         loadInitialFeed();
-        startLiveUpdates();
+        fetchIP(); // This starts the connection process
         updateNotifUI();
     </script>
 
