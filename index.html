@@ -112,7 +112,7 @@
                     <div class="card-icon">🕌</div>
                     <div class="card-title">کاتەکانی بانگ</div>
                 </a>
-                <a href="daily.html" class="card">
+                <a href="hadith.html" class="card">
                     <div class="card-icon">✨</div>
                     <div class="card-title">فەرموودە</div>
                 </a>
@@ -229,15 +229,12 @@
                 
                 const jsonHadiths = await response.json();
                 
-                // Format the JSON objects into strings that the current card system understands
-                // We combine Arabic and Kurdish with some HTML styling
                 const formattedHadiths = jsonHadiths.map(h => {
                     return `<div style="font-weight:bold; font-size:18px; color:#2c3e50; margin-bottom:5px;">${h.arabic}</div>
                             <div style="font-size:15px; color:#555; border-top:1px dashed #eee; padding-top:5px;">${h.kurdish}</div>
                             <div style="font-size:10px; color:#999; text-align:left;">${h.bookName} - ${h.ref}</div>`;
                 });
 
-                // Add to the beginning of the DB array
                 db.hadiths = [...formattedHadiths, ...db.hadiths];
                 console.log("External hadiths loaded successfully");
                 
@@ -444,7 +441,6 @@
                 if (isNotifActive) {
                     let notifTitle = "زانیاری نوێ", notifBody = "";
                     if (type === 'hadith') { 
-                        // Modified to handle HTML content in notification body
                          const tempDiv = document.createElement("div");
                          tempDiv.innerHTML = content;
                          const plainText = tempDiv.textContent || tempDiv.innerText || "";
