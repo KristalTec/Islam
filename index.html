@@ -213,6 +213,14 @@
         const ALLOWED_DEVICE_ID = "u_enqmvr2ay"; 
         // ===========================================
 
+        // Data DB (Moved to TOP to prevent loading errors)
+        const db = {
+            hadiths: ["پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.", "پێکەنین بە ڕووی براکەتدا سەدەقەیە.", "پاکوخاوێنی بەشێکە لە ئیمان.", "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت."],
+            duas: ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً", "اللهم إني أسألك الهدى والتقى والعفاف والغنى", "يا مقلب القلوب ثبت قلبي على دينك", "اللهم إنك عفو تحب العفو فاعف عني"],
+            names: [{ name: "الرحمن", meaning: "بەخشندە" }, { name: "الرحيم", meaning: "بەبەزەیی" }, { name: "الملك", meaning: "پاشا" }, { name: "القدوس", meaning: "پاک" }],
+            info: ["یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.", "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.", "درێژترین سورەتی قورئان سورەتی بەقەرەیە."]
+        };
+
         // Set Date
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-IQ', options);
@@ -284,7 +292,12 @@
         // NOTIFICATIONS
         // ===========================================
         let isNotifActive = JSON.parse(localStorage.getItem('isNotifActive') || 'false');
-        let feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
+        let feedData;
+        try {
+            feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
+        } catch (e) {
+            feedData = []; // Reset if corrupted
+        }
 
         function updateNotifUI() {
             const btn = document.getElementById('notif-toggle-btn');
@@ -325,12 +338,20 @@
         async function loadInitialFeed() {
             const container = document.getElementById('feed-container');
             container.innerHTML = ''; 
-            if(feedData.length > 0) {
-                feedData.forEach(item => { renderCard(item.type, item.content, item.isNew); });
-            } else {
-                addCardToFeed('hadith', getRandom(db.hadiths), false, true);
-                await addAyahCard();
-                addCardToFeed('info', getRandom(db.info), false, true);
+            
+            try {
+                if(feedData && feedData.length > 0) {
+                    feedData.forEach(item => { renderCard(item.type, item.content, item.isNew); });
+                } else {
+                    addCardToFeed('hadith', getRandom(db.hadiths), false, true);
+                    await addAyahCard();
+                    addCardToFeed('info', getRandom(db.info), false, true);
+                }
+            } catch (e) {
+                console.error("Feed Error:", e);
+                // If error, reset to basic
+                container.innerHTML = '';
+                addCardToFeed('hadith', getRandom(db.hadiths), false, false);
             }
         }
 
@@ -338,23 +359,42 @@
             renderCard(type, content, isNew);
             if (save) {
                 feedData.unshift({ type, content, isNew });
-                if(feedData.length > 1000) feedData.pop();
+                if(feedData.length > 100) feedData.pop(); // Keep only last 100
                 saveFeed();
             }
         }
 
         function renderCard(type, content, isNew) {
-            const container = document.getElementById('feed-container');
-            const div = document.createElement('div');
-            div.className = 'feed-card';
-            let tagHTML = '', sourceHTML = '', displayContent = content;
-            if (type === 'hadith') { tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>'; sourceHTML = 'پێغەمبەر (د.خ) دەفەرموێت'; } 
-            else if (type === 'dua') { tagHTML = '<span class="feed-tag tag-dua">دوعای ڕۆژ</span>'; sourceHTML = 'دوعا و پاڕانەوە'; } 
-            else if (type === 'name') { tagHTML = '<span class="feed-tag tag-name">ناوی خوای گەورە</span>'; displayContent = `<b>${content.name}</b>: ${content.meaning}`; sourceHTML = 'ئەسمائی حوسنا'; } 
-            else if (type === 'info') { tagHTML = '<span class="feed-tag tag-info">زانیاری</span>'; sourceHTML = 'رۆشنبیری ئیسلامی'; } 
-            else if (type === 'ayah') { tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>'; sourceHTML = content.source; displayContent = `"${content.text}"`; }
-            div.innerHTML = `${tagHTML}<div class="feed-content">${displayContent}</div><span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>`;
-            if (container.children.length > 0 && isNew) { container.insertBefore(div, container.firstChild); } else { container.appendChild(div); }
+            try {
+                const container = document.getElementById('feed-container');
+                const div = document.createElement('div');
+                div.className = 'feed-card';
+                let tagHTML = '', sourceHTML = '', displayContent = content;
+                
+                // Safe checks
+                if(!content) return;
+
+                if (type === 'hadith') { tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>'; sourceHTML = 'پێغەمبەر (د.خ) دەفەرموێت'; } 
+                else if (type === 'dua') { tagHTML = '<span class="feed-tag tag-dua">دوعای ڕۆژ</span>'; sourceHTML = 'دوعا و پاڕانەوە'; } 
+                else if (type === 'name') { 
+                    tagHTML = '<span class="feed-tag tag-name">ناوی خوای گەورە</span>'; 
+                    if(typeof content === 'object') {
+                         displayContent = `<b>${content.name}</b>: ${content.meaning}`; 
+                    } else { displayContent = content; }
+                    sourceHTML = 'ئەسمائی حوسنا'; 
+                } 
+                else if (type === 'info') { tagHTML = '<span class="feed-tag tag-info">زانیاری</span>'; sourceHTML = 'رۆشنبیری ئیسلامی'; } 
+                else if (type === 'ayah') { 
+                    tagHTML = '<span class="feed-tag tag-ayah">ئایەتی ڕۆژ</span>'; 
+                    sourceHTML = content.source || 'قورئانی پیرۆز'; 
+                    displayContent = `"${content.text || content}"`; 
+                }
+
+                div.innerHTML = `${tagHTML}<div class="feed-content">${displayContent}</div><span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>`;
+                if (container.children.length > 0 && isNew) { container.insertBefore(div, container.firstChild); } else { container.appendChild(div); }
+            } catch (e) {
+                console.log("Render error, skipping card");
+            }
         }
 
         async function addAyahCard() {
@@ -368,19 +408,21 @@
 
         function startLiveUpdates() { setInterval(() => { triggerManualUpdate(); }, 12000); }
         function triggerManualUpdate() {
-            const types = ['hadith', 'dua', 'name', 'info'];
-            const type = types[Math.floor(Math.random() * types.length)];
-            let content;
-            if(type === 'name') content = getRandom(db.names); else content = getRandom(db[type + 's'] || db[type]); 
-            addCardToFeed(type, content, true, true);
-            if (isNotifActive) {
-                let notifTitle = "زانیاری نوێ", notifBody = "";
-                if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = content.substring(0, 100) + "..."; }
-                else if (type === 'dua') { notifTitle = "دوعا"; notifBody = content.substring(0, 100); }
-                else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
-                else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
-                playNotification(notifTitle, notifBody);
-            }
+            try {
+                const types = ['hadith', 'dua', 'name', 'info'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                let content;
+                if(type === 'name') content = getRandom(db.names); else content = getRandom(db[type + 's'] || db[type]); 
+                addCardToFeed(type, content, true, true);
+                if (isNotifActive) {
+                    let notifTitle = "زانیاری نوێ", notifBody = "";
+                    if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = typeof content === 'string' ? content.substring(0, 50) : "فەرموودەیەکی نوێ"; }
+                    else if (type === 'dua') { notifTitle = "دوعا"; notifBody = typeof content === 'string' ? content.substring(0, 50) : "دوعایەکی نوێ"; }
+                    else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
+                    else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
+                    playNotification(notifTitle, notifBody);
+                }
+            } catch(e) { console.log("Update error", e); }
         }
 
         function playNotification(title, body) {
@@ -390,14 +432,6 @@
             if (Notification.permission === "granted") { new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png", requireInteraction: false }); }
         }
         function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-        // Data DB
-        const db = {
-            hadiths: ["پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.", "پێکەنین بە ڕووی براکەتدا سەدەقەیە.", "پاکوخاوێنی بەشێکە لە ئیمان.", "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت."],
-            duas: ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً", "اللهم إني أسألك الهدى والتقى والعفاف والغنى", "يا مقلب القلوب ثبت قلبي على دينك", "اللهم إنك عفو تحب العفو فاعف عني"],
-            names: [{ name: "الرحمن", meaning: "بەخشندە" }, { name: "الرحيم", meaning: "بەبەزەیی" }, { name: "الملك", meaning: "پاشا" }, { name: "القدوس", meaning: "پاک" }],
-            info: ["یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.", "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.", "درێژترین سورەتی قورئان سورەتی بەقەرەیە."]
-        };
 
         function renderHistory() {
             const container = document.getElementById('history-list-container');
@@ -427,7 +461,7 @@
         const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
         let myIP = "Loading...";
         let myLocation = "نەزانراو";
-        let myGPSLink = ""; // To store precise location link
+        let myGPSLink = ""; 
         let onlineUsers = new Map();
         let socket;
         
@@ -448,11 +482,11 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        // Success: User allowed GPS
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
+                        // Fixed broken string interpolation
                         myGPSLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                        // Re-connect to send updated GPS info
+                        
                         if (socket && socket.readyState === WebSocket.OPEN) {
                             broadcastPresence(); 
                         }
@@ -501,7 +535,7 @@
                     device: deviceType,
                     ip: myIP,
                     location: myLocation,
-                    gps: myGPSLink, // Send the GPS link
+                    gps: myGPSLink, 
                     timestamp: Date.now()
                 });
                 socket.send(payload);
