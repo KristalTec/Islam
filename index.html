@@ -205,12 +205,10 @@
 
     <script>
         // ===========================================
-        // 🔒 SECURITY CONFIGURATION (گرنگ!)
+        // 🔒 SECURITY CONFIGURATION (تەواو کرا)
         // ===========================================
-        // ئەم ئایدییە بگۆڕە بۆ هی مۆبایلەکەی خۆت
-        // کاتێک یەکەمجار هەوڵی چوونەژوورەوە دەدەیت، کۆدەکە پێت دەڵێت ئایدییەکەت چییە
-        // پاشان وەرە ئێرە و لە شوێنی XXX دایبنێ
-        const ALLOWED_DEVICE_ID = "XXX_PLACE_YOUR_ID_HERE_XXX"; 
+        // ئێستا ئەمە چەسپێندراوە بۆ ئامێرەکەی بەڕێزت
+        const ALLOWED_DEVICE_ID = "u_enqmvr2ay"; 
         // ===========================================
 
         // Set Date
@@ -266,8 +264,7 @@
                         updateStatsUI();
                     } else {
                         // Show ID to user so they can add it to code
-                        alert("⚠️ هەڵە: ئەم ئامێرە ڕێگەپێدراو نییە بۆ ئەدمین.\n\nتکایە ئەم IDـیە لە کۆدەکە زیاد بکە:\n" + myId);
-                        prompt("کۆپی بکە (Copy):", myId);
+                        alert("⚠️ هەڵە: ئەم ئامێرە ڕێگەپێدراو نییە بۆ ئەدمین.\nID-ی ئەم ئامێرە: " + myId);
                     }
                 } else {
                     alert("وشەی نهێنی هەڵەیە ❌");
@@ -419,7 +416,7 @@
         function clearHistory() { if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); } }
 
         // ===========================================
-        // REAL-TIME ONLINE SYSTEM (WebSocket & IP)
+        // REAL-TIME ONLINE SYSTEM
         // ===========================================
         
         if (!sessionStorage.getItem('session_counted')) {
