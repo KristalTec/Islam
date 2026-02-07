@@ -213,13 +213,38 @@
         const ALLOWED_DEVICE_ID = "u_enqmvr2ay"; 
         // ===========================================
 
-        // Data DB (Moved to TOP to prevent loading errors)
+        // Data DB
         const db = {
             hadiths: ["پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.", "پێکەنین بە ڕووی براکەتدا سەدەقەیە.", "پاکوخاوێنی بەشێکە لە ئیمان.", "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت."],
             duas: ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً", "اللهم إني أسألك الهدى والتقى والعفاف والغنى", "يا مقلب القلوب ثبت قلبي على دينك", "اللهم إنك عفو تحب العفو فاعف عني"],
             names: [{ name: "الرحمن", meaning: "بەخشندە" }, { name: "الرحيم", meaning: "بەبەزەیی" }, { name: "الملك", meaning: "پاشا" }, { name: "القدوس", meaning: "پاک" }],
             info: ["یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.", "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.", "درێژترین سورەتی قورئان سورەتی بەقەرەیە."]
         };
+
+        // NEW: Load External Hadiths from JSON
+        async function loadExternalHadiths() {
+            try {
+                const response = await fetch('hadiths.json');
+                if (!response.ok) throw new Error("JSON not found");
+                
+                const jsonHadiths = await response.json();
+                
+                // Format the JSON objects into strings that the current card system understands
+                // We combine Arabic and Kurdish with some HTML styling
+                const formattedHadiths = jsonHadiths.map(h => {
+                    return `<div style="font-weight:bold; font-size:18px; color:#2c3e50; margin-bottom:5px;">${h.arabic}</div>
+                            <div style="font-size:15px; color:#555; border-top:1px dashed #eee; padding-top:5px;">${h.kurdish}</div>
+                            <div style="font-size:10px; color:#999; text-align:left;">${h.bookName} - ${h.ref}</div>`;
+                });
+
+                // Add to the beginning of the DB array
+                db.hadiths = [...formattedHadiths, ...db.hadiths];
+                console.log("External hadiths loaded successfully");
+                
+            } catch (e) {
+                console.log("Could not load hadiths.json (using internal DB only):", e);
+            }
+        }
 
         // Set Date
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -336,6 +361,9 @@
         function saveFeed() { localStorage.setItem('islam_feed_data', JSON.stringify(feedData)); }
         
         async function loadInitialFeed() {
+            // First load external JSON data
+            await loadExternalHadiths();
+
             const container = document.getElementById('feed-container');
             container.innerHTML = ''; 
             
@@ -349,7 +377,6 @@
                 }
             } catch (e) {
                 console.error("Feed Error:", e);
-                // If error, reset to basic
                 container.innerHTML = '';
                 addCardToFeed('hadith', getRandom(db.hadiths), false, false);
             }
@@ -416,7 +443,14 @@
                 addCardToFeed(type, content, true, true);
                 if (isNotifActive) {
                     let notifTitle = "زانیاری نوێ", notifBody = "";
-                    if (type === 'hadith') { notifTitle = "فەرموودە"; notifBody = typeof content === 'string' ? content.substring(0, 50) : "فەرموودەیەکی نوێ"; }
+                    if (type === 'hadith') { 
+                        // Modified to handle HTML content in notification body
+                         const tempDiv = document.createElement("div");
+                         tempDiv.innerHTML = content;
+                         const plainText = tempDiv.textContent || tempDiv.innerText || "";
+                         notifTitle = "فەرموودە"; 
+                         notifBody = plainText.substring(0, 50) + "...";
+                    }
                     else if (type === 'dua') { notifTitle = "دوعا"; notifBody = typeof content === 'string' ? content.substring(0, 50) : "دوعایەکی نوێ"; }
                     else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
                     else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
@@ -603,6 +637,7 @@
             return div;
         }
 
+        // STARTUP
         loadInitialFeed();
         fetchIPandLocation(); 
         updateNotifUI();
