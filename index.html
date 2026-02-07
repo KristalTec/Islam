@@ -496,38 +496,91 @@
         function clearHistory() { if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); } }
 
         // ===========================================
-        // User Tracking
+        // User Tracking (FIXED FOR UNIQUE DEVICE)
         // ===========================================
-        let visits = localStorage.getItem('total_site_visits') || 0;
-        visits = parseInt(visits) + 1;
-        localStorage.setItem('total_site_visits', visits);
-        document.getElementById('visit-count').innerText = visits;
+        
+        // ١. لێرەدا سەرەتا دەگەڕێین بزانین ئایا ئەم موبایلە پێشتر ئایدی هەیە؟
+        // ئەگەر هەبوو ئەوە بەکاری دەهێنینەوە، ئەگەر نەبوو دانەیەکی نوێی بۆ دروست دەکەین
+        // ئەمە وادەکات ئەگەر ڕیفرێش بکەیت یان تاب دابخەیت و بیکەیتەوە، هەر بە هەمان کەس بتناسێت
+        let myId = localStorage.getItem('unique_device_id');
+        if (!myId) {
+            myId = 'u_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('unique_device_id', myId);
+        }
 
-        const myId = 'u_' + Math.random().toString(36).substr(2, 5);
+        // ئەم بەشەش بۆ ئەوەیە کە ژمارەی سەردان تەنها یەکجار زیاد بێت بۆ هەر جارێک کە براوسەرەکە دەکرێتەوە
+        // نەک هەموو ڕیفرێشێک
+        if (!sessionStorage.getItem('session_counted')) {
+            let visits = localStorage.getItem('total_site_visits') || 0;
+            visits = parseInt(visits) + 1;
+            localStorage.setItem('total_site_visits', visits);
+            sessionStorage.setItem('session_counted', 'true');
+        }
+        document.getElementById('visit-count').innerText = localStorage.getItem('total_site_visits');
+
         const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
         let myStatus = 'online';
         const bc = new BroadcastChannel('quran_app_live_tracking');
         let activeUsers = new Map();
 
-        function broadcastPresence() { bc.postMessage({ type: 'presence', id: myId, device: deviceType, status: myStatus, timestamp: Date.now() }); }
-        bc.onmessage = (event) => { if (event.data.type === 'presence') { activeUsers.set(event.data.id, event.data); updateStatsUI(); } };
+        // ناردنی زانیاری خۆت بۆ ئەوانی تر
+        function broadcastPresence() { 
+            bc.postMessage({ 
+                type: 'presence', 
+                id: myId, 
+                device: deviceType, 
+                status: myStatus, 
+                timestamp: Date.now() 
+            }); 
+        }
+
+        // وەرگرتنی زانیاری ئەوانی تر
+        bc.onmessage = (event) => { 
+            if (event.data.type === 'presence') { 
+                activeUsers.set(event.data.id, event.data); 
+                updateStatsUI(); 
+            } 
+        };
+
         setInterval(broadcastPresence, 2000);
         broadcastPresence();
+
+        // پاککردنەوەی ئەوانەی ڕۆیشتوون (دوای ٥ چرکە)
         setInterval(() => {
             const now = Date.now();
             let changed = false;
-            activeUsers.forEach((user, id) => { if (now - user.timestamp > 5000) { activeUsers.delete(id); changed = true; } });
+            activeUsers.forEach((user, id) => { 
+                if (now - user.timestamp > 5000) { 
+                    activeUsers.delete(id); 
+                    changed = true; 
+                } 
+            });
             if(changed) updateStatsUI();
         }, 3000);
-        document.addEventListener("visibilitychange", () => { myStatus = document.visibilityState === 'visible' ? 'online' : 'idle'; broadcastPresence(); });
+
+        document.addEventListener("visibilitychange", () => { 
+            myStatus = document.visibilityState === 'visible' ? 'online' : 'idle'; 
+            broadcastPresence(); 
+        });
 
         function updateStatsUI() {
             const list = document.getElementById('users-list-container');
             const countLabel = document.getElementById('active-count');
             list.innerHTML = '';
+            
+            // زیادکردنی خۆت بۆ لیستەکە
             list.appendChild(createUserElement(myId, deviceType, myStatus, true));
-            let count = 1;
-            activeUsers.forEach(user => { count++; list.appendChild(createUserElement(user.id, user.device, user.status, false)); });
+            
+            let count = 1; // خۆت هەژمار کراویت
+            
+            activeUsers.forEach((user) => { 
+                // دڵنیابوونەوە لەوەی کە خۆت دیسان زیاد نەکەیتەوە ئەگەر لە تابێکی ترەوە نامە هات
+                if (user.id !== myId) {
+                    count++; 
+                    list.appendChild(createUserElement(user.id, user.device, user.status, false)); 
+                }
+            });
+            
             countLabel.innerText = count;
         }
 
