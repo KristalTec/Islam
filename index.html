@@ -61,7 +61,7 @@
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
         
         .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .user-list { max-height: 150px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; }
+        .user-list { max-height: 150px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; display: none; }
         .user-item { padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; justify-content: space-between; }
         .user-ip { font-family: monospace; color: #555; direction: ltr; margin-right: 5px; font-size: 11px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
@@ -90,6 +90,8 @@
         .nav-icon { font-size: 24px; }
         .nav-item:active { transform: scale(0.9); }
 
+        .admin-badge { background: #e74c3c; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; display: none; }
+
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     </style>
@@ -108,7 +110,9 @@
                     <span class="notif-badge" id="history-badge"></span>
                 </div>
             </div>
-            <div style="font-weight:bold; font-size:18px;">Islam Online</div>
+            <div style="font-weight:bold; font-size:18px; cursor:pointer;" onclick="triggerAdminLogin()">
+                Islam Online <span id="admin-indicator" class="admin-badge">Admin</span>
+            </div>
             <div class="header-btn" onclick="triggerManualUpdate()" title="نوێکردنەوە">🔃</div>
         </div>
 
@@ -189,9 +193,14 @@
                 <b id="active-count" style="color:var(--highlight-color);">...</b>
             </div>
 
-            <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#777;">لیستی بەکارهێنەرە ئۆنڵاینەکان:</div>
-            <div class="user-list" id="users-list-container">
-                <div style="text-align:center; padding:10px;">جاری دەکرێت...</div>
+            <div id="admin-section" style="display:none;">
+                <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#c0392b; border-top:1px dashed #ddd; padding-top:10px;">
+                    🔒 پانێڵی ئەدمین:
+                </div>
+                <div class="user-list" id="users-list-container" style="display:block;">
+                    <div style="text-align:center; padding:10px;">جاری دەکرێت...</div>
+                </div>
+                <button onclick="logoutAdmin()" style="width:100%; margin-top:5px; background:#e74c3c; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">چوونە دەرەوە لە ئەدمین</button>
             </div>
 
             <div style="margin-top:20px; font-weight:bold; color:var(--border-color); border-bottom: 1px solid #eee;">📞 پەیوەندی</div>
@@ -226,6 +235,47 @@
         function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); }
         function openHistory() { document.getElementById('historyModal').style.display = 'flex'; renderHistory(); }
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
+
+        // ===========================================
+        // ADMIN SYSTEM (SECRET)
+        // ===========================================
+        let adminClicks = 0;
+        let isAdmin = localStorage.getItem('site_admin_access') === 'true';
+
+        // Check on load
+        if(isAdmin) {
+            document.getElementById('admin-section').style.display = 'block';
+            document.getElementById('admin-indicator').style.display = 'inline-block';
+        }
+
+        function triggerAdminLogin() {
+            adminClicks++;
+            if(adminClicks === 5) {
+                adminClicks = 0;
+                if(isAdmin) return; // Already admin
+                
+                const pass = prompt("تکایە وشەی نهێنی ئەدمین بنووسە:");
+                if(pass === "1234") { // <--- HERE IS THE PASSWORD
+                    localStorage.setItem('site_admin_access', 'true');
+                    isAdmin = true;
+                    document.getElementById('admin-section').style.display = 'block';
+                    document.getElementById('admin-indicator').style.display = 'inline-block';
+                    alert("بەخێربێیت بەڕێز ئەدمین ✅");
+                    updateStatsUI(); // Refresh to show data
+                } else {
+                    alert("وشەی نهێنی هەڵەیە ❌");
+                }
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.setItem('site_admin_access', 'false');
+            isAdmin = false;
+            document.getElementById('admin-section').style.display = 'none';
+            document.getElementById('admin-indicator').style.display = 'none';
+            alert("ماڵئاوا ئەدمین 👋");
+            location.reload();
+        }
 
         // ===========================================
         // NOTIFICATIONS & PERSISTENCE
@@ -392,20 +442,15 @@
             }
         }
 
-        // 2. Connect to Public WebSocket (Free Server)
-        // Note: Using PieSocket Demo Channel for testing. In production, use your own API Key.
+        // 2. Connect to Public WebSocket
         function connectToSignalingServer() {
-            // Using a free public demo websocket channel
-            const apiKey = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV'; // Public Demo Key
+            const apiKey = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV'; // Demo Key
             const channelId = '1'; 
             socket = new WebSocket(`wss://demo.piesocket.com/v3/channel_${channelId}?api_key=${apiKey}&notify_self=1`);
 
             socket.onopen = () => {
-                // Send "I am here" immediately
                 broadcastPresence();
-                // Start Heartbeat
                 setInterval(broadcastPresence, 3000); 
-                // Start Cleaning Offline Users
                 setInterval(cleanOfflineUsers, 5000);
             };
 
@@ -413,7 +458,6 @@
                 try {
                     const data = JSON.parse(event.data);
                     if (data.type === 'presence') {
-                        // Update User List
                         onlineUsers.set(data.id, {
                             ...data,
                             lastSeen: Date.now()
@@ -423,10 +467,7 @@
                 } catch (e) {}
             };
             
-            socket.onclose = () => {
-                // Try to reconnect if connection lost
-                setTimeout(connectToSignalingServer, 5000);
-            };
+            socket.onclose = () => { setTimeout(connectToSignalingServer, 5000); };
         }
 
         function broadcastPresence() {
@@ -446,7 +487,6 @@
             const now = Date.now();
             let changed = false;
             onlineUsers.forEach((user, id) => {
-                // If no heartbeat for 10 seconds, remove them
                 if (now - user.lastSeen > 10000) {
                     onlineUsers.delete(id);
                     changed = true;
@@ -460,26 +500,26 @@
             const countLabel = document.getElementById('active-count');
             list.innerHTML = '';
             
-            // Add Self first
-            // Note: Since 'notify_self=1' is on, I might be in the map too.
-            // Let's filter map to display.
-            
-            let count = 0;
+            // Calculate count
+            let count = onlineUsers.size;
+            if (count === 0) count = 1; // Always show at least me
+            countLabel.innerText = count;
+
+            // Security Check: Only show list if Admin
+            if (!isAdmin) {
+                return; // STOP HERE if not admin. Normal users see nothing below.
+            }
+
             const sortedUsers = Array.from(onlineUsers.values()).sort((a,b) => (a.id === myId ? -1 : 1));
 
             if (sortedUsers.length === 0) {
-                 // Fallback if socket isn't ready yet, show self
                  list.appendChild(createUserElement(myId, deviceType, myIP, true));
-                 count = 1;
             } else {
                 sortedUsers.forEach(user => {
-                    count++;
                     const isMe = user.id === myId;
                     list.appendChild(createUserElement(user.id, user.device, user.ip, isMe));
                 });
             }
-
-            countLabel.innerText = count;
         }
 
         function createUserElement(id, device, ip, isMe) {
@@ -488,7 +528,7 @@
             div.innerHTML = `
                 <div style="display:flex; align-items:center;">
                     <span class="dot online"></span>
-                    <span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ' : 'میوان'}</span>
+                    <span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ (Admin)' : 'میوان'}</span>
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:flex-end;">
                     <span style="font-size:10px; color:#888;">${device}</span>
@@ -500,7 +540,7 @@
 
         // Start
         loadInitialFeed();
-        fetchIP(); // This starts the connection process
+        fetchIP();
         updateNotifUI();
     </script>
 
