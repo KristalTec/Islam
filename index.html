@@ -8,98 +8,75 @@
     
     <style>
         * { -webkit-user-select: none; user-select: none; box-sizing: border-box; }
-        
         :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --text-color: #2c3e50; --nav-bg: #ffffff; }
-        
         body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-        
         .app-container { width: 100%; max-width: 600px; background-color: var(--bg-color); height: 100%; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-        
         /* Header */
         .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 50; }
         .icon-group { display: flex; gap: 15px; z-index: 10; }
         .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; position: relative; }
         .header-btn:hover { transform: scale(1.1); color: #b6962f; }
-        
         .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: red; border-radius: 50%; border: 1px solid white; display: none; }
-
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; scroll-behavior: smooth; }
-
         .hero-card { background: linear-gradient(135deg, var(--border-color), #f1c40f); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); position: relative; overflow: hidden; }
         .hero-title { font-size: 24px; margin-bottom: 10px; position: relative; z-index: 2; }
         .hero-date { font-size: 16px; opacity: 0.9; position: relative; z-index: 2; }
         .hero-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); }
-
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .card { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #eee; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-color); }
         .card:active { transform: scale(0.95); background-color: #fffbf2; }
         .card-icon { font-size: 32px; }
         .card-title { font-weight: bold; font-size: 18px; }
-
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
         .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
         .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
         .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
         .tag-ayah { background: var(--highlight-color); } 
         .tag-hadith { background: #3498db; } 
         .tag-dua { background: #e67e22; } 
         .tag-info { background: #9b59b6; } 
         .tag-name { background: #e74c3c; } 
-
         .feed-content { font-size: 17px; line-height: 1.8; color: #444; margin-top: 15px; text-align: justify; }
         .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
-
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
-        
         .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
         .user-list { max-height: 150px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; display: none; }
         .user-item { padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; justify-content: space-between; }
         .user-ip { font-family: monospace; color: #555; direction: ltr; margin-right: 5px; font-size: 11px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
-        
         .history-list { max-height: 300px; overflow-y: auto; text-align: right; margin-top: 10px; }
         .history-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; border-right: 3px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .h-info { display: flex; flex-direction: column; }
         .h-name { font-weight: bold; font-size: 16px; color: var(--text-color); }
         .h-time { font-size: 11px; color: #888; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
-
         .notif-toggle-btn { padding: 10px; font-size: 14px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; text-align: center; font-weight: bold; width: 100%; transition: 0.3s; border: 1px solid transparent; }
         .notif-enabled { background: #e8f8f5; color: #27ae60; border-color: #27ae60; }
         .notif-disabled { background: #fdedec; color: #c0392b; border-color: #c0392b; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
-
         .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
         .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
         .social-btn img { width: 22px; height: 22px; }
         .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
-
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
         .nav-item.active { color: var(--border-color); font-weight: bold; }
         .nav-icon { font-size: 24px; }
         .nav-item:active { transform: scale(0.9); }
-
         .admin-badge { background: #e74c3c; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; display: none; }
-
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="app-container">
-        
         <audio id="notif-sound" src="https://www.islamcan.com/audio/adhan/bismillah.mp3" preload="auto"></audio>
 
         <div class="header">
@@ -128,12 +105,10 @@
                     <div class="card-icon">📖</div>
                     <div class="card-title">قورئانی پیرۆز</div>
                 </a>
-                
                 <a href="daily.html" class="card">
                     <div class="card-icon">🕌</div>
                     <div class="card-title">کاتەکانی بانگ</div>
                 </a>
-
                 <a href="daily.html" class="card">
                     <div class="card-icon">✨</div>
                     <div class="card-title">فەرموودە</div>
@@ -162,18 +137,15 @@
                 <span class="nav-icon">🏠</span>
                 <span>سەرەکی</span>
             </a>
-            
             <a href="quran.html" class="nav-item">
                 <span class="nav-icon">📖</span>
                 <span>قورئان</span>
             </a>
-
             <a href="daily.html" class="nav-item">
                 <span class="nav-icon">🕌</span>
                 <span>بانگ و فەرموودە</span>
             </a>
         </div>
-
     </div>
 
     <div id="settingsModal" class="modal" onclick="closeModal(event, 'settingsModal')">
@@ -191,6 +163,11 @@
             <div class="stat-row">
                 <span>ئۆنڵاین لە جیهاندا:</span>
                 <b id="active-count" style="color:var(--highlight-color);">...</b>
+            </div>
+            
+            <div class="stat-row" style="background:#f0f0f0; border-radius:5px; margin-top:5px; font-size:10px;">
+                <span>ID-ی ئامێرەکەت:</span>
+                <b id="my-device-id" style="font-family:monospace;">...</b>
             </div>
 
             <div id="admin-section" style="display:none;">
@@ -227,9 +204,23 @@
     </div>
 
     <script>
+        // ===========================================
+        // 🔒 SECURITY CONFIGURATION (گرنگ!)
+        // ===========================================
+        // ئەم ئایدییە بگۆڕە بۆ هی مۆبایلەکەی خۆت
+        // کاتێک یەکەمجار هەوڵی چوونەژوورەوە دەدەیت، کۆدەکە پێت دەڵێت ئایدییەکەت چییە
+        // پاشان وەرە ئێرە و لە شوێنی XXX دایبنێ
+        const ALLOWED_DEVICE_ID = "XXX_PLACE_YOUR_ID_HERE_XXX"; 
+        // ===========================================
+
         // Set Date
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-IQ', options);
+
+        // Define My ID
+        let myId = localStorage.getItem('unique_device_id');
+        if (!myId) { myId = 'u_' + Math.random().toString(36).substr(2, 8); localStorage.setItem('unique_device_id', myId); }
+        document.getElementById('my-device-id').innerText = myId;
 
         // UI Functions
         function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; updateStatsUI(); }
@@ -237,13 +228,19 @@
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
 
         // ===========================================
-        // ADMIN SYSTEM (SECRET)
+        // ADMIN SYSTEM (SECURE DEVICE LOCK)
         // ===========================================
         let adminClicks = 0;
         let isAdmin = localStorage.getItem('site_admin_access') === 'true';
 
+        // Check ID mismatch on load (Security Feature)
+        if(isAdmin && myId !== ALLOWED_DEVICE_ID) {
+            console.log("Unauthorized device detected. Logging out.");
+            logoutAdmin(false); // Silent logout
+        }
+
         // Check on load
-        if(isAdmin) {
+        if(isAdmin && myId === ALLOWED_DEVICE_ID) {
             document.getElementById('admin-section').style.display = 'block';
             document.getElementById('admin-indicator').style.display = 'inline-block';
         }
@@ -252,29 +249,41 @@
             adminClicks++;
             if(adminClicks === 5) {
                 adminClicks = 0;
-                if(isAdmin) return; // Already admin
+                if(isAdmin) return; 
+
+                const pass = prompt("وشەی نهێنی بنووسە:");
                 
-                const pass = prompt(":");
-                if(pass === "SD@26cQcatggBBMD$531578FbnmfsWronsTyygsBc53&") { // <--- 
-                    localStorage.setItem('site_admin_access', 'true');
-                    isAdmin = true;
-                    document.getElementById('admin-section').style.display = 'block';
-                    document.getElementById('admin-indicator').style.display = 'inline-block';
-                    alert("بەخێربێیت بەڕێز ئەدمین ✅");
-                    updateStatsUI(); // Refresh to show data
+                // 1. Check Password
+                if(pass === "SD@26cQcatggBBMD$531578FbnmfsWronsTyygsBc53&") { 
+                    
+                    // 2. Check Device ID (Device Fingerprint)
+                    if (myId === ALLOWED_DEVICE_ID) {
+                        localStorage.setItem('site_admin_access', 'true');
+                        isAdmin = true;
+                        document.getElementById('admin-section').style.display = 'block';
+                        document.getElementById('admin-indicator').style.display = 'inline-block';
+                        alert("بەخێربێیت بەڕێز ئەدمین ✅");
+                        updateStatsUI();
+                    } else {
+                        // Show ID to user so they can add it to code
+                        alert("⚠️ هەڵە: ئەم ئامێرە ڕێگەپێدراو نییە بۆ ئەدمین.\n\nتکایە ئەم IDـیە لە کۆدەکە زیاد بکە:\n" + myId);
+                        prompt("کۆپی بکە (Copy):", myId);
+                    }
                 } else {
                     alert("وشەی نهێنی هەڵەیە ❌");
                 }
             }
         }
 
-        function logoutAdmin() {
+        function logoutAdmin(showAlert = true) {
             localStorage.setItem('site_admin_access', 'false');
             isAdmin = false;
             document.getElementById('admin-section').style.display = 'none';
             document.getElementById('admin-indicator').style.display = 'none';
-            alert("ماڵئاوا ئەدمین 👋");
-            location.reload();
+            if(showAlert) {
+                alert("ماڵئاوا ئەدمین 👋");
+                location.reload();
+            }
         }
 
         // ===========================================
@@ -413,9 +422,6 @@
         // REAL-TIME ONLINE SYSTEM (WebSocket & IP)
         // ===========================================
         
-        let myId = localStorage.getItem('unique_device_id');
-        if (!myId) { myId = 'u_' + Math.random().toString(36).substr(2, 6); localStorage.setItem('unique_device_id', myId); }
-
         if (!sessionStorage.getItem('session_counted')) {
             let visits = localStorage.getItem('total_site_visits') || 0;
             visits = parseInt(visits) + 1;
@@ -429,7 +435,6 @@
         let onlineUsers = new Map();
         let socket;
         
-        // 1. Fetch Real IP
         async function fetchIP() {
             try {
                 const res = await fetch('https://api.ipify.org?format=json');
@@ -442,9 +447,8 @@
             }
         }
 
-        // 2. Connect to Public WebSocket
         function connectToSignalingServer() {
-            const apiKey = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV'; // Demo Key
+            const apiKey = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV';
             const channelId = '1'; 
             socket = new WebSocket(`wss://demo.piesocket.com/v3/channel_${channelId}?api_key=${apiKey}&notify_self=1`);
 
@@ -500,14 +504,12 @@
             const countLabel = document.getElementById('active-count');
             list.innerHTML = '';
             
-            // Calculate count
             let count = onlineUsers.size;
-            if (count === 0) count = 1; // Always show at least me
+            if (count === 0) count = 1; 
             countLabel.innerText = count;
 
-            // Security Check: Only show list if Admin
             if (!isAdmin) {
-                return; // STOP HERE if not admin. Normal users see nothing below.
+                return; 
             }
 
             const sortedUsers = Array.from(onlineUsers.values()).sort((a,b) => (a.id === myId ? -1 : 1));
@@ -538,11 +540,9 @@
             return div;
         }
 
-        // Start
         loadInitialFeed();
         fetchIP();
         updateNotifUI();
     </script>
-
 </body>
 </html>
