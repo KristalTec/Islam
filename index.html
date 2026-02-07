@@ -51,6 +51,7 @@
         .user-details { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
         .user-ip { font-family: monospace; color: #555; direction: ltr; font-size: 11px; }
         .user-loc { color: #d35400; font-weight: bold; font-size: 10px; direction: ltr; }
+        .gps-link { background: #27ae60; color: white; padding: 2px 6px; border-radius: 4px; text-decoration: none; font-size: 10px; margin-top: 2px; display: inline-block;}
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
         .history-list { max-height: 300px; overflow-y: auto; text-align: right; margin-top: 10px; }
@@ -412,7 +413,7 @@
         function clearHistory() { if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); } }
 
         // ===========================================
-        // REAL-TIME ONLINE SYSTEM & GEOLOCATION
+        // REAL-TIME ONLINE SYSTEM & PRECISE LOCATION
         // ===========================================
         
         if (!sessionStorage.getItem('session_counted')) {
@@ -426,12 +427,13 @@
         const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "📱 مۆبایل" : "💻 کۆمپیوتەر";
         let myIP = "Loading...";
         let myLocation = "نەزانراو";
+        let myGPSLink = ""; // To store precise location link
         let onlineUsers = new Map();
         let socket;
         
         async function fetchIPandLocation() {
+            // 1. Get Rough IP Location First
             try {
-                // بەکارهێنانی سێرڤەرێک بۆ هێنانی ئایپی و لۆکەیشەن پێکەوە
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
                 myIP = data.ip || "Unknown";
@@ -441,6 +443,26 @@
                 myIP = "Unknown";
                 myLocation = "Unknown Location";
             }
+
+            // 2. Try to get 100% Accurate GPS Location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // Success: User allowed GPS
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        myGPSLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                        // Re-connect to send updated GPS info
+                        if (socket && socket.readyState === WebSocket.OPEN) {
+                            broadcastPresence(); 
+                        }
+                    },
+                    (error) => {
+                        console.log("GPS denied or error: " + error.message);
+                    }
+                );
+            }
+
             connectToSignalingServer();
         }
 
@@ -479,6 +501,7 @@
                     device: deviceType,
                     ip: myIP,
                     location: myLocation,
+                    gps: myGPSLink, // Send the GPS link
                     timestamp: Date.now()
                 });
                 socket.send(payload);
@@ -513,18 +536,24 @@
             const sortedUsers = Array.from(onlineUsers.values()).sort((a,b) => (a.id === myId ? -1 : 1));
 
             if (sortedUsers.length === 0) {
-                 list.appendChild(createUserElement(myId, deviceType, myIP, myLocation, true));
+                 list.appendChild(createUserElement(myId, deviceType, myIP, myLocation, myGPSLink, true));
             } else {
                 sortedUsers.forEach(user => {
                     const isMe = user.id === myId;
-                    list.appendChild(createUserElement(user.id, user.device, user.ip, user.location, isMe));
+                    list.appendChild(createUserElement(user.id, user.device, user.ip, user.location, user.gps, isMe));
                 });
             }
         }
 
-        function createUserElement(id, device, ip, loc, isMe) {
+        function createUserElement(id, device, ip, loc, gps, isMe) {
             const div = document.createElement('div');
             div.className = 'user-item';
+            
+            let gpsHTML = '';
+            if (gps && gps.length > 5) {
+                gpsHTML = `<a href="${gps}" target="_blank" class="gps-link">📍 کردنەوەی نەخشە</a>`;
+            }
+
             div.innerHTML = `
                 <div style="display:flex; align-items:center;">
                     <span class="dot online"></span>
@@ -532,15 +561,16 @@
                 </div>
                 <div class="user-details">
                     <span style="font-size:10px; color:#888;">${device}</span>
-                    <span class="user-loc">📍 ${loc || "نەزانراو"}</span>
+                    <span class="user-loc">${loc || "نەزانراو"}</span>
                     <span class="user-ip">${ip}</span>
+                    ${gpsHTML}
                 </div>
             `;
             return div;
         }
 
         loadInitialFeed();
-        fetchIPandLocation(); // New function call
+        fetchIPandLocation(); 
         updateNotifUI();
     </script>
 </body>
