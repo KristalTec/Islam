@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فەرموودەکان - Islam Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { -webkit-user-select: none; user-select: none; box-sizing: border-box; }
+        :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --text-color: #2c3e50; --nav-bg: #ffffff; }
+        body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .app-container { width: 100%; max-width: 600px; background-color: var(--bg-color); height: 100%; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        
+        /* Header */
+        .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 50; }
+        .header-title { font-size: 20px; font-weight: bold; }
+        .header-btn { cursor: pointer; font-size: 22px; padding: 5px; }
+
+        /* Content */
+        .content { flex-grow: 1; overflow-y: auto; padding: 15px; padding-bottom: 20px; scroll-behavior: smooth; }
+        
+        /* Search Bar */
+        .search-container { position: sticky; top: 0; z-index: 40; background: var(--bg-color); padding-bottom: 10px; padding-top: 5px; }
+        .search-box { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; font-family: 'Amiri'; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; }
+        .search-box:focus { border-color: var(--border-color); box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
+
+        /* Categories (Tabs) */
+        .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; margin-bottom: 10px; }
+        .tabs-container::-webkit-scrollbar { display: none; }
+        .tab-btn { padding: 8px 15px; background: white; border: 1px solid #eee; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 14px; transition: 0.3s; color: #666; }
+        .tab-btn.active { background: var(--border-color); color: white; border-color: var(--border-color); font-weight: bold; box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3); }
+
+        /* Hadith Card */
+        .hadith-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; box-shadow: 0 3px 8px rgba(0,0,0,0.03); position: relative; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hadith-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
+        .hadith-book { font-size: 12px; background: #fffbf2; color: var(--border-color); padding: 3px 8px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: bold; }
+        .hadith-number { font-size: 12px; color: #999; font-family: sans-serif; }
+
+        .hadith-arabic { font-size: 18px; line-height: 2.2; color: #2c3e50; text-align: justify; margin-bottom: 15px; font-weight: bold; background: #fafafa; padding: 10px; border-radius: 10px; border-right: 3px solid var(--border-color); }
+        .hadith-kurdish { font-size: 16px; line-height: 1.8; color: #444; text-align: justify; margin-bottom: 15px; }
+        
+        .card-actions { display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .action-btn { background: none; border: none; cursor: pointer; color: #888; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .action-btn:hover { color: var(--border-color); }
+        .copy-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 12px; display: none; z-index: 10; }
+
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="app-container">
+        
+        <div class="header">
+            <div class="header-btn" onclick="window.location.href='index.html'">⬅️</div>
+            <div class="header-title">فەرموودە سەحیحەکان</div>
+            <div class="header-btn" onclick="scrollToTop()">🔝</div>
+        </div>
+
+        <div class="content" id="content-area">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-box" placeholder="گەڕان بەدوای فەرموودەدا..." onkeyup="filterHadiths()">
+            </div>
+
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab('all')">هەمووی</button>
+                <button class="tab-btn" onclick="switchTab('bukhari')">صحيح البخاري</button>
+                <button class="tab-btn" onclick="switchTab('muslim')">صحيح مسلم</button>
+                <button class="tab-btn" onclick="switchTab('riyad')">رياض الصالحين</button>
+                <button class="tab-btn" onclick="switchTab('qudsi')">فەرموودەی قودسی</button>
+            </div>
+
+            <div id="hadith-list">
+                </div>
+            
+            <div id="no-result" style="display:none; text-align:center; padding:20px; color:#999;">
+                هیچ فەرموودەیەک نەدۆزرایەوە
+            </div>
+
+            <div style="height: 20px;"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Database of Hadiths
+        // تێبینی: ئەمە نموونەی داتابەیسێکی گەورەیە. دەتوانیت لە خوارەوەی سکریپتەکە فەرموودەی تر زیاد بکەیت.
+        const hadithDB = [
+            // Bukhari
+            {
+                id: 1,
+                book: "bukhari",
+                bookName: "صحيح البخاري",
+                arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
+                kurdish: "بەڕاستی هەموو کار و کردەوەکان بەپێی نیەتەکانن، وە بۆ هەموو کەسێک تەنها ئەوە هەیە کە نیەتی هێناوە.",
+                ref: "١"
+            },
+            {
+                id: 2,
+                book: "bukhari",
+                bookName: "صحيح البخاري",
+                arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ القُرْآنَ وَعَلَّمَهُ",
+                kurdish: "باشترینتان ئەو کەسەیە کە فێری قورئان دەبێت و فێری خەڵکیشی دەکات.",
+                ref: "٥٠٢٧"
+            },
+            {
+                id: 3,
+                book: "bukhari",
+                bookName: "صحيح البخاري",
+                arabic: "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+                kurdish: "کەسێکتان ئیمانی تەواو نییە تاوەکو ئەوەی بۆ خۆی پێی خۆشە، بۆ براکەشی پێی خۆش نەبێت.",
+                ref: "١٣"
+            },
+            {
+                id: 4,
+                book: "bukhari",
+                bookName: "صحيح البخاري",
+                arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَاليَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
+                kurdish: "هەرکەسێک باوەڕی بە خودا و ڕۆژی دوایی هەیە، با قسەی چاک بکات یان بێدەنگ بێت.",
+                ref: "٦٠١٨"
+            },
+            // Muslim
+            {
+                id: 5,
+                book: "muslim",
+                bookName: "صحيح مسلم",
+                arabic: "الطُّهُورُ شَطْرُ الْإِيمَانِ",
+                kurdish: "پاکوخاوێنی نیوەی ئیمانە.",
+                ref: "٢٢٣"
+            },
+            {
+                id: 6,
+                book: "muslim",
+                bookName: "صحيح مسلم",
+                arabic: "الدِّينُ النَّصِيحَةُ",
+                kurdish: "ئاین بریتییە لە ئامۆژگاری و دڵسۆزی.",
+                ref: "٥٥"
+            },
+            {
+                id: 7,
+                book: "muslim",
+                bookName: "صحيح مسلم",
+                arabic: "لاَ يَدْخُلُ الْجَنَّةَ مَنْ كَانَ فِي قَلْبِهِ مِثْقَالُ ذَرَّةٍ مِنْ كِبْرٍ",
+                kurdish: "ناچێتە بەهەشتەوە هەرکەسێک بە ئەندازەی گەردیلەیەک لوتبەرزی (تەکەبور) لە دڵیدا هەبێت.",
+                ref: "٩١"
+            },
+            // Riyad
+            {
+                id: 8,
+                book: "riyad",
+                bookName: "رياض الصالحين",
+                arabic: "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ",
+                kurdish: "لە خواترس بە لە هەر شوێنێک بیت، وە بەدوای هەر خراپەیەکدا چاکەیەک بکە بۆ ئەوەی بیسڕێتەوە، وە هەڵسوکەوت لەگەڵ خەڵکدا بکە بە ڕەوشتێکی جوان.",
+                ref: "الترمذي: ١٩٨٧"
+            },
+            {
+                id: 9,
+                book: "riyad",
+                bookName: "رياض الصالحين",
+                arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
+                kurdish: "پێکەنین بە ڕووی براکەتدا بۆ تۆ خێر و سەدەقەیە.",
+                ref: "الترمذي"
+            },
+            // Qudsi
+            {
+                id: 10,
+                book: "qudsi",
+                bookName: "فەرموودەی قودسی",
+                arabic: "يَا عِبَادِي إِنِّي حَرَّمْتُ الظُّلْمَ عَلَى نَفْسِي وَجَعَلْتُهُ بَيْنَكُمْ مُحَرَّمًا فَلَا تَظَالَمُوا",
+                kurdish: "ئەی بەندەکانم، من ستەمم لە خۆم حەرام کردووە و لە نێوان ئێوەشدا حەرامم کردووە، کەواتە ستەم لە یەکتر مەکەن.",
+                ref: "مسلم: ٢٥٧٧"
+            },
+            {
+                id: 11,
+                book: "qudsi",
+                bookName: "فەرموودەی قودسی",
+                arabic: "أَنَا عِنْدَ ظَنِّ عَبْدِي بِي",
+                kurdish: "من لەلای گومانی بەندەکەمم بە خۆم (ئەگەر گومانی باش بێت، ئەوا باش دەبم بۆی).",
+                ref: "متفق عليه"
+            },
+            // More Bukhari
+            {
+                id: 12,
+                book: "bukhari",
+                bookName: "صحيح البخاري",
+                arabic: "لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الغَضَبِ",
+                kurdish: "پاڵەوان و بەهێز ئەو کەسە نییە کە زۆرکەس دەدات بە زەویدا، بەڵکو بەهێز ئەو کەسەیە کە لە کاتی توڕەییدا کۆنترۆڵی خۆی دەکات.",
+                ref: "٦١١٤"
+            },
+            {
+                id: 13,
+                book: "muslim",
+                bookName: "صحيح مسلم",
+                arabic: "أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ",
+                kurdish: "نزیكترین کاتێک کە بەندە لە پەروەردگارییەوە نزیک بێت ئەو کاتەیە کە لە سوجدەدایە، دەی زۆر دوعا و پاڕانەوە بکەن.",
+                ref: "٤٨٢"
+            },
+            {
+                id: 14,
+                book: "riyad",
+                bookName: "رياض الصالحين",
+                arabic: "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+                kurdish: "وشەی جوان و پاک سەدەقە و خێرە.",
+                ref: "متفق عليه"
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        // Load Hadiths on Startup
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHadiths(hadithDB);
+        });
+
+        // Filter by Tab
+        function switchTab(category) {
+            currentCategory = category;
+            
+            // Update UI buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter Data
+            if (category === 'all') {
+                renderHadiths(hadithDB);
+            } else {
+                const filtered = hadithDB.filter(h => h.book === category);
+                renderHadiths(filtered);
+            }
+            
+            // Reset Search
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Search Function
+        function filterHadiths() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            let baseList = (currentCategory === 'all') 
+                ? hadithDB 
+                : hadithDB.filter(h => h.book === currentCategory);
+
+            const filtered = baseList.filter(item => 
+                item.kurdish.toLowerCase().includes(query) || 
+                item.arabic.includes(query) ||
+                item.ref.includes(query)
+            );
+
+            renderHadiths(filtered);
+        }
+
+        // Render Function
+        function renderHadiths(list) {
+            const container = document.getElementById('hadith-list');
+            const noResult = document.getElementById('no-result');
+            
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                noResult.style.display = 'block';
+                return;
+            } else {
+                noResult.style.display = 'none';
+            }
+
+            list.forEach(hadith => {
+                const card = document.createElement('div');
+                card.className = 'hadith-card';
+                card.innerHTML = `
+                    <div class="hadith-header">
+                        <span class="hadith-book">${hadith.bookName}</span>
+                        <span class="hadith-number">ژمارە: ${hadith.ref}</span>
+                    </div>
+                    <div class="hadith-arabic">${hadith.arabic}</div>
+                    <div class="hadith-kurdish">${hadith.kurdish}</div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="copyHadith(this, '${hadith.arabic}', '${hadith.kurdish}')">
+                            📋 کۆپی
+                        </button>
+                        <button class="action-btn" onclick="shareHadith('${hadith.arabic}', '${hadith.kurdish}')">
+                            📤 بڵاوکردنەوە
+                        </button>
+                    </div>
+                    <div class="copy-msg">کۆپی کرا ✅</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Scroll to Top
+        function scrollToTop() {
+            document.querySelector('.content').scrollTo(0, 0);
+        }
+
+        // Copy Function
+        function copyHadith(btn, ar, ku) {
+            const text = `${ar}\n\n${ku}\n\nلە ئەپی Islam Online`;
+            navigator.clipboard.writeText(text).then(() => {
+                const msg = btn.closest('.hadith-card').querySelector('.copy-msg');
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.display = 'none'; }, 2000);
+            });
+        }
+
+        // Share Function
+        function shareHadith(ar, ku) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'فەرموودەی پێغەمبەر (د.خ)',
+                    text: `${ar}\n\n${ku}\n\n`,
+                    url: window.location.href
+                });
+            } else {
+                alert('موبایلەکەت پشتگیری بڵاوکردنەوە ناکات، تکایە کۆپی بکە.');
+            }
+        }
+
+    </script>
+</body>
+</html>
