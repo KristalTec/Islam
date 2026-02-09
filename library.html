@@ -6,7 +6,8 @@
     <title>کتێبخانەی گشتگیری ئیسلامی</title>
     <style>
         :root {
-            --primary-color: #2e7d32;
+            --primary-color: #2e7d32; /* سەوزی ئیسلامی */
+            --danger-color: #c0392b; /* سوور بۆ دەرچوون */
             --bg-color: #f4f7f6;
         }
 
@@ -22,9 +23,34 @@
             text-align: center;
             margin-bottom: 40px;
             background: white;
-            padding: 30px;
+            padding: 40px 30px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative; /* بۆ ئەوەی دوگمەی دەرچوونەکە جێگیر بکەین */
+        }
+
+        /* ستایلی دوگمەی دەرچوون */
+        .exit-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px; /* لە لای چەپ دەبێت */
+            background-color: var(--danger-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .exit-btn:hover {
+            background-color: #a93226;
         }
 
         h1 { color: var(--primary-color); margin: 0; }
@@ -47,7 +73,7 @@
 
         input[type="text"]:focus { border-color: var(--primary-color); }
 
-        button {
+        button.search-btn {
             padding: 12px 25px;
             background-color: var(--primary-color);
             color: white;
@@ -57,7 +83,7 @@
             transition: 0.3s;
         }
 
-        button:hover { background-color: #1b5e20; }
+        button.search-btn:hover { background-color: #1b5e20; }
 
         #books-container {
             display: grid;
@@ -131,12 +157,16 @@
 <body>
 
     <header>
+        <button onclick="exitApp()" class="exit-btn">
+            🚪 دەرچوون
+        </button>
+
         <h1>📚 کتێبخانەی گشتگیری ئیسلامی</h1>
-        <p>هەموو کتێبەکان لە یەک شوێندا</p>
+        <p>هەموو کتێبەکان لە یەک شوێندا - گەڕان و خوێندنەوە</p>
         
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="بۆ هەر کتێبێک دەگەڕێیت لێرە بینووسە...">
-            <button onclick="initiateSearch()">بگەڕێ</button>
+            <input type="text" id="searchInput" placeholder="ناوی کتێب یان بابەتی دڵخواز بنووسە...">
+            <button class="search-btn" onclick="initiateSearch()">بگەڕێ</button>
         </div>
     </header>
 
@@ -145,7 +175,7 @@
 
     <script>
         let startIndex = 0;
-        let currentQuery = 'subject:islam'; // بە شێوەی بنەڕەتی کتێبە ئیسلامییەکان بار دەکات
+        let currentQuery = 'subject:islam'; 
         let isSearching = false;
 
         // بارکردنی یەکەم جار
@@ -201,27 +231,39 @@
             }
         }
 
-        // فەنکشنی تایبەت بە گەڕان
+        // فەنکشنی گەڕان
         function initiateSearch() {
             const query = document.getElementById('searchInput').value;
             if (query.trim() === "") {
-                currentQuery = 'subject:islam'; // گەڕانەوە بۆ دۆخی ئاسایی ئەگەر سێرچەکە بەتاڵ بوو
+                currentQuery = 'subject:islam';
             } else {
-                currentQuery = query; // گەڕان بۆ ئەو ناوەی بەکارهێنەر دەیەوێت
+                currentQuery = query;
             }
-            loadBooks(true); // پاککردنەوەی لاپەڕە و بارکردنی ئەنجامە نوێیەکان
+            loadBooks(true);
         }
 
-        // دابەزین بۆ خوارەوە بۆ هێنانی کتێبی زیاتر
+        // فەنکشنی دەرچوون
+        function exitApp() {
+            if (confirm("دڵنیایت دەتەوێت لە کتێبخانەکە بچیتە دەرەوە؟")) {
+                // هەوڵدان بۆ داخستنی پەنجەرەکە
+                window.close();
+                
+                // ئەگەر داخستنەکە ڕێگە پێنەدراو بوو (چونکە وێبە)، دەگەڕێتەوە بۆ پێشوو
+                window.history.back();
+                
+                // ئەگەر ئەوەش نەبوو، دەچێتە لاپەڕەیەکی بەتاڵ
+                window.location.href = "about:blank";
+            }
+        }
+
+        // Infinite Scroll
         window.onscroll = function() {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) {
-                // تەنها ئەگەر خەریکی بارکردن نەبێت، داواکاری نوێ بنێرە
                 if (document.getElementById('loading').style.display !== 'none') return;
                 loadBooks();
             }
         };
 
-        // گەڕان بە Enter
         document.getElementById("searchInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") initiateSearch();
         });
