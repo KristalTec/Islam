@@ -61,7 +61,7 @@
 
         /* بەشی مێژوو (History Panel) */
         #history-panel {
-            display: none; /* سەرەتا شاردراوەتەوە */
+            display: none;
             position: absolute;
             top: 60px;
             left: 20px;
@@ -204,8 +204,7 @@
     <script>
         let startIndex = 0;
         let currentQuery = 'subject:islam';
-        let isSearching = false;
-
+        
         // بارکردنی یەکەم جار
         loadBooks();
 
@@ -262,32 +261,22 @@
 
         function initiateSearch() {
             const query = document.getElementById('searchInput').value;
-            if (query.trim() === "") {
-                goHome();
-            } else {
+            if (query.trim() !== "") {
                 currentQuery = query;
-                saveToHistory(query); // لێرەدا پاشەکەوت دەکرێت
+                saveToHistory(query);
                 loadBooks(true);
             }
         }
 
-        // پاشەکەوتکردنی گەڕان لەگەڵ کات
         function saveToHistory(query) {
             let history = JSON.parse(localStorage.getItem('islamicLibHistory')) || [];
-            
             const now = new Date();
             const timeString = now.toLocaleDateString('ku-IQ') + ' - ' + now.toLocaleTimeString('ku-IQ');
-
-            // زیادکردن بۆ سەرەتای لیستەکە
             history.unshift({ text: query, time: timeString });
-
-            // هێشتنەوەی تەنها ٢٠ دانەی کۆتایی بۆ ئەوەی زۆر قورس نەبێت
             if (history.length > 20) history.pop();
-
             localStorage.setItem('islamicLibHistory', JSON.stringify(history));
         }
 
-        // پیشاندانی مێژوو
         function toggleHistory() {
             const panel = document.getElementById('history-panel');
             const listDiv = document.getElementById('history-list');
@@ -316,27 +305,23 @@
             }
         }
 
-        // گەڕان لە ڕێگەی مێژووەوە
         function searchHistoryItem(text) {
             document.getElementById('searchInput').value = text;
             currentQuery = text;
-            document.getElementById('history-panel').style.display = 'none'; // داخستنی لیستەکە
+            document.getElementById('history-panel').style.display = 'none';
             loadBooks(true);
         }
 
-        // سڕینەوەی مێژوو
         function clearHistory() {
             if(confirm("دڵنیایت دەتەوێت مێژووی گەڕانەکانت بسڕیتەوە؟")) {
                 localStorage.removeItem('islamicLibHistory');
-                toggleHistory(); // نوێکردنەوەی لیستەکە
+                toggleHistory();
             }
         }
 
+        // گۆڕانکارییەکە لێرەیە: دەچێتەوە بۆ index.html
         function goHome() {
-            document.getElementById('searchInput').value = '';
-            currentQuery = 'subject:islam';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            loadBooks(true);
+            window.location.href = "index.html";
         }
 
         window.onscroll = function() {
