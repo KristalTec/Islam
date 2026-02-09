@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>کتێبخانەی ئیسلامی ئۆنلاین</title>
+    <title>کتێبخانەی گشتگیری ئیسلامی</title>
     <style>
         :root {
-            --primary-color: #2e7d32; /* ڕەنگی سەوزی ئیسلامی */
+            --primary-color: #2e7d32;
             --bg-color: #f4f7f6;
         }
 
@@ -27,10 +27,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        h1 {
-            color: var(--primary-color);
-            margin: 0;
-        }
+        h1 { color: var(--primary-color); margin: 0; }
 
         .search-container {
             margin-top: 20px;
@@ -41,16 +38,14 @@
 
         input[type="text"] {
             padding: 12px;
-            width: 60%;
+            width: 50%;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             outline: none;
         }
 
-        input[type="text"]:focus {
-            border-color: var(--primary-color);
-        }
+        input[type="text"]:focus { border-color: var(--primary-color); }
 
         button {
             padding: 12px 25px;
@@ -59,15 +54,11 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
+            transition: 0.3s;
         }
 
-        button:hover {
-            background-color: #1b5e20;
-        }
+        button:hover { background-color: #1b5e20; }
 
-        /* بەشی کتێبەکان */
         #books-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -86,9 +77,7 @@
             height: 100%;
         }
 
-        .book-card:hover {
-            transform: translateY(-5px);
-        }
+        .book-card:hover { transform: translateY(-5px); }
 
         .book-img {
             width: 100%;
@@ -108,6 +97,10 @@
             font-weight: bold;
             margin-bottom: 5px;
             font-size: 1.1em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .book-author {
@@ -127,16 +120,11 @@
             border-radius: 5px;
         }
 
-        .read-btn:hover {
-            background-color: #0277bd;
-        }
-
-        .loading {
+        .loading-status {
             text-align: center;
-            font-size: 1.2em;
-            color: #666;
-            margin-top: 20px;
-            display: none;
+            padding: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
         }
     </style>
 </head>
@@ -144,47 +132,47 @@
 
     <header>
         <h1>📚 کتێبخانەی گشتگیری ئیسلامی</h1>
-        <p>گەڕان بەدوای هەموو کتێبەکان لە سەرچاوە جیهانییەکانەوە</p>
+        <p>هەموو کتێبەکان لە یەک شوێندا</p>
         
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="ناوی کتێب یان نووسەر بنووسە (م. تەفسیری قورئان)...">
-            <button onclick="searchBooks()">گەڕان</button>
+            <input type="text" id="searchInput" placeholder="بۆ هەر کتێبێک دەگەڕێیت لێرە بینووسە...">
+            <button onclick="initiateSearch()">بگەڕێ</button>
         </div>
     </header>
 
-    <div id="loading" class="loading">جارێ دەگەڕێم، تکایە چاوەڕێ بە...</div>
     <div id="books-container"></div>
+    <div id="loading" class="loading-status">خەریکە کتێبەکان باردەکرێن...</div>
 
     <script>
-        // فەنکشن بۆ هێنانی کتێبەکان لە Google Books API
-        async function searchBooks() {
-            const query = document.getElementById('searchInput').value;
-            const container = document.getElementById('books-container');
-            const loading = document.getElementById('loading');
+        let startIndex = 0;
+        let currentQuery = 'subject:islam'; // بە شێوەی بنەڕەتی کتێبە ئیسلامییەکان بار دەکات
+        let isSearching = false;
 
-            if (!query) {
-                alert("تکایە ناوی کتێبێک بنووسە");
-                return;
+        // بارکردنی یەکەم جار
+        loadBooks();
+
+        async function loadBooks(reset = false) {
+            if (reset) {
+                startIndex = 0;
+                document.getElementById('books-container').innerHTML = '';
             }
 
-            // پاککردنەوەی ئەنجامی پێشوو
-            container.innerHTML = '';
-            loading.style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
 
             try {
-                // ناردنی داواکاری بۆ سێرڤەری کتێبەکان
-                // لێرەدا وشەی "islam"م زیاد کردووە بۆ ئەوەی ئەنجامەکان زیاتر ئیسلامی بن
-                const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}+subject:islam&maxResults=20&printType=books`);
+                const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${currentQuery}&startIndex=${startIndex}&maxResults=40&printType=books`);
                 const data = await response.json();
 
-                loading.style.display = 'none';
-
-                if (data.totalItems === 0) {
-                    container.innerHTML = '<p style="text-align:center; width:100%;">هیچ کتێبێک نەدۆزرایەوە.</p>';
+                if (!data.items || data.items.length === 0) {
+                    if (startIndex === 0) {
+                        document.getElementById('books-container').innerHTML = '<p style="grid-column: 1/-1; text-align:center;">هیچ کتێبێک نەدۆزرایەوە.</p>';
+                    }
+                    document.getElementById('loading').style.display = 'none';
                     return;
                 }
 
-                // پیشاندانی کتێبەکان
+                const container = document.getElementById('books-container');
+                
                 data.items.forEach(book => {
                     const info = book.volumeInfo;
                     const title = info.title || "بێ ناونیشان";
@@ -196,27 +184,46 @@
                         <div class="book-card">
                             <img src="${imgUrl}" alt="${title}" class="book-img">
                             <div class="book-info">
-                                <div class="book-title">${title}</div>
+                                <div class="book-title" title="${title}">${title}</div>
                                 <div class="book-author">${authors}</div>
-                                <a href="${link}" target="_blank" class="read-btn">📖 خوێندنەوە / پیشاندان</a>
+                                <a href="${link}" target="_blank" class="read-btn">📖 خوێندنەوە</a>
                             </div>
                         </div>
                     `;
                     container.innerHTML += card;
                 });
 
+                document.getElementById('loading').style.display = 'none';
+                startIndex += 40;
             } catch (error) {
-                loading.style.display = 'none';
-                container.innerHTML = '<p style="text-align:center; color:red;">هەڵەیەک ڕوویدا لە پەیوەستبوون بە ئینتەرنێتەوە.</p>';
-                console.error(error);
+                console.error("Error:", error);
+                document.getElementById('loading').innerText = "هەڵەیەک لە پەیوەستبوون ڕوویدا.";
             }
         }
 
-        // گەڕان بە فشارکردنی Enter
-        document.getElementById("searchInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                searchBooks();
+        // فەنکشنی تایبەت بە گەڕان
+        function initiateSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim() === "") {
+                currentQuery = 'subject:islam'; // گەڕانەوە بۆ دۆخی ئاسایی ئەگەر سێرچەکە بەتاڵ بوو
+            } else {
+                currentQuery = query; // گەڕان بۆ ئەو ناوەی بەکارهێنەر دەیەوێت
             }
+            loadBooks(true); // پاککردنەوەی لاپەڕە و بارکردنی ئەنجامە نوێیەکان
+        }
+
+        // دابەزین بۆ خوارەوە بۆ هێنانی کتێبی زیاتر
+        window.onscroll = function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) {
+                // تەنها ئەگەر خەریکی بارکردن نەبێت، داواکاری نوێ بنێرە
+                if (document.getElementById('loading').style.display !== 'none') return;
+                loadBooks();
+            }
+        };
+
+        // گەڕان بە Enter
+        document.getElementById("searchInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") initiateSearch();
         });
     </script>
 
