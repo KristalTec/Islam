@@ -3,108 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سەرەکی - Islam Online</title>
+    <title>سەرەکی - ڕەمەزان کەریم</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
+        /* ================= R A M A D A N   T H E M E ================= */
         * { -webkit-user-select: none; user-select: none; box-sizing: border-box; }
-        :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --text-color: #2c3e50; --nav-bg: #ffffff; }
-        body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-        .app-container { width: 100%; max-width: 600px; background-color: var(--bg-color); height: 100%; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        
+        :root { 
+            --bg-deep: #0f172a;      /* Deep Night Blue */
+            --bg-card: rgba(30, 41, 59, 0.7); /* Glassy Card */
+            --gold: #fbbf24;         /* Bright Gold */
+            --gold-dark: #b45309;    /* Dark Gold/Bronze */
+            --text-main: #f1f5f9;    /* White-ish */
+            --text-muted: #94a3b8;   /* Light Grey */
+            --highlight: #10b981;    /* Emerald Green */
+            --nav-bg: rgba(15, 23, 42, 0.95);
+            --border-glass: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        body { 
+            font-family: 'Amiri', serif; 
+            background: linear-gradient(135deg, #020024 0%, #090979 35%, #00d4ff 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'), linear-gradient(to bottom, #0f172a, #1e1b4b);
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            height: 100vh; 
+            overflow: hidden; 
+            color: var(--text-main);
+        }
+
+        /* Container with Glass Effect */
+        .app-container { 
+            width: 100%; 
+            max-width: 600px; 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            height: 100%; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); 
+            border-left: var(--border-glass);
+            border-right: var(--border-glass);
+        }
         
         /* Header */
-        .header { background: white; padding: 15px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 50; }
-        .icon-group { display: flex; gap: 15px; z-index: 10; }
-        .header-btn { cursor: pointer; font-size: 22px; padding: 5px; transition: 0.3s; position: relative; }
-        .header-btn:hover { transform: scale(1.1); color: #b6962f; }
-        .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: red; border-radius: 50%; border: 1px solid white; display: none; }
+        .header { 
+            background: rgba(15, 23, 42, 0.8); 
+            padding: 15px; 
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            color: var(--gold); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            z-index: 50; 
+        }
+        .header-btn { cursor: pointer; font-size: 24px; padding: 5px; transition: 0.3s; position: relative; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4); }
+        .header-btn:hover { transform: scale(1.1); color: #fff; }
+        .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 1px solid white; display: none; box-shadow: 0 0 5px red; }
         
-        /* Content & Hero */
-        .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; scroll-behavior: smooth; }
-        .hero-card { background: linear-gradient(135deg, var(--border-color), #f1c40f); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); position: relative; overflow: hidden; }
-        .hero-title { font-size: 24px; margin-bottom: 10px; position: relative; z-index: 2; }
-        .hero-date { font-size: 16px; opacity: 0.9; position: relative; z-index: 2; }
-        .hero-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); }
+        /* Content */
+        .content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; scroll-behavior: smooth; }
         
+        /* Hero Card - Ramadan Style */
+        .hero-card { 
+            background: linear-gradient(135deg, #b45309, #fbbf24); 
+            color: #0f172a; 
+            padding: 25px; 
+            border-radius: 20px; 
+            text-align: center; 
+            margin-bottom: 25px; 
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2); 
+            position: relative; 
+            overflow: hidden; 
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .hero-title { font-size: 28px; margin-bottom: 5px; position: relative; z-index: 2; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.4); }
+        .hero-date { font-size: 16px; opacity: 0.9; position: relative; z-index: 2; font-weight: bold; }
+        .hero-pattern { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.2; 
+            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); 
+        }
+        /* Lantern Decoration CSS */
+        .lantern-deco {
+            position: absolute; top: -10px; right: 20px; font-size: 50px; opacity: 0.3; transform: rotate(15deg);
+        }
+
         /* Menu Grid */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .card { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #eee; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-color); }
-        .card:active { transform: scale(0.95); background-color: #fffbf2; }
-        .card-icon { font-size: 32px; }
-        .card-title { font-weight: bold; font-size: 18px; }
+        .card { 
+            background: var(--bg-card); 
+            padding: 20px; 
+            border-radius: 16px; 
+            text-align: center; 
+            border: var(--border-glass); 
+            transition: 0.3s; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            text-decoration: none; 
+            color: var(--text-main); 
+        }
+        .card:hover { transform: translateY(-5px); background: rgba(251, 191, 36, 0.1); border-color: var(--gold); }
+        .card:active { transform: scale(0.95); }
+        .card-icon { font-size: 32px; filter: drop-shadow(0 0 5px rgba(251,191,36,0.5)); }
+        .card-title { font-weight: bold; font-size: 18px; color: var(--gold); }
 
         /* Feed System */
-        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .feed-title { font-size: 18px; font-weight: bold; color: var(--border-color); display: flex; align-items: center; gap: 8px; }
-        .live-indicator { width: 8px; height: 8px; background: red; border-radius: 50%; animation: blink 1.5s infinite; }
+        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .feed-title { font-size: 18px; font-weight: bold; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+        .live-indicator { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: blink 1.5s infinite; box-shadow: 0 0 8px #ef4444; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .feed-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: 0.5s; position: relative; overflow: hidden; animation: slideIn 0.5s ease; }
+        
+        .feed-card { 
+            background: rgba(30, 41, 59, 0.6); 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            transition: 0.5s; 
+            position: relative; 
+            overflow: hidden; 
+            animation: slideIn 0.5s ease; 
+        }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: bold; }
-        .tag-ayah { background: var(--highlight-color); } 
-        .tag-hadith { background: #3498db; } 
-        .tag-dua { background: #e67e22; } 
-        .tag-info { background: #9b59b6; } 
-        .tag-name { background: #e74c3c; } 
-        .feed-content { font-size: 17px; line-height: 1.8; color: #444; margin-top: 15px; text-align: justify; }
-        .feed-source { font-size: 12px; color: #888; margin-top: 10px; display: block; font-style: italic; border-top: 1px dashed #eee; padding-top: 5px; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--border-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 20px auto; }
+        
+        .feed-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 4px 10px; border-radius: 20px; color: #fff; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .tag-ayah { background: linear-gradient(45deg, #10b981, #059669); } 
+        .tag-hadith { background: linear-gradient(45deg, #3b82f6, #2563eb); } 
+        .tag-dua { background: linear-gradient(45deg, #f59e0b, #d97706); } 
+        .tag-info { background: linear-gradient(45deg, #8b5cf6, #7c3aed); } 
+        .tag-name { background: linear-gradient(45deg, #ef4444, #dc2626); } 
+        
+        .feed-content { font-size: 17px; line-height: 1.8; color: #e2e8f0; margin-top: 15px; text-align: justify; text-shadow: 0 1px 1px rgba(0,0,0,0.5); }
+        .feed-source { font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-style: italic; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; }
+        
+        /* Moon Loader */
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--gold); border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Modals & Library */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--border-color); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; }
-        .full-screen-modal { width: 100%; height: 100%; max-width: 600px; max-height: 100%; border-radius: 0; border: none; padding: 0; display: flex; flex-direction: column; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; align-items: center; justify-content: center; }
+        .modal-content { background: #1e293b; color: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--gold); animation: popUp 0.3s ease; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 0 30px rgba(251, 191, 36, 0.2); }
+        .full-screen-modal { width: 100%; height: 100%; max-width: 600px; max-height: 100%; border-radius: 0; border: none; padding: 0; display: flex; flex-direction: column; background: #0f172a; }
         
         /* Library Specific Styles */
-        .library-header { background: white; padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 10; }
-        .back-btn { font-size: 24px; cursor: pointer; color: var(--text-color); }
+        .library-header { background: #1e293b; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 10; }
+        .back-btn { font-size: 24px; cursor: pointer; color: var(--gold); }
         .search-container { width: 100%; position: relative; }
-        .search-input { width: 100%; padding: 10px 15px; padding-right: 35px; border-radius: 20px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Amiri', serif; outline: none; transition: 0.3s; }
-        .search-input:focus { border-color: var(--border-color); background: white; box-shadow: 0 0 5px rgba(212, 175, 55, 0.2); }
-        .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #999; }
-        .library-body { padding: 15px; overflow-y: auto; background: #fffbf2; flex-grow: 1; }
-        .book-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; border: 1px solid transparent; }
-        .book-item:hover { border-color: var(--border-color); transform: translateY(-2px); }
-        .book-thumb { width: 50px; height: 70px; background: linear-gradient(45deg, #2c3e50, #34495e); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .search-input { width: 100%; padding: 12px 15px; padding-right: 35px; border-radius: 25px; border: 1px solid #334155; background: #0f172a; color: white; font-family: 'Amiri', serif; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(251, 191, 36, 0.1); }
+        .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #64748b; }
+        .library-body { padding: 15px; overflow-y: auto; background: #0f172a; flex-grow: 1; }
+        
+        .book-item { background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; border: 1px solid transparent; }
+        .book-item:hover { border-color: var(--gold); background: rgba(30, 41, 59, 0.8); }
+        .book-thumb { width: 50px; height: 70px; background: linear-gradient(45deg, #b45309, #fbbf24); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #0f172a; font-size: 20px; box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
         .book-info { text-align: right; flex-grow: 1; }
-        .book-title { font-weight: bold; color: var(--text-color); margin-bottom: 3px; font-size: 16px; }
-        .book-author { font-size: 12px; color: #7f8c8d; }
-        .book-cat { font-size: 10px; background: #ecf0f1; padding: 2px 6px; border-radius: 4px; color: #7f8c8d; display: inline-block; margin-top: 5px; }
-        .read-btn { background: var(--border-color); color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px; border: none; cursor: pointer; }
+        .book-title { font-weight: bold; color: var(--text-main); margin-bottom: 3px; font-size: 16px; }
+        .book-author { font-size: 12px; color: #94a3b8; }
+        .book-cat { font-size: 10px; background: #334155; padding: 2px 8px; border-radius: 10px; color: #cbd5e1; display: inline-block; margin-top: 5px; }
+        .read-btn { background: var(--gold); color: #0f172a; padding: 5px 15px; border-radius: 15px; font-size: 12px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .read-btn:hover { background: #fff; box-shadow: 0 0 10px white; }
 
         /* Other Styles */
-        .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .user-list { max-height: 200px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #f0f0f0; padding: 5px; border-radius: 5px; display: none; }
-        .user-item { padding: 10px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; justify-content: space-between; border-bottom: 2px solid #eee; }
+        .stat-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; color: #cbd5e1; }
+        .user-list { max-height: 200px; overflow-y: auto; margin-top: 10px; text-align: right; border: 1px solid #334155; padding: 5px; border-radius: 5px; display: none; background: #0f172a; }
+        .user-item { padding: 10px; background: rgba(255,255,255,0.05); margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; font-size: 12px; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .user-details { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-        .user-ip { font-family: monospace; color: #555; direction: ltr; font-size: 11px; }
-        .user-loc { color: #d35400; font-weight: bold; font-size: 10px; direction: ltr; }
-        .gps-link { background: #27ae60; color: white; padding: 2px 6px; border-radius: 4px; text-decoration: none; font-size: 10px; margin-top: 2px; display: inline-block;}
+        .user-ip { font-family: monospace; color: #64748b; direction: ltr; font-size: 11px; }
+        .user-loc { color: var(--gold); font-weight: bold; font-size: 10px; direction: ltr; }
+        .gps-link { background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; text-decoration: none; font-size: 10px; margin-top: 2px; display: inline-block;}
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 8px; }
-        .dot.online { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
+        .dot.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        
         .history-list { max-height: 300px; overflow-y: auto; text-align: right; margin-top: 10px; }
-        .history-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 8px; border-right: 3px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .history-item { background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 8px; border-radius: 8px; border-right: 3px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
         .h-info { display: flex; flex-direction: column; }
-        .h-name { font-weight: bold; font-size: 16px; color: var(--text-color); }
-        .h-time { font-size: 11px; color: #888; }
-        .clear-btn { background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
+        .h-name { font-weight: bold; font-size: 16px; color: var(--text-main); }
+        .h-time { font-size: 11px; color: #94a3b8; }
+        .clear-btn { background: #ef4444; color: white; border: none; padding: 5px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; margin-top: 10px; }
+        
         .notif-toggle-btn { padding: 10px; font-size: 14px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; text-align: center; font-weight: bold; width: 100%; transition: 0.3s; border: 1px solid transparent; }
-        .notif-enabled { background: #e8f8f5; color: #27ae60; border-color: #27ae60; }
-        .notif-disabled { background: #fdedec; color: #c0392b; border-color: #c0392b; animation: pulse 2s infinite; }
+        .notif-enabled { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: #10b981; }
+        .notif-disabled { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #ef4444; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+        
         .social-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border: 1px solid #ddd; transition: 0.2s; }
-        .social-btn img { width: 22px; height: 22px; }
-        .social-btn:hover { transform: translateY(-3px); border-color: var(--border-color); background: #fffbf2; }
+        .social-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
+        .social-btn img { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+        .social-btn:hover { transform: translateY(-3px); border-color: var(--gold); background: var(--gold); }
+        .social-btn:hover img { filter: none; }
         
         /* Navigation */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 70px; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; gap: 5px; transition: 0.2s; width: 33.33%; }
-        .nav-item.active { color: var(--border-color); font-weight: bold; }
-        .nav-icon { font-size: 24px; }
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); height: 75px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); z-index: 100; backdrop-filter: blur(10px); }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 12px; gap: 6px; transition: 0.3s; width: 33.33%; padding: 10px; border-radius: 10px; }
+        .nav-item.active { color: var(--gold); font-weight: bold; background: rgba(251, 191, 36, 0.1); }
+        .nav-icon { font-size: 24px; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
         .nav-item:active { transform: scale(0.9); }
-        .admin-badge { background: #e74c3c; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; display: none; }
+        .admin-badge { background: #ef4444; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; display: none; box-shadow: 0 0 5px red; }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
@@ -121,7 +228,7 @@
                     <span class="notif-badge" id="history-badge"></span>
                 </div>
             </div>
-            <div style="font-weight:bold; font-size:18px; cursor:pointer;" onclick="triggerAdminLogin()">
+            <div style="font-weight:bold; font-size:18px; cursor:pointer; text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);" onclick="triggerAdminLogin()">
                 Islam Online <span id="admin-indicator" class="admin-badge">Admin</span>
             </div>
             <div class="header-btn" onclick="triggerManualUpdate()" title="نوێکردنەوە">🔃</div>
@@ -130,7 +237,8 @@
         <div class="content">
             <div class="hero-card">
                 <div class="hero-pattern"></div>
-                <div class="hero-title">بەخێربێیت</div>
+                <div class="lantern-deco">🌙</div>
+                <div class="hero-title">ڕەمەزان پیرۆز</div>
                 <div class="hero-date" id="current-date">...</div>
             </div>
 
@@ -156,16 +264,16 @@
             <div class="feed-header">
                 <div class="feed-title">
                     <span class="live-indicator"></span>
-                    <span>نوێترین بابەتەکان</span>
+                    <span>بابەتە نوێکان</span>
                 </div>
-                <span style="font-size:12px; color:#888;">ڕاستەوخۆ</span>
+                <span style="font-size:12px; color:#94a3b8;">ڕاستەوخۆ</span>
             </div>
             
             <div id="feed-container">
                 <div class="loader"></div>
             </div>
             
-            <div style="margin-top: 30px; text-align: center; color: #ccc; font-size: 12px;">
+            <div style="margin-top: 30px; text-align: center; color: #64748b; font-size: 12px; opacity: 0.6;">
                 Made by Muhamad Ibrahim Rasul
             </div>
         </div>
@@ -181,7 +289,7 @@
             </a>
             <a href="daily.html" class="nav-item">
                 <span class="nav-icon">🕌</span>
-                <span>بانگ و فەرموودە</span>
+                <span>بانگ</span>
             </a>
         </div>
     </div>
@@ -202,7 +310,7 @@
 
     <div id="settingsModal" class="modal" onclick="closeModal(event, 'settingsModal')">
         <div class="modal-content">
-            <h3>⚙️ ڕێکخستنەکان</h3>
+            <h3 style="color:var(--gold); border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">⚙️ ڕێکخستنەکان</h3>
             
             <div id="notif-toggle-btn" class="notif-toggle-btn notif-disabled" onclick="toggleNotifications()">
                 🔔 کرتە بکە بۆ چالاککردنی نۆتیفیکەیشن
@@ -210,29 +318,29 @@
 
             <div class="stat-row">
                 <span>سەردانی تۆ:</span>
-                <b id="visit-count">0</b>
+                <b id="visit-count" style="color:white;">0</b>
             </div>
             <div class="stat-row">
                 <span>ئۆنڵاین لە جیهاندا:</span>
-                <b id="active-count" style="color:var(--highlight-color);">...</b>
+                <b id="active-count" style="color:var(--highlight);">...</b>
             </div>
             
-            <div class="stat-row" style="background:#f0f0f0; border-radius:5px; margin-top:5px; font-size:10px;">
+            <div class="stat-row" style="background:rgba(255,255,255,0.05); border-radius:5px; margin-top:5px; font-size:10px;">
                 <span>ID-ی ئامێرەکەت:</span>
-                <b id="my-device-id" style="font-family:monospace;">...</b>
+                <b id="my-device-id" style="font-family:monospace; color:#94a3b8;">...</b>
             </div>
 
             <div id="admin-section" style="display:none;">
-                <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#c0392b; border-top:1px dashed #ddd; padding-top:10px;">
+                <div style="text-align:right; margin-top:15px; font-weight:bold; font-size:14px; color:#ef4444; border-top:1px dashed #334155; padding-top:10px;">
                     🔒 پانێڵی ئەدمین:
                 </div>
                 <div class="user-list" id="users-list-container" style="display:block;">
-                    <div style="text-align:center; padding:10px;">جاری دەکرێت...</div>
+                    <div style="text-align:center; padding:10px; color:#94a3b8;">جاری دەکرێت...</div>
                 </div>
-                <button onclick="logoutAdmin()" style="width:100%; margin-top:5px; background:#e74c3c; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">چوونە دەرەوە لە ئەدمین</button>
+                <button onclick="logoutAdmin()" style="width:100%; margin-top:5px; background:#ef4444; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold;">چوونە دەرەوە لە ئەدمین</button>
             </div>
 
-            <div style="margin-top:20px; font-weight:bold; color:var(--border-color); border-bottom: 1px solid #eee;">📞 پەیوەندی</div>
+            <div style="margin-top:20px; font-weight:bold; color:var(--gold); border-bottom: 1px solid rgba(255,255,255,0.1);">📞 پەیوەندی</div>
             <div class="social-row" style="margin-top:10px;">
                 <a href="https://facebook.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
                 <a href="https://instagram.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"></a>
@@ -240,17 +348,17 @@
                 <a href="https://tiktok.com" target="_blank" class="social-btn"><img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg"></a>
             </div>
 
-            <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
+            <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; padding:8px 20px; background:var(--gold); color:#0f172a; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">داخستن</button>
         </div>
     </div>
 
     <div id="historyModal" class="modal" onclick="closeModal(event, 'historyModal')">
         <div class="modal-content">
-            <h3>🕒 مێژووی خوێندنەوە</h3>
+            <h3 style="color:var(--gold);">🕒 مێژووی خوێندنەوە</h3>
             <div id="history-list-container" class="history-list"></div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                <button class="clear-btn" onclick="clearHistory()">🗑️ سڕینەوەی هەمووی</button>
-                <button onclick="document.getElementById('historyModal').style.display='none'" style="padding:8px 20px; background:var(--border-color); color:white; border:none; border-radius:5px; cursor:pointer;">داخستن</button>
+                <button class="clear-btn" onclick="clearHistory()">🗑️ سڕینەوە</button>
+                <button onclick="document.getElementById('historyModal').style.display='none'" style="padding:8px 20px; background:var(--gold); color:#0f172a; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">داخستن</button>
             </div>
         </div>
     </div>
@@ -298,9 +406,10 @@
                 if (!response.ok) throw new Error("JSON not found");
                 const jsonHadiths = await response.json();
                 const formattedHadiths = jsonHadiths.map(h => {
-                    return `<div style="font-weight:bold; font-size:18px; color:#2c3e50; margin-bottom:5px;">${h.arabic}</div>
-                            <div style="font-size:15px; color:#555; border-top:1px dashed #eee; padding-top:5px;">${h.kurdish}</div>
-                            <div style="font-size:10px; color:#999; text-align:left;">${h.bookName} - ${h.ref}</div>`;
+                    // Update: Changed text color to white for dark theme
+                    return `<div style="font-weight:bold; font-size:18px; color:var(--text-main); margin-bottom:5px;">${h.arabic}</div>
+                            <div style="font-size:15px; color:#cbd5e1; border-top:1px dashed rgba(255,255,255,0.1); padding-top:5px;">${h.kurdish}</div>
+                            <div style="font-size:10px; color:#94a3b8; text-align:left;">${h.bookName} - ${h.ref}</div>`;
                 });
                 db.hadiths = [...formattedHadiths, ...db.hadiths];
             } catch (e) {
@@ -517,7 +626,7 @@
                     displayContent = `"${content.text || content}"`; 
                 }
 
-                div.innerHTML = `${tagHTML}<div class="feed-content">${displayContent}</div><span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:red">تازە</span>' : ''}</span>`;
+                div.innerHTML = `${tagHTML}<div class="feed-content">${displayContent}</div><span class="feed-source">${sourceHTML} ${isNew ? '• <span style="color:#ef4444">تازە</span>' : ''}</span>`;
                 if (container.children.length > 0) { container.insertBefore(div, container.firstChild); } else { container.appendChild(div); }
             } catch (e) {
                 console.log("Render error");
@@ -677,7 +786,7 @@
             div.className = 'user-item';
             let gpsHTML = '';
             if (gps && gps.length > 5) { gpsHTML = `<a href="${gps}" target="_blank" class="gps-link">📍 کردنەوەی نەخشە</a>`; }
-            div.innerHTML = `<div style="display:flex; align-items:center;"><span class="dot online"></span><span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ (Admin)' : 'میوان'}</span></div><div class="user-details"><span style="font-size:10px; color:#888;">${device}</span><span class="user-loc">${loc || "نەزانراو"}</span><span class="user-ip">${ip}</span>${gpsHTML}</div>`;
+            div.innerHTML = `<div style="display:flex; align-items:center;"><span class="dot online"></span><span style="margin-right:10px; font-weight:bold;">${isMe ? 'تۆ (Admin)' : 'میوان'}</span></div><div class="user-details"><span style="font-size:10px; color:#94a3b8;">${device}</span><span class="user-loc">${loc || "نەزانراو"}</span><span class="user-ip">${ip}</span>${gpsHTML}</div>`;
             return div;
         }
 
