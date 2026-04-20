@@ -107,6 +107,20 @@
         .admin-badge { background: #e74c3c; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; display: none; }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
+
+<!-- PWA Support START -->
+<link rel="manifest" href="/manifest.json">
+
+<meta name="theme-color" content="#0b0f19">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Islam Online">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-startup-image" href="/splash.png">
+<!-- PWA Support END -->
+
 </head>
 <body oncontextmenu="return false;">
 
@@ -685,6 +699,16 @@
         loadInitialFeed();
         fetchIPandLocation(); 
         updateNotifUI();
+
+updateNotifUI();
     </script>
+
+<!-- PWA Service Worker -->
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
+
 </body>
 </html>
