@@ -549,26 +549,87 @@
             }
         }
 
-        function startLiveUpdates() { 
-            // FIX: Ensure this runs and doesn't get stuck
-            setInterval(() => { triggerManualUpdate(); }, 15000); 
+        // ===========================================
+        // CLAUDE AI CLOUDFLARE WORKER INTEGRATION
+        // ===========================================
+        const CLAUDE_WORKER_URL = "https://islam-online-ai.muhammadibrahimrasul.workers.dev";
+
+        const contentTypePrompts = {
+            hadith:  "بنووسە یەک فەرموودەی پێغەمبەر (د.خ) بە زمانی کوردی سۆرانی، کورت و بەمانا. تەنها متنی فەرموودەکە بنووسە، بێ سەرپووتان یان شیکاری زیاتر.",
+            dua:     "بنووسە یەک دوعای ئیسلامی بە عەرەبی، پاشان وەرگێڕانی بۆ کوردی سۆرانی لە کێژیدا. فۆرمات: عەرەبی لەسەر، کوردی لەژێر، بە لایینێک جیاکردنەوە.",
+            name:    "یەکێک لە ناوە جوانەکانی خودا (ئەسمائی حوسنا) هەڵبژێرە و مانای بە کوردی سۆرانی بنووسە. فۆرمات JSON: {\"name\": \"...\", \"meaning\": \"...\"}",
+            info:    "بنووسە یەک زانیاری ئیسلامی سوودمەند و نوێ بە کوردی سۆرانی، کورت و ئاڵۆز. تەنها زانیاریەکە بنووسە.",
+            ayah:    "یەک ئایەتی قورئانی بە عەرەبی هەڵبژێرە (نا دووبارە، نوێ بێت). پاشان سورەتەکەی تێدا بنووسە. فۆرمات JSON: {\"text\": \"...\", \"source\": \"سورة ...\"}"
+        };
+
+        let isAIFetching = false;
+
+        async function fetchAIContent(type) {
+            if (isAIFetching) return null;
+            isAIFetching = true;
+            try {
+                const prompt = contentTypePrompts[type] || contentTypePrompts.info;
+                const response = await fetch(CLAUDE_WORKER_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt })
+                });
+                if (!response.ok) throw new Error("Worker error: " + response.status);
+                const data = await response.json();
+                const text = (data.content || "").trim();
+                if (!text) return null;
+                // If JSON type, parse it
+                if (type === 'name' || type === 'ayah') {
+                    try {
+                        const clean = text.replace(/```json|```/g, "").trim();
+                        return JSON.parse(clean);
+                    } catch(e) { return text; }
+                }
+                return text;
+            } catch (e) {
+                console.log("AI Worker failed, using local DB:", e.message);
+                return null;
+            } finally {
+                isAIFetching = false;
+            }
         }
 
-        function triggerManualUpdate() {
+        function startLiveUpdates() { 
+            // Run first update after 10s, then every 20s
+            setTimeout(() => triggerManualUpdate(), 10000);
+            setInterval(() => { triggerManualUpdate(); }, 20000); 
+        }
+
+        async function triggerManualUpdate() {
             try {
-                const types = ['hadith', 'dua', 'name', 'info'];
+                const types = ['hadith', 'dua', 'name', 'info', 'ayah'];
                 const type = types[Math.floor(Math.random() * types.length)];
-                let content;
-                if(type === 'name') content = getRandom(db.names); else content = getRandom(db[type + 's'] || db[type]); 
+                
+                // Try Claude AI Worker first
+                let content = await fetchAIContent(type);
+
+                // Fallback to local DB if AI fails
+                if (!content) {
+                    if(type === 'name') content = getRandom(db.names);
+                    else if(type === 'ayah') { await addAyahCard(); return; }
+                    else content = getRandom(db[type + 's'] || db[type]); 
+                }
+
                 addCardToFeed(type, content, true, true);
                 
                 if (isNotifActive) {
-                    let notifTitle = "زانیاری نوێ", notifBody = "نوێکرایەوە";
-                    if(typeof content === 'string') notifBody = content.substring(0, 40) + "...";
-                    else if(type === 'name') notifBody = content.name;
+                    let notifTitle = "🌙 زانیاری نوێ";
+                    let notifBody = "نوێکرایەوە";
+                    if (type === 'hadith') notifTitle = "📿 فەرموودەی نوێ";
+                    else if (type === 'dua') notifTitle = "🤲 دوعای ڕۆژ";
+                    else if (type === 'name') notifTitle = "✨ ناوی خودای گەورە";
+                    else if (type === 'ayah') notifTitle = "📖 ئایەتی نوێ";
+                    if(typeof content === 'string') notifBody = content.replace(/<[^>]+>/g, '').substring(0, 60) + "...";
+                    else if(content && content.name) notifBody = content.name + ": " + content.meaning;
+                    else if(content && content.text) notifBody = content.text.substring(0, 60) + "...";
                     playNotification(notifTitle, notifBody);
                 }
-            } catch(e) { console.log("Update error"); }
+            } catch(e) { console.log("Update error:", e); }
         }
 
         function playNotification(title, body) {
