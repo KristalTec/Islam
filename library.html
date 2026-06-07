@@ -10,6 +10,7 @@
             --secondary-color: #00796b;
             --history-color: #f39c12;
             --bg-color: #f4f7f6;
+            --kurdish-color: #d32f2f;
         }
 
         body {
@@ -79,6 +80,7 @@
             padding: 10px 0;
             cursor: pointer;
             transition: 0.2s;
+            text-align: right;
         }
 
         .history-item:hover { background-color: #f9f9f9; }
@@ -95,6 +97,7 @@
             border-radius: 5px;
             margin-top: 10px;
             cursor: pointer;
+            font-family: inherit;
         }
 
         h1 { color: var(--primary-color); margin: 0; }
@@ -114,6 +117,7 @@
             border-radius: 8px;
             font-size: 16px;
             outline: none;
+            font-family: inherit;
         }
 
         input[type="text"]:focus { border-color: var(--primary-color); }
@@ -126,16 +130,53 @@
             border-radius: 8px;
             cursor: pointer;
             transition: 0.3s;
+            font-family: inherit;
+            font-size: 16px;
         }
 
         button.search-btn:hover { background-color: #1b5e20; }
 
-        /* Source Tabs */
+        /* Kurdish Filter Styling */
+        .filter-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .kurdish-toggle {
+            cursor: pointer;
+            font-weight: bold;
+            background: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 2px solid #ddd;
+            color: #555;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .kurdish-toggle:hover {
+            background: #f1f1f1;
+        }
+
+        .kurdish-toggle input {
+            display: none;
+        }
+
+        .kurdish-toggle.active {
+            background-color: #e8f5e9;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
         .source-tabs {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin: 15px 0 0 0;
+            margin: 20px 0 0 0;
             flex-wrap: wrap;
         }
 
@@ -181,6 +222,7 @@
             height: 250px;
             object-fit: cover;
             background-color: #eee;
+            border-bottom: 1px solid #ddd;
         }
 
         .book-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
@@ -194,11 +236,12 @@
 
         .book-source-tag {
             font-size: 11px;
-            padding: 2px 8px;
+            padding: 4px 8px;
             border-radius: 10px;
             display: inline-block;
             margin-bottom: 8px;
             font-weight: bold;
+            text-align: center;
         }
 
         .tag-openlibrary { background: #e8f5e9; color: #2e7d32; }
@@ -208,15 +251,20 @@
         .read-btn {
             margin-top: auto; display: block; text-align: center;
             background-color: #0288d1; color: white; text-decoration: none; padding: 10px; border-radius: 5px;
+            font-family: inherit; font-weight: bold; transition: 0.3s;
         }
+        
+        .read-btn:hover { background-color: #0277bd; }
 
-        .loading-status { text-align: center; padding: 20px; font-weight: bold; color: var(--primary-color); }
+        .loading-status { text-align: center; padding: 20px; font-weight: bold; color: var(--primary-color); display: none; }
 
         .results-info {
             text-align: center;
             padding: 10px;
             color: #666;
             font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -235,11 +283,18 @@
         </div>
 
         <h1>📚 کتێبخانەی گشتگیری ئیسلامی</h1>
-        <p>گەڕان و خوێندنەوەی هەموو کتێبە ئیسلامییەکان</p>
+        <p>گەڕان و خوێندنەوەی هەزاران کتێبی ئیسلامی و گشتی</p>
         
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="ناوی کتێب یان بابەتی دڵخواز بنووسە...">
+            <input type="text" id="searchInput" placeholder="ناوی کتێب یان نووسەر بنووسە (بۆ نموونە: قورئان، تەفسیر)...">
             <button class="search-btn" onclick="initiateSearch()">بگەڕێ</button>
+        </div>
+
+        <div class="filter-container">
+            <label class="kurdish-toggle" id="kurdishToggleLabel">
+                <input type="checkbox" id="kurdishFilter" onchange="toggleKurdishMode()">
+                ☀️ تەنها کتێبە کوردییەکان
+            </label>
         </div>
 
         <div class="source-tabs">
@@ -252,35 +307,35 @@
 
     <div id="results-info" class="results-info"></div>
     <div id="books-container"></div>
-    <div id="loading" class="loading-status">خەریکە کتێبەکان باردەکرێن...</div>
+    <div id="loading" class="loading-status">⏳ خەریکە کتێبەکان باردەکرێن... کەمێک چاوەڕێ بە</div>
 
     <script>
-        // ==========================================
-        // State
-        // ==========================================
-        let currentQuery = 'islam';
+        let currentQuery = 'تەفسیری قورئان'; 
         let currentSource = 'all';
         let isLoading = false;
+        let isKurdishOnly = false; // گۆڕاوی نوێ بۆ فلتەری کوردی
 
-        // Pagination state per source
         let pageState = {
             openlibrary: { page: 1, done: false },
             google: { startIndex: 0, done: false },
             archive: { page: 1, done: false }
         };
 
-        // ==========================================
-        // Default Islamic keyword searches
-        // ==========================================
-        const defaultQueries = [
-            'quran', 'hadith', 'fiqh', 'islam', 'sunnah',
-            'tafsir', 'aqeedah', 'seerah', 'prophet muhammad',
-            'islamic jurisprudence', 'muslim', 'arabic calligraphy'
-        ];
+        // چالاککردن و لەکارخستنی فلتەری کوردی
+        function toggleKurdishMode() {
+            isKurdishOnly = document.getElementById('kurdishFilter').checked;
+            const label = document.getElementById('kurdishToggleLabel');
+            
+            if (isKurdishOnly) {
+                label.classList.add('active');
+            } else {
+                label.classList.remove('active');
+            }
+            
+            // کاتێک فلتەرەکە دەگۆڕێت، دووبارە دەگەڕێتەوە
+            initiateSearch(true);
+        }
 
-        // ==========================================
-        // Source Selection
-        // ==========================================
         function setSource(source) {
             currentSource = source;
             document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
@@ -288,19 +343,15 @@
             initiateSearch(true);
         }
 
-        // ==========================================
-        // Main Search Trigger
-        // ==========================================
         function initiateSearch(keepQuery = false) {
             const input = document.getElementById('searchInput').value.trim();
             if (input) {
                 currentQuery = input;
                 saveToHistory(input);
             } else if (!keepQuery) {
-                currentQuery = 'islam';
+                currentQuery = isKurdishOnly ? 'تەفسیری قورئان کوردی' : 'تفسير القرآن';
             }
 
-            // Reset pagination
             pageState = {
                 openlibrary: { page: 1, done: false },
                 google: { startIndex: 0, done: false },
@@ -312,9 +363,6 @@
             loadBooks();
         }
 
-        // ==========================================
-        // Load Books (dispatcher)
-        // ==========================================
         async function loadBooks() {
             if (isLoading) return;
             isLoading = true;
@@ -322,8 +370,7 @@
 
             try {
                 if (currentSource === 'all') {
-                    // Load from all three simultaneously
-                    await Promise.all([
+                    await Promise.allSettled([
                         loadFromOpenLibrary(),
                         loadFromGoogle(),
                         loadFromArchive()
@@ -336,22 +383,27 @@
                     await loadFromArchive();
                 }
             } catch (e) {
-                console.error(e);
+                console.error("General Error loading books: ", e);
             }
 
             document.getElementById('loading').style.display = 'none';
             isLoading = false;
+            
+            if (document.getElementById('books-container').children.length === 0) {
+                document.getElementById('results-info').innerText = 'هیچ کتێبێک نەدۆزرایەوە! هەوڵبدە وشەی گەڕانەکەت بگۆڕیت.';
+            }
         }
 
-        // ==========================================
-        // Open Library API
-        // ==========================================
         async function loadFromOpenLibrary() {
             if (pageState.openlibrary.done) return;
             try {
-                const q = encodeURIComponent(currentQuery + ' islam');
+                // ئەگەر فلتەری کوردی چالاک بوو، وشەی کوردی بۆ گەڕانەکە زیاد دەکەین لەگەڵ فلتەری زمان
+                let queryStr = isKurdishOnly ? `${currentQuery} کوردی` : currentQuery;
+                let langFilter = isKurdishOnly ? '&language=kur' : '';
+                
+                const q = encodeURIComponent(queryStr);
                 const page = pageState.openlibrary.page;
-                const url = `https://openlibrary.org/search.json?q=${q}&page=${page}&limit=20&language=ara,eng,urd,tur,fas`;
+                const url = `https://openlibrary.org/search.json?q=${q}&page=${page}&limit=20${langFilter}`;
 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -381,68 +433,59 @@
                         sourceLabel: 'Open Library'
                     });
                 });
-
                 updateResultsInfo();
             } catch (e) {
                 console.error('OpenLibrary error:', e);
             }
         }
 
-        // ==========================================
-        // Google Books API
-        // ==========================================
         async function loadFromGoogle() {
             if (pageState.google.done) return;
             try {
-                const q = encodeURIComponent(`${currentQuery} islam`);
+                // بۆ گۆگڵ، زیادکردنی وشەی 'کوردی' باشترین ئەنجام دەدات
+                let queryStr = isKurdishOnly ? `${currentQuery} کوردی` : currentQuery;
+                const q = encodeURIComponent(queryStr);
                 const si = pageState.google.startIndex;
-                const url = `https://www.googleapis.com/books/v1/volumes?q=${q}&startIndex=${si}&maxResults=20&printType=books&filter=free-ebooks`;
+                const url = `https://www.googleapis.com/books/v1/volumes?q=${q}&startIndex=${si}&maxResults=20&printType=books`;
 
                 const res = await fetch(url);
                 const data = await res.json();
 
                 if (!data.items || data.items.length === 0) {
-                    // Try without free filter
-                    const url2 = `https://www.googleapis.com/books/v1/volumes?q=${q}&startIndex=${si}&maxResults=20&printType=books`;
-                    const res2 = await fetch(url2);
-                    const data2 = await res2.json();
-
-                    if (!data2.items) { pageState.google.done = true; return; }
-
-                    data2.items.forEach(book => renderGoogleBook(book));
-                    pageState.google.startIndex += 20;
-                } else {
-                    data.items.forEach(book => renderGoogleBook(book));
-                    pageState.google.startIndex += 20;
+                    pageState.google.done = true;
+                    return;
                 }
 
+                data.items.forEach(book => {
+                    const info = book.volumeInfo;
+                    const title = info.title || "بێ ناونیشان";
+                    const authors = info.authors ? info.authors.join(', ') : "نووسەر نادیارە";
+                    const imgUrl = info.imageLinks
+                        ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail)
+                        : 'https://via.placeholder.com/128x195?text=No+Cover';
+                    const link = info.previewLink || info.infoLink || '#';
+
+                    appendCard({ title, authors, imgUrl, link, source: 'google', sourceLabel: 'Google Books' });
+                });
+                
+                pageState.google.startIndex += 20;
                 updateResultsInfo();
             } catch (e) {
                 console.error('Google Books error:', e);
             }
         }
 
-        function renderGoogleBook(book) {
-            const info = book.volumeInfo;
-            const title = info.title || "بێ ناونیشان";
-            const authors = info.authors ? info.authors.join(', ') : "نووسەر نادیارە";
-            const imgUrl = info.imageLinks
-                ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail)
-                : 'https://via.placeholder.com/128x195?text=No+Cover';
-            const link = info.previewLink || info.infoLink || '#';
-
-            appendCard({ title, authors, imgUrl, link, source: 'google', sourceLabel: 'Google Books' });
-        }
-
-        // ==========================================
-        // Internet Archive API
-        // ==========================================
         async function loadFromArchive() {
             if (pageState.archive.done) return;
             try {
-                const q = encodeURIComponent(`(${currentQuery}) AND (subject:islam OR subject:quran OR subject:hadith)`);
+                // بۆ ئەرشیڤ، فلتەری زمان و وشە پێکەوە بەکاردەهێنین
+                let queryStr = currentQuery;
+                if (isKurdishOnly) {
+                    queryStr += ' AND (language:kur OR language:kurdish OR title:کوردی OR description:کوردی)';
+                }
+                const q = encodeURIComponent(`${queryStr} AND mediatype:texts`);
                 const page = pageState.archive.page;
-                const url = `https://archive.org/advancedsearch.php?q=${q}&fl[]=identifier,title,creator,subject,mediatype&rows=20&page=${page}&output=json&mediatype=texts`;
+                const url = `https://archive.org/advancedsearch.php?q=${q}&fl[]=identifier,title,creator,subject,mediatype&rows=20&page=${page}&output=json`;
 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -473,16 +516,12 @@
                         sourceLabel: 'Archive.org'
                     });
                 });
-
                 updateResultsInfo();
             } catch (e) {
                 console.error('Archive error:', e);
             }
         }
 
-        // ==========================================
-        // Render Card
-        // ==========================================
         function appendCard({ title, authors, imgUrl, link, source, sourceLabel }) {
             const container = document.getElementById('books-container');
             const div = document.createElement('div');
@@ -493,7 +532,7 @@
                     <span class="book-source-tag tag-${source}">${sourceLabel}</span>
                     <div class="book-title" title="${title}">${title}</div>
                     <div class="book-author">${authors}</div>
-                    <a href="${link}" target="_blank" class="read-btn">📖 خوێندنەوە</a>
+                    <a href="${link}" target="_blank" class="read-btn">📖 خوێندنەوەی کتێب</a>
                 </div>
             `;
             container.appendChild(div);
@@ -501,16 +540,20 @@
 
         function updateResultsInfo() {
             const count = document.getElementById('books-container').children.length;
-            document.getElementById('results-info').innerText = `${count} کتێب دۆزرایەوە`;
+            if(count > 0) {
+                let msg = `ئێستا ${count} کتێب نیشان دراوە`;
+                if(isKurdishOnly) msg += ' (بە فلتەری کوردی)';
+                document.getElementById('results-info').innerText = msg;
+            }
         }
 
-        // ==========================================
-        // History
-        // ==========================================
         function saveToHistory(query) {
             let history = JSON.parse(localStorage.getItem('islamicLibHistory')) || [];
             const now = new Date();
             const timeString = now.toLocaleDateString('ku-IQ') + ' - ' + now.toLocaleTimeString('ku-IQ');
+            
+            history = history.filter(item => item.text !== query);
+            
             history.unshift({ text: query, time: timeString });
             if (history.length > 20) history.pop();
             localStorage.setItem('islamicLibHistory', JSON.stringify(history));
@@ -529,7 +572,7 @@
                 let history = JSON.parse(localStorage.getItem('islamicLibHistory')) || [];
 
                 if (history.length === 0) {
-                    listDiv.innerHTML = '<p style="font-size:12px; color:#666;">هیچ مێژوویەک نییە.</p>';
+                    listDiv.innerHTML = '<p style="font-size:12px; color:#666; text-align:center;">هیچ مێژوویەک نییە.</p>';
                     return;
                 }
 
@@ -561,12 +604,13 @@
         }
 
         function goHome() {
-            window.location.href = "index.html";
+            document.getElementById('searchInput').value = '';
+            // ئەگەر بمانەوێت فلتەری کوردی بکوژێتەوە کاتێک دەچینە سەرەکی دەتوانین ئەمە بکەین:
+            // document.getElementById('kurdishFilter').checked = false;
+            // toggleKurdishMode();
+            initiateSearch(false);
         }
 
-        // ==========================================
-        // Infinite Scroll
-        // ==========================================
         window.addEventListener('scroll', () => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) {
                 if (!isLoading) loadBooks();
@@ -577,9 +621,6 @@
             if (event.key === "Enter") initiateSearch();
         });
 
-        // ==========================================
-        // Init - load default islamic books
-        // ==========================================
         loadBooks();
     </script>
 
