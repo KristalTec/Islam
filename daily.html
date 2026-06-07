@@ -1,628 +1,450 @@
 <!DOCTYPE html>
-<html lang="ckb" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>کتێبخانەی ئیسلامی</title>
+    <title>ڕۆژانەی مسوڵمان - کاتەکانی بانگ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #2e7d32;
-            --secondary-color: #00796b;
-            --history-color: #f39c12;
-            --bg-color: #f4f7f6;
-            --kurdish-color: #d32f2f;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            background: white;
-            padding: 50px 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .header-btns {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .home-btn { background-color: var(--secondary-color); }
-        .home-btn:hover { background-color: #004d40; }
-
-        .history-btn { background-color: var(--history-color); }
-        .history-btn:hover { background-color: #d35400; }
-
-        #history-panel {
-            display: none;
-            position: absolute;
-            top: 60px;
-            left: 20px;
-            width: 300px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            z-index: 1000;
-            padding: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: right;
-        }
-
-        .history-item:hover { background-color: #f9f9f9; }
-
-        .history-query { font-weight: bold; color: var(--primary-color); }
-        .history-time { font-size: 12px; color: #888; display: block; margin-top: 3px; }
+        :root { --bg-color: #fffbf2; --border-color: #d4af37; --highlight-color: #27ae60; --text-color: #2c3e50; }
+        body { font-family: 'Amiri', serif; background-color: #f8f9fa; margin: 0; padding: 20px; text-align: center; }
         
-        .clear-history {
-            width: 100%;
-            background-color: #c0392b;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        h1 { color: var(--primary-color); margin: 0; }
-
-        .search-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        input[type="text"] {
-            padding: 12px;
-            width: 50%;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            font-family: inherit;
-        }
-
-        input[type="text"]:focus { border-color: var(--primary-color); }
-
-        button.search-btn {
-            padding: 12px 25px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: inherit;
-            font-size: 16px;
-        }
-
-        button.search-btn:hover { background-color: #1b5e20; }
-
-        /* Kurdish Filter Styling */
-        .filter-container {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .kurdish-toggle {
-            cursor: pointer;
-            font-weight: bold;
-            background: #fff;
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: 2px solid #ddd;
-            color: #555;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            user-select: none;
-        }
-
-        .kurdish-toggle:hover {
-            background: #f1f1f1;
-        }
-
-        .kurdish-toggle input {
-            display: none;
-        }
-
-        .kurdish-toggle.active {
-            background-color: #e8f5e9;
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .source-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin: 20px 0 0 0;
-            flex-wrap: wrap;
-        }
-
-        .source-tab {
-            padding: 6px 16px;
-            border: 2px solid #ddd;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            background: white;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-
-        .source-tab.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        #books-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px;
-            padding: 10px;
-        }
-
-        .book-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .book-card:hover { transform: translateY(-5px); }
-
-        .book-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            background-color: #eee;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .book-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
-
-        .book-title {
-            font-weight: bold; margin-bottom: 5px; font-size: 1.1em;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
-
-        .book-author { color: #666; font-size: 0.9em; margin-bottom: 15px; }
-
-        .book-source-tag {
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .tag-openlibrary { background: #e8f5e9; color: #2e7d32; }
-        .tag-google { background: #e3f2fd; color: #1565c0; }
-        .tag-archive { background: #fff3e0; color: #e65100; }
-
-        .read-btn {
-            margin-top: auto; display: block; text-align: center;
-            background-color: #0288d1; color: white; text-decoration: none; padding: 10px; border-radius: 5px;
-            font-family: inherit; font-weight: bold; transition: 0.3s;
-        }
+        .container { max-width: 600px; margin: 0 auto; background: var(--bg-color); border: 2px solid var(--border-color); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
-        .read-btn:hover { background-color: #0277bd; }
+        .header { background: var(--border-color); color: white; padding: 15px; position: relative; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        
+        .back-btn { position: absolute; left: 15px; top: 15px; background: white; color: var(--border-color); text-decoration: none; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
 
-        .loading-status { text-align: center; padding: 20px; font-weight: bold; color: var(--primary-color); display: none; }
+        /* Controls Area */
+        .settings-box { background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 10px; width: 90%; display: flex; flex-direction: column; gap: 10px; }
+        
+        select.custom-select { padding: 8px; border-radius: 20px; border: none; font-family: 'Amiri'; font-size: 14px; cursor: pointer; outline: none; background: white; color: var(--text-color); width: 100%; text-align: center; }
+        
+        .audio-controls { display: flex; align-items: center; justify-content: space-between; gap: 5px; background: white; padding: 5px 10px; border-radius: 20px; flex-wrap: wrap; }
+        
+        /* Volume Slider */
+        input[type=range] { width: 80px; cursor: pointer; }
+        
+        /* Mute Button */
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px; }
 
-        .results-info {
-            text-align: center;
-            padding: 10px;
-            color: #666;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+        optgroup { font-weight: bold; color: var(--border-color); }
+
+        .section { padding: 20px; border-bottom: 1px solid #eee; }
+        .prayer-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .prayer-card { background: white; padding: 12px; border-radius: 8px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .prayer-card.active-prayer { border: 2px solid var(--highlight-color); background-color: #e8f8f5; transform: scale(1.02); box-shadow: 0 0 10px rgba(39, 174, 96, 0.2); }
+        
+        .prayer-name { font-weight: bold; color: var(--text-color); }
+        .prayer-time { color: var(--border-color); font-weight: bold; background: #fffbf2; padding: 3px 8px; border-radius: 5px; direction: ltr; }
+
+        #adhan-alert { display: none; background-color: var(--highlight-color); color: white; padding: 15px; margin: 10px; border-radius: 8px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
+        .audio-permission { background: #ffeaa7; padding: 10px; font-size: 12px; color: #d35400; border-bottom: 1px solid #fdcb6e; display: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-btns">
-            <button onclick="goHome()" class="btn home-btn">🏠 سەرەکی</button>
-            <button onclick="toggleHistory()" class="btn history-btn">📜 مێژوو</button>
+    <div class="container">
+        <audio id="adhan-audio" preload="auto">
+            <source src="" type="audio/mpeg">
+        </audio>
+
+        <div class="audio-permission" id="audio-perm-btn" onclick="enableAudio()">
+            🔊 تکایە ئێرە دابگرە بۆ چالاککردنی دەنگی بانگ (پێویستە)
         </div>
 
-        <div id="history-panel">
-            <h4 style="margin-top:0;">مێژووی گەڕانەکان</h4>
-            <div id="history-list"></div>
-            <button onclick="clearHistory()" class="clear-history">🗑️ سڕینەوەی مێژوو</button>
+        <div class="header">
+            <a href="index.html" class="back-btn">↪</a>
+            <span style="font-size:20px; font-weight:bold;">کاتەکانی بانگ</span>
+            
+            <div class="settings-box">
+                <select id="city-select" class="custom-select" onchange="changeCity()">
+                    <optgroup label="شارە گەورەکان">
+                        <option value="Sulaymaniyah">سلێمانی</option>
+                        <option value="Erbil">هەولێر</option>
+                        <option value="Duhok">دهۆک</option>
+                        <option value="Kirkuk">کەرکوک</option>
+                        <option value="Halabja">هەڵەبجە</option>
+                        <option value="Baghdad">بەغداد</option>
+                    </optgroup>
+                    <optgroup label="قەزا و ناحیەکان">
+                        <option value="Zakho">زاخۆ</option>
+                        <option value="Soran">سۆران</option>
+                        <option value="Kalar">کەلار</option>
+                        <option value="Ranya">ڕانیە</option>
+                        <option value="Chamchamal">چەمچەماڵ</option>
+                        <option value="Koya">کۆیە</option>
+                        <option value="Akre">ئاکرێ</option>
+                        <option value="Darbandikhan">دەربەندیخان</option>
+                        <option value="Penjwen">پێنجوێن</option>
+                        <option value="Qaladze">قەڵادزێ</option>
+                        <option value="Khanaqin">خانەقین</option>
+                        <option value="Dukan">دوکان</option>
+                        <option value="Rawanduz">ڕەواندز</option>
+                        <option value="Shaqlawa">شەقڵاوە</option>
+                        <option value="Amadiya">ئامێدی</option>
+                    </optgroup>
+                </select>
+
+                <div class="audio-controls">
+                    <select id="audio-select" onchange="changeAdhanSound()" style="border:none; outline:none; font-family:'Amiri'; width:90px; font-size:12px;">
+                        <option value="makkah">بانگی مەککە</option>
+                        <option value="madina">بانگی مەدینە</option>
+                        <option value="aqsa">بانگی قودس</option>
+                        <option value="mishary">مشاری العفاسی</option>
+                        <option value="abdulbasit">عبدالباسط</option>
+                    </select>
+
+                    <select id="format-select" onchange="changeTimeFormat()" style="border:none; outline:none; font-family:'Amiri'; width:60px; font-size:12px; font-weight:bold;">
+                        <option value="24">24H</option>
+                        <option value="12">12H</option>
+                    </select>
+                    
+                    <input type="range" id="volume-control" min="0" max="1" step="0.1" value="1" onchange="changeVolume()" title="دەنگ">
+                    
+                    <button id="mute-btn" class="icon-btn" onclick="toggleMute()" title="بێدەنگ/نۆتیفیکەیشن">🔔</button>
+                </div>
+            </div>
         </div>
 
-        <h1>📚 کتێبخانەی گشتگیری ئیسلامی</h1>
-        <p>گەڕان و خوێندنەوەی هەزاران کتێبی ئیسلامی و گشتی</p>
-        
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="ناوی کتێب یان نووسەر بنووسە (بۆ نموونە: قورئان، تەفسیر)...">
-            <button class="search-btn" onclick="initiateSearch()">بگەڕێ</button>
+        <div id="adhan-alert">
+            🕌 الله أكبر! کاتی بانگی <span id="current-prayer-name">...</span>
         </div>
 
-        <div class="filter-container">
-            <label class="kurdish-toggle" id="kurdishToggleLabel">
-                <input type="checkbox" id="kurdishFilter" onchange="toggleKurdishMode()">
-                ☀️ تەنها کتێبە کوردییەکان
-            </label>
+        <div class="section">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span id="gregorian-date">...</span>
+                <span id="hijri-date" style="color:var(--border-color);">...</span>
+            </div>
+            
+            <div id="prayer-container" class="prayer-grid">
+                <div style="color:#888;">جاری هێنانە...</div>
+            </div>
         </div>
 
-        <div class="source-tabs">
-            <button class="source-tab active" onclick="setSource('all')" id="tab-all">🌐 هەموو سەرچاوەکان</button>
-            <button class="source-tab" onclick="setSource('openlibrary')" id="tab-openlibrary">📗 Open Library</button>
-            <button class="source-tab" onclick="setSource('google')" id="tab-google">📘 Google Books</button>
-            <button class="source-tab" onclick="setSource('archive')" id="tab-archive">🏛️ Archive.org</button>
+        <div class="section" style="border:none; font-size:12px; color:#999;">
+            تێبینی: بۆ بیستنی بانگ، تکایە ئەم پەڕەیە دامەخە (دەتوانیت بچیتە بەرنامەی تر).
         </div>
-    </header>
-
-    <div id="results-info" class="results-info"></div>
-    <div id="books-container"></div>
-    <div id="loading" class="loading-status">⏳ خەریکە کتێبەکان باردەکرێن... کەمێک چاوەڕێ بە</div>
+    </div>
 
     <script>
-        let currentQuery = 'تەفسیری قورئان'; 
-        let currentSource = 'all';
-        let isLoading = false;
-        let isKurdishOnly = false; // گۆڕاوی نوێ بۆ فلتەری کوردی
-
-        let pageState = {
-            openlibrary: { page: 1, done: false },
-            google: { startIndex: 0, done: false },
-            archive: { page: 1, done: false }
+        // ==========================================
+        // 1. Audio Sources & Setup
+        // ==========================================
+        const adhanSounds = {
+            'makkah': 'https://www.islamcan.com/audio/adhan/azan2.mp3',
+            'madina': 'https://www.islamcan.com/audio/adhan/azan3.mp3',
+            'aqsa': 'https://www.islamcan.com/audio/adhan/azan6.mp3',
+            'mishary': 'https://www.islamcan.com/audio/adhan/azan1.mp3',
+            'abdulbasit': 'https://www.islamcan.com/audio/adhan/azan10.mp3'
         };
 
-        // چالاککردن و لەکارخستنی فلتەری کوردی
-        function toggleKurdishMode() {
-            isKurdishOnly = document.getElementById('kurdishFilter').checked;
-            const label = document.getElementById('kurdishToggleLabel');
-            
-            if (isKurdishOnly) {
-                label.classList.add('active');
+        const audioPlayer = document.getElementById('adhan-audio');
+        let isMuted = false;
+        let audioEnabled = false;
+
+        // Restore Settings
+        let currentCity = localStorage.getItem('selectedCity') || "Sulaymaniyah";
+        let currentLat = localStorage.getItem('userLat') || null;
+        let currentLng = localStorage.getItem('userLng') || null;
+        let currentSound = localStorage.getItem('selectedSound') || "makkah";
+        let savedVolume = localStorage.getItem('adhanVolume') || 1;
+        let timeFormat = localStorage.getItem('timeFormat') || '24';
+
+        // Initial UI Setup
+        document.getElementById('city-select').value = currentCity;
+        document.getElementById('audio-select').value = currentSound;
+        document.getElementById('volume-control').value = savedVolume;
+        document.getElementById('format-select').value = timeFormat;
+        
+        audioPlayer.src = adhanSounds[currentSound];
+        audioPlayer.volume = savedVolume;
+
+        // ==========================================
+        // Service Worker Registration
+        // ==========================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log('Service Worker registered:', reg.scope);
+            }).catch(err => console.log('SW registration failed:', err));
+
+            // Listen for messages from Service Worker (background adhan trigger)
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'PLAY_ADHAN') {
+                    triggerAdhan(event.data.prayerKey, true); // true = from background
+                }
+            });
+        }
+
+        function sendPrayersToSW(prayers) {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'SCHEDULE_ADHAN',
+                    prayers: prayers,
+                    sound: currentSound,
+                    volume: savedVolume,
+                    city: currentCity
+                });
+            }
+        }
+
+        // ==========================================
+        // Geolocation - Auto-detect user location
+        // ==========================================
+        function detectLocation() {
+            if (!navigator.geolocation) return;
+
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    const lat = pos.coords.latitude.toFixed(4);
+                    const lng = pos.coords.longitude.toFixed(4);
+
+                    // Only update if meaningfully different from saved
+                    if (lat !== currentLat || lng !== currentLng) {
+                        currentLat = lat;
+                        currentLng = lng;
+                        localStorage.setItem('userLat', lat);
+                        localStorage.setItem('userLng', lng);
+                        fetchIslamicData();
+                    }
+                },
+                (err) => {
+                    // Geolocation denied or failed - use saved city
+                    console.log('Geolocation unavailable, using city:', currentCity);
+                },
+                { timeout: 8000, maximumAge: 600000 }
+            );
+        }
+
+        // Request Notification Permission then detect location
+        if ("Notification" in window) {
+            Notification.requestPermission().then(() => detectLocation());
+        } else {
+            detectLocation();
+        }
+
+        function enableAudio() {
+            audioPlayer.play().then(() => {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                audioEnabled = true;
+                document.getElementById('audio-perm-btn').style.display = 'none';
+                alert("✅ دەنگ چالاک کرا");
+            }).catch(e => console.log("User interaction required"));
+        }
+
+        document.addEventListener('click', () => {
+            if(!audioEnabled) document.getElementById('audio-perm-btn').style.display = 'block';
+        }, {once:true});
+
+        // ==========================================
+        // 2. Settings Functions
+        // ==========================================
+        function changeAdhanSound() {
+            const selected = document.getElementById('audio-select').value;
+            currentSound = selected;
+            localStorage.setItem('selectedSound', selected);
+            audioPlayer.src = adhanSounds[selected];
+            if(audioEnabled) {
+                audioPlayer.play();
+                setTimeout(() => { audioPlayer.pause(); audioPlayer.currentTime=0; }, 3000);
+            }
+        }
+
+        function changeVolume() {
+            const vol = document.getElementById('volume-control').value;
+            savedVolume = vol;
+            localStorage.setItem('adhanVolume', vol);
+            audioPlayer.volume = vol;
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('mute-btn');
+            if(isMuted) {
+                btn.innerText = "🔕";
+                btn.style.opacity = "0.5";
             } else {
-                label.classList.remove('active');
+                btn.innerText = "🔔";
+                btn.style.opacity = "1";
             }
+        }
+
+        function changeTimeFormat() {
+            timeFormat = document.getElementById('format-select').value;
+            localStorage.setItem('timeFormat', timeFormat);
+            renderPrayers();
+        }
+
+        // Helper to format 24h to 12h
+        function formatTime(time24) {
+            if (timeFormat === '24') return time24;
             
-            // کاتێک فلتەرەکە دەگۆڕێت، دووبارە دەگەڕێتەوە
-            initiateSearch(true);
-        }
-
-        function setSource(source) {
-            currentSource = source;
-            document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + source).classList.add('active');
-            initiateSearch(true);
-        }
-
-        function initiateSearch(keepQuery = false) {
-            const input = document.getElementById('searchInput').value.trim();
-            if (input) {
-                currentQuery = input;
-                saveToHistory(input);
-            } else if (!keepQuery) {
-                currentQuery = isKurdishOnly ? 'تەفسیری قورئان کوردی' : 'تفسير القرآن';
-            }
-
-            pageState = {
-                openlibrary: { page: 1, done: false },
-                google: { startIndex: 0, done: false },
-                archive: { page: 1, done: false }
-            };
-
-            document.getElementById('books-container').innerHTML = '';
-            document.getElementById('results-info').innerText = '';
-            loadBooks();
-        }
-
-        async function loadBooks() {
-            if (isLoading) return;
-            isLoading = true;
-            document.getElementById('loading').style.display = 'block';
-
-            try {
-                if (currentSource === 'all') {
-                    await Promise.allSettled([
-                        loadFromOpenLibrary(),
-                        loadFromGoogle(),
-                        loadFromArchive()
-                    ]);
-                } else if (currentSource === 'openlibrary') {
-                    await loadFromOpenLibrary();
-                } else if (currentSource === 'google') {
-                    await loadFromGoogle();
-                } else if (currentSource === 'archive') {
-                    await loadFromArchive();
-                }
-            } catch (e) {
-                console.error("General Error loading books: ", e);
-            }
-
-            document.getElementById('loading').style.display = 'none';
-            isLoading = false;
+            let [hours, minutes] = time24.split(':');
+            hours = parseInt(hours);
             
-            if (document.getElementById('books-container').children.length === 0) {
-                document.getElementById('results-info').innerText = 'هیچ کتێبێک نەدۆزرایەوە! هەوڵبدە وشەی گەڕانەکەت بگۆڕیت.';
-            }
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            
+            return `${hours}:${minutes} ${ampm}`;
         }
 
-        async function loadFromOpenLibrary() {
-            if (pageState.openlibrary.done) return;
+        // ==========================================
+        // 3. API & Data Logic
+        // ==========================================
+        let todayPrayers = {};
+
+        async function fetchIslamicData() {
+            const cityContainer = document.getElementById('prayer-container');
+            cityContainer.innerHTML = "<div style='color:#888;'>جاری هێنانە...</div>";
+            
             try {
-                // ئەگەر فلتەری کوردی چالاک بوو، وشەی کوردی بۆ گەڕانەکە زیاد دەکەین لەگەڵ فلتەری زمان
-                let queryStr = isKurdishOnly ? `${currentQuery} کوردی` : currentQuery;
-                let langFilter = isKurdishOnly ? '&language=kur' : '';
+                let url;
+                // Prefer coordinates if available (more accurate)
+                if (currentLat && currentLng) {
+                    url = `https://api.aladhan.com/v1/timings?latitude=${currentLat}&longitude=${currentLng}&method=3`;
+                } else {
+                    url = `https://api.aladhan.com/v1/timingsByCity?city=${currentCity}&country=Iraq&method=3`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
                 
-                const q = encodeURIComponent(queryStr);
-                const page = pageState.openlibrary.page;
-                const url = `https://openlibrary.org/search.json?q=${q}&page=${page}&limit=20${langFilter}`;
+                if(data.code === 200) {
+                    const timings = data.data.timings;
+                    const date = data.data.date;
 
-                const res = await fetch(url);
-                const data = await res.json();
+                    document.getElementById('gregorian-date').innerText = date.gregorian.date;
+                    document.getElementById('hijri-date').innerText = `${date.hijri.day} ${date.hijri.month.en}`;
 
-                if (!data.docs || data.docs.length === 0) {
-                    pageState.openlibrary.done = true;
-                    return;
+                    todayPrayers = {
+                        'Fajr': timings.Fajr.split(' ')[0],
+                        'Sunrise': timings.Sunrise.split(' ')[0],
+                        'Dhuhr': timings.Dhuhr.split(' ')[0],
+                        'Asr': timings.Asr.split(' ')[0],
+                        'Maghrib': timings.Maghrib.split(' ')[0],
+                        'Isha': timings.Isha.split(' ')[0]
+                    };
+
+                    renderPrayers();
+
+                    // Send updated prayer times to Service Worker for background scheduling
+                    sendPrayersToSW(todayPrayers);
                 }
-
-                pageState.openlibrary.page++;
-
-                data.docs.forEach(book => {
-                    if (!book.title) return;
-                    const coverId = book.cover_i;
-                    const imgUrl = coverId
-                        ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
-                        : 'https://via.placeholder.com/128x195?text=No+Cover';
-                    const authors = book.author_name ? book.author_name.join(', ') : 'نووسەر نادیارە';
-                    const link = book.key ? `https://openlibrary.org${book.key}` : '#';
-
-                    appendCard({
-                        title: book.title,
-                        authors,
-                        imgUrl,
-                        link,
-                        source: 'openlibrary',
-                        sourceLabel: 'Open Library'
-                    });
-                });
-                updateResultsInfo();
-            } catch (e) {
-                console.error('OpenLibrary error:', e);
+            } catch (error) {
+                cityContainer.innerHTML = "<div style='color:red;'>کێشە لە پەیوەندی هەیە!</div>";
             }
         }
 
-        async function loadFromGoogle() {
-            if (pageState.google.done) return;
-            try {
-                // بۆ گۆگڵ، زیادکردنی وشەی 'کوردی' باشترین ئەنجام دەدات
-                let queryStr = isKurdishOnly ? `${currentQuery} کوردی` : currentQuery;
-                const q = encodeURIComponent(queryStr);
-                const si = pageState.google.startIndex;
-                const url = `https://www.googleapis.com/books/v1/volumes?q=${q}&startIndex=${si}&maxResults=20&printType=books`;
+        function renderPrayers() {
+            const cityContainer = document.getElementById('prayer-container');
+            const prayersDisplay = [
+                { key: 'Fajr', name: 'بەیانی' },
+                { key: 'Sunrise', name: 'خۆرھەڵاتن' },
+                { key: 'Dhuhr', name: 'نیوەڕۆ' },
+                { key: 'Asr', name: 'عەسر' },
+                { key: 'Maghrib', name: 'مەغریب' },
+                { key: 'Isha', name: 'عیشا' }
+            ];
 
-                const res = await fetch(url);
-                const data = await res.json();
-
-                if (!data.items || data.items.length === 0) {
-                    pageState.google.done = true;
-                    return;
-                }
-
-                data.items.forEach(book => {
-                    const info = book.volumeInfo;
-                    const title = info.title || "بێ ناونیشان";
-                    const authors = info.authors ? info.authors.join(', ') : "نووسەر نادیارە";
-                    const imgUrl = info.imageLinks
-                        ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail)
-                        : 'https://via.placeholder.com/128x195?text=No+Cover';
-                    const link = info.previewLink || info.infoLink || '#';
-
-                    appendCard({ title, authors, imgUrl, link, source: 'google', sourceLabel: 'Google Books' });
-                });
+            let html = '';
+            prayersDisplay.forEach(p => {
+                let displayTime = formatTime(todayPrayers[p.key]);
                 
-                pageState.google.startIndex += 20;
-                updateResultsInfo();
-            } catch (e) {
-                console.error('Google Books error:', e);
-            }
+                html += `
+                    <div class="prayer-card" id="card-${p.key}">
+                        <span class="prayer-name">${p.name}</span>
+                        <span class="prayer-time" dir="ltr">${displayTime}</span>
+                    </div>
+                `;
+            });
+            cityContainer.innerHTML = html;
         }
 
-        async function loadFromArchive() {
-            if (pageState.archive.done) return;
-            try {
-                // بۆ ئەرشیڤ، فلتەری زمان و وشە پێکەوە بەکاردەهێنین
-                let queryStr = currentQuery;
-                if (isKurdishOnly) {
-                    queryStr += ' AND (language:kur OR language:kurdish OR title:کوردی OR description:کوردی)';
-                }
-                const q = encodeURIComponent(`${queryStr} AND mediatype:texts`);
-                const page = pageState.archive.page;
-                const url = `https://archive.org/advancedsearch.php?q=${q}&fl[]=identifier,title,creator,subject,mediatype&rows=20&page=${page}&output=json`;
-
-                const res = await fetch(url);
-                const data = await res.json();
-                const docs = data?.response?.docs;
-
-                if (!docs || docs.length === 0) {
-                    pageState.archive.done = true;
-                    return;
-                }
-
-                pageState.archive.page++;
-
-                docs.forEach(item => {
-                    if (!item.title) return;
-                    const id = item.identifier;
-                    const imgUrl = `https://archive.org/services/img/${id}`;
-                    const link = `https://archive.org/details/${id}`;
-                    const authors = Array.isArray(item.creator)
-                        ? item.creator.join(', ')
-                        : (item.creator || 'نووسەر نادیارە');
-
-                    appendCard({
-                        title: Array.isArray(item.title) ? item.title[0] : item.title,
-                        authors,
-                        imgUrl,
-                        link,
-                        source: 'archive',
-                        sourceLabel: 'Archive.org'
-                    });
-                });
-                updateResultsInfo();
-            } catch (e) {
-                console.error('Archive error:', e);
-            }
+        function changeCity() {
+            currentCity = document.getElementById('city-select').value;
+            // When user manually picks a city, clear coordinates so city is used
+            currentLat = null;
+            currentLng = null;
+            localStorage.removeItem('userLat');
+            localStorage.removeItem('userLng');
+            localStorage.setItem('selectedCity', currentCity);
+            document.getElementById('prayer-container').innerHTML = "جاری گۆڕین...";
+            fetchIslamicData();
         }
 
-        function appendCard({ title, authors, imgUrl, link, source, sourceLabel }) {
-            const container = document.getElementById('books-container');
-            const div = document.createElement('div');
-            div.className = 'book-card';
-            div.innerHTML = `
-                <img src="${imgUrl}" alt="${title}" class="book-img" onerror="this.src='https://via.placeholder.com/128x195?text=No+Cover'">
-                <div class="book-info">
-                    <span class="book-source-tag tag-${source}">${sourceLabel}</span>
-                    <div class="book-title" title="${title}">${title}</div>
-                    <div class="book-author">${authors}</div>
-                    <a href="${link}" target="_blank" class="read-btn">📖 خوێندنەوەی کتێب</a>
-                </div>
-            `;
-            container.appendChild(div);
-        }
+        // ==========================================
+        // 4. Time Check & Trigger Logic
+        // ==========================================
+        let lastPlayedTime = "";
 
-        function updateResultsInfo() {
-            const count = document.getElementById('books-container').children.length;
-            if(count > 0) {
-                let msg = `ئێستا ${count} کتێب نیشان دراوە`;
-                if(isKurdishOnly) msg += ' (بە فلتەری کوردی)';
-                document.getElementById('results-info').innerText = msg;
-            }
-        }
-
-        function saveToHistory(query) {
-            let history = JSON.parse(localStorage.getItem('islamicLibHistory')) || [];
+        function checkTimeLoop() {
             const now = new Date();
-            const timeString = now.toLocaleDateString('ku-IQ') + ' - ' + now.toLocaleTimeString('ku-IQ');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
             
-            history = history.filter(item => item.text !== query);
-            
-            history.unshift({ text: query, time: timeString });
-            if (history.length > 20) history.pop();
-            localStorage.setItem('islamicLibHistory', JSON.stringify(history));
-        }
+            // Highlight active prayer card
+            document.querySelectorAll('.prayer-card').forEach(c => c.classList.remove('active-prayer'));
 
-        function toggleHistory() {
-            const panel = document.getElementById('history-panel');
-            const listDiv = document.getElementById('history-list');
-            
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-                listDiv.innerHTML = '';
-                
-                let history = JSON.parse(localStorage.getItem('islamicLibHistory')) || [];
-
-                if (history.length === 0) {
-                    listDiv.innerHTML = '<p style="font-size:12px; color:#666; text-align:center;">هیچ مێژوویەک نییە.</p>';
-                    return;
+            for (const [key, time] of Object.entries(todayPrayers)) {
+                if (currentTime === time) {
+                    const card = document.getElementById(`card-${key}`);
+                    if(card) card.classList.add('active-prayer');
                 }
 
-                history.forEach(item => {
-                    const d = document.createElement('div');
-                    d.className = 'history-item';
-                    d.onclick = () => searchHistoryItem(item.text);
-                    d.innerHTML = `
-                        <div class="history-query">🔍 ${item.text}</div>
-                        <span class="history-time">${item.time}</span>
-                    `;
-                    listDiv.appendChild(d);
+                if (currentTime === time && key !== 'Sunrise') {
+                    if (lastPlayedTime !== currentTime) {
+                        triggerAdhan(key, false);
+                        lastPlayedTime = currentTime;
+                    }
+                }
+            }
+        }
+
+        function triggerAdhan(prayerKey, fromBackground) {
+            const nameMap = {'Fajr':'بەیانی', 'Dhuhr':'نیوەڕۆ', 'Asr':'عەسر', 'Maghrib':'مەغریب', 'Isha':'عیشا'};
+            const prayerName = nameMap[prayerKey];
+
+            // 1. Show Visual Alert
+            const alertBox = document.getElementById('adhan-alert');
+            document.getElementById('current-prayer-name').innerText = prayerName;
+            alertBox.style.display = 'block';
+
+            // 2. Play Audio (only if page is visible or triggered from background message)
+            if (!isMuted) {
+                audioPlayer.currentTime = 0;
+                audioPlayer.play().catch(e => document.getElementById('audio-perm-btn').style.display = 'block');
+            }
+
+            // 3. Send Notification (only if page is visible; SW handles it when in background)
+            if (!fromBackground && Notification.permission === "granted") {
+                new Notification("کاتەکانی بانگ", {
+                    body: `بانگی ${prayerName} - الله أكبر`,
+                    icon: "https://cdn-icons-png.flaticon.com/512/2884/2884657.png"
                 });
             }
+
+            // Hide alert after 5 mins
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+                if(!isMuted) audioPlayer.pause();
+            }, 300000);
         }
 
-        function searchHistoryItem(text) {
-            document.getElementById('searchInput').value = text;
-            currentQuery = text;
-            document.getElementById('history-panel').style.display = 'none';
-            initiateSearch(true);
-        }
-
-        function clearHistory() {
-            if (confirm("دڵنیایت دەتەوێت مێژووی گەڕانەکانت بسڕیتەوە؟")) {
-                localStorage.removeItem('islamicLibHistory');
-                document.getElementById('history-panel').style.display = 'none';
-            }
-        }
-
-        function goHome() {
-            document.getElementById('searchInput').value = '';
-            // ئەگەر بمانەوێت فلتەری کوردی بکوژێتەوە کاتێک دەچینە سەرەکی دەتوانین ئەمە بکەین:
-            // document.getElementById('kurdishFilter').checked = false;
-            // toggleKurdishMode();
-            initiateSearch(false);
-        }
-
-        window.addEventListener('scroll', () => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) {
-                if (!isLoading) loadBooks();
-            }
+        // Re-schedule SW when SW becomes active (page reload after SW install)
+        navigator.serviceWorker && navigator.serviceWorker.ready.then(() => {
+            if (Object.keys(todayPrayers).length > 0) sendPrayersToSW(todayPrayers);
         });
 
-        document.getElementById("searchInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") initiateSearch();
-        });
+        // Start Loop
+        setInterval(checkTimeLoop, 1000);
+        fetchIslamicData();
 
-        loadBooks();
     </script>
-
 </body>
 </html>
