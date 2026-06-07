@@ -358,6 +358,9 @@
                 archive: { page: 1, done: false }
             };
 
+            // چارەسەری کێشەکە: ڕێگەپێدان بە لۆدینگی نوێ کاتێک سەرەکی دادەگرین
+            isLoading = false;
+
             document.getElementById('books-container').innerHTML = '';
             document.getElementById('results-info').innerText = '';
             loadBooks();
@@ -604,10 +607,20 @@
         }
 
         function goHome() {
+            // سڕینەوەی بۆشایی گەڕان
             document.getElementById('searchInput').value = '';
-            // ئەگەر بمانەوێت فلتەری کوردی بکوژێتەوە کاتێک دەچینە سەرەکی دەتوانین ئەمە بکەین:
-            // document.getElementById('kurdishFilter').checked = false;
-            // toggleKurdishMode();
+            
+            // گەڕاندنەوەی فلتەری سەرچاوەکان بۆ 'هەموو سەرچاوەکان'
+            currentSource = 'all';
+            document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-all').classList.add('active');
+
+            // کوژاندنەوەی فلتەری کوردی
+            document.getElementById('kurdishFilter').checked = false;
+            document.getElementById('kurdishToggleLabel').classList.remove('active');
+            isKurdishOnly = false;
+
+            // دەستپێکردنەوەی گەڕان
             initiateSearch(false);
         }
 
