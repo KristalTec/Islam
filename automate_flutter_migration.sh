@@ -131,7 +131,7 @@ YAML
 
 echo "Generated workflow: $WORKFLOW_FILE"
 
-git -C "$REPO_ROOT" add "$WORKFLOW_FILE" "$REPO_ROOT/automate_flutter_migration.sh"
+git -C "$REPO_ROOT" add -A
 
 if git -C "$REPO_ROOT" diff --cached --quiet; then
   echo "No changes to commit."
