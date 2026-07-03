@@ -1,0 +1,90 @@
+name: islam_online
+description: Islam Online - Kurdish Islamic App (Flutter native)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  provider: ^6.1.2
+
+  # HTTP & networking
+  http: ^1.2.1
+  web_socket_channel: ^2.4.5
+
+  # Audio playback
+  just_audio: ^0.9.40
+
+  # Geolocation
+  geolocator: ^12.0.0
+
+  # Local storage
+  shared_preferences: ^2.3.2
+
+  # Notifications
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.4
+
+  # Fonts (Amiri for Arabic/Kurdish)
+  google_fonts: ^6.2.1
+
+  # Date/time formatting
+  intl: ^0.19.0
+
+  # Speech recognition (Quran recitation matching)
+  speech_to_text: ^6.6.2
+
+  # Sharing
+  share_plus: ^10.0.2
+
+  # Clipboard
+  flutter_clipboard_manager: ^0.0.2
+
+  # URL launcher (for library book links)
+  url_launcher: ^6.3.0
+
+  # Cached network images
+  cached_network_image: ^3.4.1
+
+  # Shimmer loading effect
+  shimmer: ^3.0.0
+
+  # Connectivity check
+  connectivity_plus: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1
+
+# App icon configuration
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 21
+  web:
+    generate: false
+  windows:
+    generate: false
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  # Amiri font is loaded via google_fonts package at runtime
+  # To bundle fonts locally, add TTF files to assets/fonts/ and uncomment:
+  # fonts:
+  #   - family: Amiri
+  #     fonts:
+  #       - asset: assets/fonts/Amiri-Regular.ttf
+  #       - asset: assets/fonts/Amiri-Bold.ttf
+  #         weight: 700
