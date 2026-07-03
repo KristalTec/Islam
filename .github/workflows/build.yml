@@ -1,0 +1,93 @@
+name: Flutter Native Build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-release:
+    name: Android APK Release
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: flutter_app
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-release
+          path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
+
+  ios-release:
+    name: iOS Runner.app and IPA (no codesign)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: flutter_app
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS app (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package no-codesign IPA
+        run: |
+          rm -rf build/ios/ipa_payload
+          mkdir -p build/ios/ipa_payload/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ios/ipa_payload/Payload/Runner.app
+          (cd build/ios/ipa_payload && zip -r ../Runner-no-codesign.ipa Payload)
+
+      - name: Upload Runner.app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-runner-app
+          path: flutter_app/build/ios/iphoneos/Runner.app
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-no-codesign-ipa
+          path: flutter_app/build/ios/Runner-no-codesign.ipa
