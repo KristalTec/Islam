@@ -5,7 +5,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FLUTTER_DIR="$REPO_ROOT/flutter_app"
 WORKFLOW_DIR="$REPO_ROOT/.github/workflows"
 WORKFLOW_FILE="$WORKFLOW_DIR/build.yml"
-EXPECTED_DART_FILES=49
+EXPECTED_DART_FILES="${EXPECTED_DART_FILES:-49}"
 COMMIT_MESSAGE="Automated Native Flutter Migration and Build Pipeline"
 
 require_cmd() {
