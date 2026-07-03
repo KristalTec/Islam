@@ -3,7 +3,9 @@ include ':app'
 def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
 def properties = new Properties()
 
-assert localPropertiesFile.exists()
+if (!localPropertiesFile.exists()) {
+    throw new GradleException("local.properties not found. Define flutter.sdk in android/local.properties (or run Flutter tooling to generate it).")
+}
 localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
 
 def flutterSdkPath = properties.getProperty("flutter.sdk")
