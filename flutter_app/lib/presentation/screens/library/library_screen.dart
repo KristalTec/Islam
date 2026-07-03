@@ -412,7 +412,7 @@ class _HistoryPanel extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           if (provider.searchHistory.isEmpty)
-            const Text('مێژوو بوونی نییە',
+            const Text('هیچ مێژوویەک نییە',
                 style: TextStyle(color: Colors.grey)),
           ...provider.searchHistory.map((h) {
             return GestureDetector(

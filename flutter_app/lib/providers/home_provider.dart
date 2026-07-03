@@ -110,9 +110,10 @@ class HomeProvider extends ChangeNotifier {
       else if (type == 'ayah') title = '📖 ئایەتی نوێ';
 
       if (item.content is String) {
-        body = (item.content as String)
+        final contentStr = item.content as String;
+        body = contentStr
             .replaceAll(RegExp(r'<[^>]+>'), '')
-            .substring(0, min(60, (item.content as String).length));
+            .substring(0, min(60, contentStr.length));
       } else if (item.content is Map) {
         final m = item.content as Map;
         body = m['name'] != null

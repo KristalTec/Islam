@@ -229,7 +229,7 @@ class QuranProvider extends ChangeNotifier {
             RegExp(
                 '[\u0610-\u061A\u064B-\u066F\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]'),
             '')
-        .replaceAll(RegExp('[اأإآٱٰ]'), '')
+        .replaceAll(RegExp('[اأإآٱٰ]'), 'ا')
         .replaceAll(RegExp('(ى|ي|ئ)'), 'ي')
         .replaceAll(RegExp('(ة|ه)'), 'ه')
         .replaceAll(RegExp('(ؤ|و)'), 'و')

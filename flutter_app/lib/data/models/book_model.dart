@@ -50,7 +50,7 @@ class BookModel {
       readUrl: webReaderLink,
       source: 'google',
       publishYear: (volumeInfo['publishedDate'] as String?)
-          ?.substring(0, 4.clamp(0, (volumeInfo['publishedDate'] as String? ?? '').length)),
+          ?.substring(0, (volumeInfo['publishedDate'] as String? ?? '').length.clamp(0, 4)),
       description: volumeInfo['description'] as String?,
     );
   }
