@@ -83,10 +83,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void _startLiveUpdates() {
-    // First update after 10s, then every 20s
-    Future.delayed(const Duration(seconds: 10), () => triggerUpdate());
+    // First update after 30s, then every 5 minutes
+    Future.delayed(const Duration(seconds: 30), () => triggerUpdate());
     _updateTimer = Timer.periodic(
-      const Duration(seconds: 20),
+      const Duration(minutes: 5),
       (_) => triggerUpdate(),
     );
   }
