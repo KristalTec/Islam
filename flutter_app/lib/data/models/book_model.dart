@@ -49,9 +49,12 @@ class BookModel {
       coverUrl: thumbnail,
       readUrl: webReaderLink,
       source: 'google',
-      publishYear: (volumeInfo['publishedDate'] as String?)
-          ?.substring(0, (volumeInfo['publishedDate'] as String? ?? '').length.clamp(0, 4)),
-      description: volumeInfo['description'] as String?,
+      publishYear: (() {
+        final publishedDate = volumeInfo['publishedDate'] as String?;
+        if (publishedDate == null || publishedDate.isEmpty) return null;
+        final end = publishedDate.length < 4 ? publishedDate.length : 4;
+        return publishedDate.substring(0, end);
+      })(),
     );
   }
 
