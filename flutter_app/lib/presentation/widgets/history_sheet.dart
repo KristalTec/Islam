@@ -106,7 +106,7 @@ class HistorySheet extends StatelessWidget {
                           onPressed: () async {
                             final confirm = await showDialog<bool>(
                               context: context,
-                              builder: (_) => Directionality(
+                              builder: (dialogContext) => Directionality(
                                 textDirection: TextDirection.rtl,
                                 child: AlertDialog(
                                   content:
@@ -114,13 +114,13 @@ class HistorySheet extends StatelessWidget {
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
-                                          Navigator.pop(_, false),
+                                          Navigator.pop(dialogContext, false),
                                       child:
                                           const Text(AppStrings.cancel),
                                     ),
                                     TextButton(
                                       onPressed: () =>
-                                          Navigator.pop(_, true),
+                                          Navigator.pop(dialogContext, true),
                                       child: const Text(AppStrings.ok),
                                     ),
                                   ],
