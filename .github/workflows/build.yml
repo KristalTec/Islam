@@ -2,7 +2,7 @@ name: Flutter Native Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "copilot/**"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:

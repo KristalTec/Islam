@@ -7,6 +7,8 @@ WORKFLOW_DIR="$REPO_ROOT/.github/workflows"
 WORKFLOW_FILE="$WORKFLOW_DIR/build.yml"
 EXPECTED_DART_FILES="${EXPECTED_DART_FILES:-49}"
 COMMIT_MESSAGE="Automated Native Flutter Migration and Build Pipeline"
+SKIP_PUSH="${SKIP_PUSH:-0}"
+TARGET_BRANCH="${TARGET_BRANCH:-main}"
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -16,7 +18,6 @@ require_cmd() {
 }
 
 require_cmd git
-require_cmd flutter
 
 if [[ ! -d "$FLUTTER_DIR" ]]; then
   echo "Error: $FLUTTER_DIR does not exist." >&2
@@ -38,7 +39,7 @@ name: Flutter Native Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "copilot/**"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
@@ -137,6 +138,10 @@ if git -C "$REPO_ROOT" diff --cached --quiet; then
   echo "No changes to commit."
 else
   git -C "$REPO_ROOT" commit -m "$COMMIT_MESSAGE"
-  git -C "$REPO_ROOT" push origin main
-  echo "Changes committed and pushed to origin/main."
+  if [[ "$SKIP_PUSH" == "1" ]]; then
+    echo "Skipping push because SKIP_PUSH=1."
+  else
+    git -C "$REPO_ROOT" push origin "$TARGET_BRANCH"
+    echo "Changes committed and pushed to origin/$TARGET_BRANCH."
+  fi
 fi
