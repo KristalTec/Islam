@@ -42,9 +42,6 @@ dependencies:
   # Sharing
   share_plus: ^10.0.2
 
-  # Clipboard
-  flutter_clipboard_manager: ^0.0.2
-
   # URL launcher (for library book links)
   url_launcher: ^6.3.0
 
