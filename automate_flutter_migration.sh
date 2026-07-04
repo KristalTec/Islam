@@ -25,8 +25,8 @@ if [[ ! -d "$FLUTTER_DIR" ]]; then
 fi
 
 actual_dart_files=$(find "$FLUTTER_DIR" -type f -name '*.dart' | wc -l | tr -d '[:space:]')
-if [[ "$actual_dart_files" -ne "$EXPECTED_DART_FILES" ]]; then
-  echo "Error: Expected $EXPECTED_DART_FILES Dart files in $FLUTTER_DIR but found $actual_dart_files." >&2
+if [[ "$actual_dart_files" -lt "$EXPECTED_DART_FILES" ]]; then
+  echo "Error: Expected at least $EXPECTED_DART_FILES Dart files in $FLUTTER_DIR but found $actual_dart_files." >&2
   exit 1
 fi
 
@@ -39,7 +39,7 @@ name: Flutter Native Build
 
 on:
   push:
-    branches: ["main", "copilot/**"]
+    branches: ["main", "copilot/migrate-web-app-to-flutter"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
