@@ -133,8 +133,13 @@ lib/
 │   │   └── api_constants.dart   # All API endpoint URLs
 │   ├── theme/
 │   │   └── app_theme.dart       # Material3 theme
+│   ├── usecases/
+│   │   └── usecase.dart         # Shared use case contract
 │   └── utils/
 │       └── date_utils.dart      # Date formatting helpers
+├── domain/
+│   ├── entities/                 # Core business models
+│   └── repositories/             # Repository contracts
 ├── data/
 │   ├── models/                  # Data models (Hadith, Prayer, Book, etc.)
 │   ├── services/                # API clients (prayer, quran, library, AI)
