@@ -23,6 +23,7 @@
 name: "NowSecure"
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
   pull_request:
@@ -31,22 +32,39 @@ on:
 jobs:
   nowsecure:
     name: NowSecure
+    if: ${{ secrets.NS_TOKEN != '' && secrets.NS_GROUP_ID != '' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter_app
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Build your application
-        run: ./gradlew assembleDebug              # Update this to build your Android or iOS application
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build debug APK
+        run: flutter build apk --debug
 
       - name: Run NowSecure
         uses: nowsecure/nowsecure-action@3b439db31b6dce857b09f5222fd13ffc3159ad26
         with:
           token: ${{ secrets.NS_TOKEN }}
-          app_file: app-debug.apk                 # Update this to a path to your .ipa or .apk
-          group_id: {{ groupId }}                 # Update this to your desired Platform group ID
+          app_file: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
+          group_id: ${{ secrets.NS_GROUP_ID }}
 
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3
+        if: always() && hashFiles('NowSecure.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: NowSecure.sarif

@@ -22,33 +22,47 @@
 name: Appknox
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 jobs:
   appknox:
+    if: ${{ secrets.APPKNOX_ACCESS_TOKEN != '' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter_app
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
 
-      - name: Build the app
-        run: ./gradlew build                                         # Update this to build your Android or iOS application
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build debug APK
+        run: flutter build apk --debug
 
       - name: Appknox GitHub action
         uses: appknox/appknox-github-action@b7d2bfb2321d5544e97bffcba48557234ab953a4
         with:
           appknox_access_token: ${{ secrets.APPKNOX_ACCESS_TOKEN }}
-          file_path: app/build/outputs/apk/debug/app-debug.apk        # Specify the path to your .ipa or .apk here
+          file_path: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
           risk_threshold: MEDIUM                                      # Update this to desired risk threshold [LOW, MEDIUM, HIGH, CRITICAL]
           sarif: Enable
 
       - name: Upload SARIF to GHAS
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        if: always() && hashFiles('report.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: report.sarif
